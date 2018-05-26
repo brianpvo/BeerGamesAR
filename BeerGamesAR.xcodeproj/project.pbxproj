@@ -1,0 +1,433 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7AB26A5F20B928490066908D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB26A5E20B928490066908D /* AppDelegate.swift */; };
+		7AB26A6120B928490066908D /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB26A6020B928490066908D /* GameViewController.swift */; };
+		7AB26A6420B928490066908D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6220B928490066908D /* Main.storyboard */; };
+		7AB26A6620B9284A0066908D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6520B9284A0066908D /* Assets.xcassets */; };
+		7AB26A6920B9284A0066908D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6720B9284A0066908D /* LaunchScreen.storyboard */; };
+		7AB26A7320B92E120066908D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A7220B92E120066908D /* GoogleService-Info.plist */; };
+		A3A9E81429EA57B5977F1A5A /* Pods_BeerGamesAR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B6224FC584954427FA2DE89 /* Pods_BeerGamesAR.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0B6224FC584954427FA2DE89 /* Pods_BeerGamesAR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeerGamesAR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AB26A5B20B928490066908D /* BeerGamesAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeerGamesAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AB26A5E20B928490066908D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		7AB26A6020B928490066908D /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		7AB26A6320B928490066908D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		7AB26A6520B9284A0066908D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7AB26A6820B9284A0066908D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		7AB26A6A20B9284A0066908D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7AB26A7220B92E120066908D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8E51913D20667A4C7520C5A5 /* Pods-BeerGamesAR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeerGamesAR.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR.release.xcconfig"; sourceTree = "<group>"; };
+		F5D7DEA710CE72D6022F2B2C /* Pods-BeerGamesAR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeerGamesAR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR.debug.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7AB26A5820B928490066908D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3A9E81429EA57B5977F1A5A /* Pods_BeerGamesAR.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7AB26A5220B928490066908D = {
+			isa = PBXGroup;
+			children = (
+				7AB26A5D20B928490066908D /* BeerGamesAR */,
+				7AB26A5C20B928490066908D /* Products */,
+				808D40E319D17E5861AB9DF4 /* Pods */,
+				E9E75DE93037D2E4F66FD385 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		7AB26A5C20B928490066908D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7AB26A5B20B928490066908D /* BeerGamesAR.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7AB26A5D20B928490066908D /* BeerGamesAR */ = {
+			isa = PBXGroup;
+			children = (
+				7AB26A5E20B928490066908D /* AppDelegate.swift */,
+				7AB26A6020B928490066908D /* GameViewController.swift */,
+				7AB26A6220B928490066908D /* Main.storyboard */,
+				7AB26A6520B9284A0066908D /* Assets.xcassets */,
+				7AB26A6720B9284A0066908D /* LaunchScreen.storyboard */,
+				7AB26A6A20B9284A0066908D /* Info.plist */,
+				7AB26A7220B92E120066908D /* GoogleService-Info.plist */,
+			);
+			path = BeerGamesAR;
+			sourceTree = "<group>";
+		};
+		808D40E319D17E5861AB9DF4 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F5D7DEA710CE72D6022F2B2C /* Pods-BeerGamesAR.debug.xcconfig */,
+				8E51913D20667A4C7520C5A5 /* Pods-BeerGamesAR.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		E9E75DE93037D2E4F66FD385 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0B6224FC584954427FA2DE89 /* Pods_BeerGamesAR.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7AB26A5A20B928490066908D /* BeerGamesAR */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7AB26A6D20B9284A0066908D /* Build configuration list for PBXNativeTarget "BeerGamesAR" */;
+			buildPhases = (
+				5D203838F6972C5F00AD7AAA /* [CP] Check Pods Manifest.lock */,
+				7AB26A5720B928490066908D /* Sources */,
+				7AB26A5820B928490066908D /* Frameworks */,
+				7AB26A5920B928490066908D /* Resources */,
+				B1E154C36DDA9E44BDA4F36C /* [CP] Embed Pods Frameworks */,
+				178A5965CD75E8F7DEA0B8E6 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BeerGamesAR;
+			productName = BeerGamesAR;
+			productReference = 7AB26A5B20B928490066908D /* BeerGamesAR.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7AB26A5320B928490066908D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+				ORGANIZATIONNAME = "Brian Vo & Ray Lin & Ramen Singh & Tyler Boudreau";
+				TargetAttributes = {
+					7AB26A5A20B928490066908D = {
+						CreatedOnToolsVersion = 9.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 7AB26A5620B928490066908D /* Build configuration list for PBXProject "BeerGamesAR" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 7AB26A5220B928490066908D;
+			productRefGroup = 7AB26A5C20B928490066908D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7AB26A5A20B928490066908D /* BeerGamesAR */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7AB26A5920B928490066908D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7AB26A6920B9284A0066908D /* LaunchScreen.storyboard in Resources */,
+				7AB26A6620B9284A0066908D /* Assets.xcassets in Resources */,
+				7AB26A6420B928490066908D /* Main.storyboard in Resources */,
+				7AB26A7320B92E120066908D /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		178A5965CD75E8F7DEA0B8E6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/ARCore/ARCoreResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ARCoreResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5D203838F6972C5F00AD7AAA /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BeerGamesAR-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B1E154C36DDA9E44BDA4F36C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7AB26A5720B928490066908D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7AB26A6120B928490066908D /* GameViewController.swift in Sources */,
+				7AB26A5F20B928490066908D /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		7AB26A6220B928490066908D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7AB26A6320B928490066908D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		7AB26A6720B9284A0066908D /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7AB26A6820B9284A0066908D /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		7AB26A6B20B9284A0066908D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		7AB26A6C20B9284A0066908D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7AB26A6E20B9284A0066908D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F5D7DEA710CE72D6022F2B2C /* Pods-BeerGamesAR.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = BeerGamesAR/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bvrlrstb.BeerGamesAR;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7AB26A6F20B9284A0066908D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8E51913D20667A4C7520C5A5 /* Pods-BeerGamesAR.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = BeerGamesAR/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.bvrlrstb.BeerGamesAR;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7AB26A5620B928490066908D /* Build configuration list for PBXProject "BeerGamesAR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7AB26A6B20B9284A0066908D /* Debug */,
+				7AB26A6C20B9284A0066908D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7AB26A6D20B9284A0066908D /* Build configuration list for PBXNativeTarget "BeerGamesAR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7AB26A6E20B9284A0066908D /* Debug */,
+				7AB26A6F20B9284A0066908D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7AB26A5320B928490066908D /* Project object */;
+}

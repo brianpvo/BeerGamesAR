@@ -1,0 +1,5 @@
+.DS_Store
+Pods/
+*/xcuserdata/*
+BeerGamesAR.xcodeproj/project.xcworkspace/xcuserdata/*
+BeerGamesAR/GoogleService-Info.plist

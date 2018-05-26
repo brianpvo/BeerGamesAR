@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Game View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="GameViewController" customModule="BeerGamesAR" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bXb-eF-poO">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </arscnView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kgW-Kq-3zM">
+                                <rect key="frame" x="20" y="20" width="33" height="30"/>
+                                <state key="normal" title="Host"/>
+                                <connections>
+                                    <action selector="hostButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dHO-1n-ikx"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PDp-QC-aY8">
+                                <rect key="frame" x="61" y="20" width="54" height="30"/>
+                                <state key="normal" title="Resolve"/>
+                                <connections>
+                                    <action selector="resolveButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="v3y-ax-NgV"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="PDp-QC-aY8" secondAttribute="trailing" constant="260" id="0J5-Sg-ca4"/>
+                            <constraint firstItem="kgW-Kq-3zM" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="FXX-vr-QP7"/>
+                            <constraint firstItem="PDp-QC-aY8" firstAttribute="leading" secondItem="kgW-Kq-3zM" secondAttribute="trailing" constant="8" id="KaP-Ot-fr3"/>
+                            <constraint firstItem="bXb-eF-poO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="MgS-n0-PFH"/>
+                            <constraint firstItem="bXb-eF-poO" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="ZXu-ip-t5T"/>
+                            <constraint firstItem="PDp-QC-aY8" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="dw7-pc-Dfe"/>
+                            <constraint firstItem="bXb-eF-poO" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="eKL-d5-Kh1"/>
+                            <constraint firstItem="bXb-eF-poO" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="rns-f4-5y1"/>
+                            <constraint firstItem="kgW-Kq-3zM" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="vUs-Sl-V0k"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="hostButton" destination="kgW-Kq-3zM" id="Qwr-1Z-FbP"/>
+                        <outlet property="resolveButton" destination="PDp-QC-aY8" id="9XL-9H-F8R"/>
+                        <outlet property="sceneView" destination="bXb-eF-poO" id="fjm-7Y-6NE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+</document>
