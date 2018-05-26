@@ -296,20 +296,130 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     func createRoom() {
         weak var weakSelf = self
+        var roomNumber = 0
         firebaseReference?.child("last_room_code").runTransactionBlock({ (currentData) -> TransactionResult in
             let strongSelf = weakSelf
             
-            guard var roomNumber = currentData.value as? NSNumber else { return TransactionResult() }
+            //            guard var roomNumber = currentData.value as? NSNumber else { return TransactionResult() }
             
-            roomNumber = 0
+            // cast last room number from firebase database to variable "lastRoomNumber", if unwrapping fails, set lastRoomNumber to 0, which mean there is no last room number documented in firebase database
+            if let lastRoomNumber = currentData.value as? Int{
+                roomNumber = lastRoomNumber
+            }else{
+                roomNumber = 0
+            }
             
-            var roomNumberInt = roomNumber.intValue
-            roomNumberInt += 1
-            let newRoomNumber = NSNumber.init(value: roomNumberInt)
+            //            roomNumber = 0
+            //
+            //            var roomNumberInt = roomNumber.intValue
+            //            roomNumberInt += 1
+            //            let newRoomNumber = NSNumber.init(value: roomNumberInt)
             
-            // TODO - finish implementing
-            return TransactionResult()
+            // Increment the room number and set it as new room number
+            roomNumber += 1
+            let newRoomNumber = NSNumber(value: roomNumber)
+            
+            // create timestamp for the room number
+            let currentTimestamp = Date()
+            let timestampeInt = Int(currentTimestamp.timeIntervalSince1970 * 1000)
+            let timestamp = NSNumber(value: timestampeInt)
+            
+            // pass room number as string and timestamp into newRoom dictionary
+            let newRoom = ["display_name" : newRoomNumber.stringValue,
+                           "updated_at_timestamp" : timestamp] as [String : Any]
+            
+            // create a new node in firebase under hotspot_list to document the new room infro with newRoom variable
+            strongSelf?.firebaseReference?.child("hotspot_list").child(newRoomNumber.stringValue).setValue(newRoom)
+            
+            // update node "last_rooom_code" as reference for next room creation
+            currentData.value = newRoomNumber
+            return TransactionResult.success(withValue: currentData)
+            
+            //
+            //            // TODO - finish implementing
+            //            return TransactionResult()
+            
+        },andCompletionBlock: { (error, committed, snapshot) in
+            DispatchQueue.main.async {
+                if error != nil{
+                    weakSelf?.enterState(state: .Default)
+                }else {
+                    if let roomNumber = snapshot?.value as? NSNumber{
+                        weakSelf?.roomCreated(roomCode: roomNumber.stringValue)
+                    }
+                }
+            }
         })
+    }
+    
+    private func roomCreated(roomCode: String){
+        self.roomCode = roomCode
+        self.enterState(state: .RoomCreated)
+    }
+    
+    // pragma mark - ARSCNViewDelegate
+    
+    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+        // render SCN object
+        if !(anchor.isMember(of: ARPlaneAnchor.self)) {
+            let scene = SCNScene.init(named: "Place scn object here")
+            return scene?.rootNode.childNode(withName: "object name", recursively: false)
+        }
+        let scnNode = SCNNode()
+        return scnNode
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        // determine position and size of the plane anchor
+        if anchor.isMember(of: ARPlaneAnchor.self) {
+            let planeAnchor = anchor as? ARPlaneAnchor
+            
+            guard let width = planeAnchor?.extent.x, let height = planeAnchor?.extent.z else {
+                return
+            }
+            let plane = SCNPlane.init(width: CGFloat(width), height: CGFloat(height))
+            
+            plane.materials.first?.diffuse.contents = UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 0.3)
+            
+            let planeNode = SCNNode(geometry: plane)
+            
+            if let x = planeAnchor?.center.x, let y = planeAnchor?.center.y, let z = planeAnchor?.center.z {
+                planeNode.position = SCNVector3Make(x, y, z)
+                planeNode.eulerAngles = SCNVector3Make(Float(-Double.pi / 2), 0, 0)
+            }
+            
+            node.addChildNode(planeNode)
+        }
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        // Update position and size of plane anchor
+        if anchor.isMember(of: ARPlaneAnchor.self){
+            let planeAnchor = anchor as? ARPlaneAnchor
+            
+            let planeNode = node.childNodes.first
+            guard let plane = planeNode?.geometry as? SCNPlane else {return}
+            
+            if let width = planeAnchor?.extent.x {
+                plane.width = CGFloat(width)
+            }
+            if let height = planeAnchor?.extent.z {
+                plane.height = CGFloat(height)
+            }
+            
+            if let x = planeAnchor?.center.x, let y = planeAnchor?.center.y, let z = planeAnchor?.center.z {
+                planeNode?.position = SCNVector3Make(x, y, z)
+            }
+            
+        }
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
+        // remove plane node from parent node
+        if anchor.isMember(of: ARPlaneAnchor.self){
+            let planeNode = node.childNodes.first
+            planeNode?.removeFromParentNode()
+        }
     }
     
 }
