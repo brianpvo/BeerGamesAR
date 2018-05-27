@@ -31,6 +31,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     @IBOutlet weak var sceneView: ARSCNView!
     @IBOutlet weak var hostButton: UIButton!
     @IBOutlet weak var resolveButton: UIButton!
+    @IBOutlet weak var roomCodeLabel: UILabel!
+    @IBOutlet weak var messageLabel: UILabel!
     
     // API VARIABLES
     var firebaseReference: DatabaseReference?
@@ -59,7 +61,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         sceneView.session.delegate = self
         
         do {
-            gSession = try GARSession.init(apiKey: "API_KEY_HERE", bundleIdentifier: nil)
+            gSession = try GARSession.init(apiKey: ARCoreAPIKey, bundleIdentifier: nil)
         } catch {
             print("Couldn't initialize GAR session")
         }
@@ -174,7 +176,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     // MARK: Helper Methods
     
     func updateMessageLabel() {
-        // TODO
+        self.messageLabel.text = self.message
+        self.roomCodeLabel.text = "Room: \(roomCode ?? "0000")"
     }
     
     func toggleButton(button: UIButton?, enabled: Bool, title: String?) {
@@ -300,20 +303,12 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         firebaseReference?.child("last_room_code").runTransactionBlock({ (currentData) -> TransactionResult in
             let strongSelf = weakSelf
             
-            //            guard var roomNumber = currentData.value as? NSNumber else { return TransactionResult() }
-            
             // cast last room number from firebase database to variable "lastRoomNumber", if unwrapping fails, set lastRoomNumber to 0, which mean there is no last room number documented in firebase database
             if let lastRoomNumber = currentData.value as? Int{
                 roomNumber = lastRoomNumber
             }else{
                 roomNumber = 0
             }
-            
-            //            roomNumber = 0
-            //
-            //            var roomNumberInt = roomNumber.intValue
-            //            roomNumberInt += 1
-            //            let newRoomNumber = NSNumber.init(value: roomNumberInt)
             
             // Increment the room number and set it as new room number
             roomNumber += 1
@@ -328,16 +323,12 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             let newRoom = ["display_name" : newRoomNumber.stringValue,
                            "updated_at_timestamp" : timestamp] as [String : Any]
             
-            // create a new node in firebase under hotspot_list to document the new room infro with newRoom variable
+            // create a new node in firebase under hotspot_list to document the new room info with newRoom variable
             strongSelf?.firebaseReference?.child("hotspot_list").child(newRoomNumber.stringValue).setValue(newRoom)
             
             // update node "last_rooom_code" as reference for next room creation
             currentData.value = newRoomNumber
             return TransactionResult.success(withValue: currentData)
-            
-            //
-            //            // TODO - finish implementing
-            //            return TransactionResult()
             
         },andCompletionBlock: { (error, committed, snapshot) in
             DispatchQueue.main.async {
@@ -357,7 +348,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         self.enterState(state: .RoomCreated)
     }
     
-    // pragma mark - ARSCNViewDelegate
+    // Mark - ARSCNViewDelegate
     
     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
         // render SCN object
