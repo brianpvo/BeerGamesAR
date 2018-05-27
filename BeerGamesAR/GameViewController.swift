@@ -230,6 +230,9 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         let cancelAction = UIAlertAction(title: "CANCEL", style: .default) { (action) in
             self.enterState(state: .Default)
         }
+        alertController.addTextField { (textField) in
+            textField.keyboardType = UIKeyboardType.numberPad
+        }
         alertController.addAction(okAction)
         alertController.addAction(cancelAction)
         self.present(alertController, animated: false, completion: nil)
@@ -237,14 +240,13 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     func enterState(state: ARState) {
-        guard let garAnchor = self.garAnchor else { return }
         switch (state) {
         case .Default:
             if let arAnchor = arAnchor {
                 sceneView.session.remove(anchor: arAnchor)
                 self.arAnchor = nil;
             }
-            if let gSession = gSession {
+            if let gSession = gSession, let garAnchor = garAnchor {
                 gSession.remove(garAnchor)
                 self.garAnchor = nil;
             }
@@ -278,6 +280,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             self.message = "Hosting anchor...";
             break;
         case .HostingFinished:
+            guard let garAnchor = self.garAnchor else { return }
             self.message = "Finished hosting: \(garAnchor.cloudState)"
             break;
         case .EnterRoomCode:
@@ -290,6 +293,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             toggleButton(button: resolveButton, enabled: true, title: "CANCEL")
             break;
         case .ResolvingFinished:
+            guard let garAnchor = self.garAnchor else { return }
             self.message = "Finished resolving \(self.cloudStateString(cloudState: garAnchor.cloudState))"
             break;
         }
@@ -306,7 +310,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             // cast last room number from firebase database to variable "lastRoomNumber", if unwrapping fails, set lastRoomNumber to 0, which mean there is no last room number documented in firebase database
             if let lastRoomNumber = currentData.value as? Int{
                 roomNumber = lastRoomNumber
-            }else{
+            } else {
                 roomNumber = 0
             }
             
@@ -353,8 +357,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
         // render SCN object
         if !(anchor.isMember(of: ARPlaneAnchor.self)) {
-            let scene = SCNScene.init(named: "Place scn object here")
-            return scene?.rootNode.childNode(withName: "object name", recursively: false)
+            let scene = SCNScene(named: "example.scnassets/andy.scn")
+            return scene?.rootNode.childNode(withName: "andy", recursively: false)
         }
         let scnNode = SCNNode()
         return scnNode
