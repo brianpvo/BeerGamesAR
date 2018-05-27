@@ -172,6 +172,65 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
     }
     
+    // MARK - GARSessionDelegate
+    
+    func session(_ session: GARSession, didHostAnchor anchor: GARAnchor) {
+        if state != ARState.Hosting || anchor != garAnchor {
+            return
+        }
+        garAnchor = anchor
+        enterState(state: .HostingFinished)
+        guard let roomCode = roomCode else { return}
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("hosted_anchor_id").setValue(anchor.cloudIdentifier)
+        
+        // create timestamp for the room number
+        let timestampeInt = Int(Date().timeIntervalSince1970 * 1000)
+        let timestamp = NSNumber(value: timestampeInt)
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("updated_at_timestamp").setValue(timestamp)
+    }
+    
+    func session(_ session: GARSession, didFailToHostAnchor anchor: GARAnchor) {
+        if (state != ARState.Hosting || !(anchor.isEqual(garAnchor))){
+            return
+        }
+        
+        garAnchor = anchor
+        enterState(state: ARState.HostingFinished)
+    }
+    
+    func session(_ session: GARSession, didResolve anchor: GARAnchor) {
+        if (state != ARState.Resolving || !(anchor.isEqual(garAnchor))){
+            return
+        }
+        
+        garAnchor = anchor
+        arAnchor = ARAnchor.init(transform: anchor.transform)
+        if let arAnchor = arAnchor {
+            sceneView.session.add(anchor: arAnchor)
+        }
+        enterState(state: ARState.ResolvingFinished)
+    }
+    
+    func session(_ session: GARSession, didFailToResolve anchor: GARAnchor) {
+        if (state != ARState.Resolving || !(anchor.isEqual(garAnchor))){
+            return
+        }
+        
+        garAnchor = anchor
+        enterState(state: ARState.ResolvingFinished)
+    }
+    
+    // MARK - ARSessionDelegate
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        // Forward ARKit's update to ARCore session
+        do {
+            try gSession?.update(frame)
+        }catch let error{
+            print("fail to update ARKit frame to ARCore session: \(error)")
+        }
+    }
     
     // MARK: Helper Methods
     
