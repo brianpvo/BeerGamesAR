@@ -1,10 +1,5 @@
-//
-//  ViewController.swift
-//  BeerGamesAR
-//
 //  Created by Brian Vo on 2018-05-25.
 //  Copyright © 2018 Brian Vo & Ray Lin & Ramen Singh & Tyler Boudreau. All rights reserved.
-//
 
 import UIKit
 import ARKit
@@ -39,6 +34,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     var gSession: GARSession?
     var arAnchor: ARAnchor?
     var garAnchor: GARAnchor?
+    var garAnchorArray = [GARAnchor]()
     
     // ENUM VARIABLES
     var state: ARState?
@@ -88,17 +84,15 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if touches.count < 1 || state != ARState.RoomCreated {
+        if touches.count < 1 {//|| state != ARState.RoomCreated {
             return
         }
         let touch = touches.first!
         let touchLocation = touch.location(in: sceneView)
         
         let hitTestResult = sceneView.hitTest(touchLocation, types: [.existingPlane, .existingPlaneUsingExtent, .estimatedHorizontalPlane])
-        if hitTestResult.count > 0 {
-            guard let result = hitTestResult.first else { return }
-            self.addAnchorWithTransform(transform: result.worldTransform)
-        }
+        guard let result = hitTestResult.first else { return }
+        self.addAnchorWithTransform(transform: result.worldTransform)
     }
     
     // MARK: Anchor Hosting / Resolving
@@ -107,6 +101,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         self.roomCode = roomCode
         enterState(state: .Resolving)
         weak var weakSelf = self
+        
+        // Observe any changes in the room
         firebaseReference?.child("hotspot_list").child(roomCode)
             .observe(.value, with: { (snapshot) in
                 DispatchQueue.main.async {
@@ -115,36 +111,46 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                         !(strongSelf?.roomCode == roomCode) {
                         return
                     }
-                    var anchorId: String?
-                    if let value = snapshot.value as? NSDictionary {
-                        anchorId = value["hosted_anchor_id"] as? String
-                    }
-                    if let anchorId = anchorId, let strongSelf = strongSelf {
-                        strongSelf.firebaseReference?.child("hotspot_list").child(roomCode).removeAllObservers()
-                        strongSelf.resolveAnchorWithIdentifier(identifier: anchorId)
+                    //var anchorId: String?
+                    guard let value = snapshot.value as? NSDictionary else { return }
+                    print("value: \(value)")
+                    // TODO: read different ids for many objects on the plane
+                    guard let anchors = value["hosted_anchor_id"] as? [String] else { return }
+                    for anchorId in anchors {
+                        print("anchorId: \(anchorId)")
+                        
+                       // if let anchorId = anchorId, let strongSelf = strongSelf {
+                            // After retrieving anchor ID, remove the observer
+                            // TODO: allow continued observer to find new objects
+                            //strongSelf.firebaseReference?.child("hotspot_list").child(roomCode).removeAllObservers()
+                            strongSelf?.resolveAnchorWithIdentifier(identifier: anchorId)
+                       // }
                     }
                 }
             })
     }
     
+    // Now that we have the anchor ID from firebase, we resolve the anchor.
+    // Success and failure of this call is handled by the delegate methods
+    // session:didResolveAnchor and session:didFailToResolveAnchor appropriately.
     func resolveAnchorWithIdentifier(identifier: String) {
-        // Now that we have the anchor ID from firebase, we resolve the anchor.
-        // Success and failure of this call is handled by the delegate methods
-        // session:didResolveAnchor and session:didFailToResolveAnchor appropriately.
         guard let gSession = gSession else { return }
         do {
             self.garAnchor = try gSession.resolveCloudAnchor(withIdentifier: identifier)
+            if let garAnchor = self.garAnchor {
+                self.garAnchorArray.append(garAnchor)
+            }
         } catch {
             print("Couldn't resolve cloud anchor")
         }
     }
     
     func addAnchorWithTransform(transform: matrix_float4x4) {
-        arAnchor = ARAnchor.init(transform: transform)
+        arAnchor = ARAnchor(transform: transform)
         sceneView.session.add(anchor: arAnchor!)
         
         // To share an anchor, we call host anchor here on the ARCore session.
-        // session:disHostAnchor: session:didFailToHostAnchor: will get called appropriately.
+        // session:didHostAnchor: session:didFailToHostAnchor: will get called appropriately.
         do {
             garAnchor = try gSession?.hostCloudAnchor(arAnchor!)
             enterState(state: .Hosting)
@@ -180,15 +186,34 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
         garAnchor = anchor
         enterState(state: .HostingFinished)
-        guard let roomCode = roomCode else { return}
-        firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("hosted_anchor_id").setValue(anchor.cloudIdentifier)
         
-        // create timestamp for the room number
-        let timestampeInt = Int(Date().timeIntervalSince1970 * 1000)
-        let timestamp = NSNumber(value: timestampeInt)
-        firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("updated_at_timestamp").setValue(timestamp)
+        guard let roomCode = roomCode else { return }
+        weak var weakSelf = self
+         var anchorCount = 0
+       firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("hosted_anchor_count").runTransactionBlock({ (currentData) -> TransactionResult in
+                let strongSelf = weakSelf
+                if let lastAnchorCount = currentData.value as? Int {
+                    anchorCount = lastAnchorCount
+                }
+                
+                anchorCount += 1
+                let anchorIndex = anchorCount - 1
+                let anchorNumber = NSNumber(value: anchorCount)
+                // Set different id # for different objects
+                strongSelf?.firebaseReference?.child("hotspot_list").child(roomCode)
+                    .child("hosted_anchor_id").child(NSNumber(value: anchorIndex).stringValue)
+                    .setValue(anchor.cloudIdentifier)
+                
+                // create timestamp for the room number
+                let timestampeInt = Int(Date().timeIntervalSince1970 * 1000)
+                let timestamp = NSNumber(value: timestampeInt)
+                strongSelf?.firebaseReference?.child("hotspot_list").child(roomCode)
+                    .child("updated_at_timestamp").setValue(timestamp)
+                
+                currentData.value = anchorNumber
+                return TransactionResult.success(withValue: currentData)
+        })
     }
     
     func session(_ session: GARSession, didFailToHostAnchor anchor: GARAnchor) {
@@ -201,16 +226,16 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     func session(_ session: GARSession, didResolve anchor: GARAnchor) {
-        if (state != ARState.Resolving || !(anchor.isEqual(garAnchor))){
+        if state != ARState.Resolving || !(anchor.isEqual(garAnchor)) {
             return
         }
         
         garAnchor = anchor
-        arAnchor = ARAnchor.init(transform: anchor.transform)
+        arAnchor = ARAnchor(transform: anchor.transform)
         if let arAnchor = arAnchor {
             sceneView.session.add(anchor: arAnchor)
         }
-        enterState(state: ARState.ResolvingFinished)
+        //enterState(state: ARState.ResolvingFinished)
     }
     
     func session(_ session: GARSession, didFailToResolve anchor: GARAnchor) {
@@ -303,6 +328,11 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         case .Default:
             if let arAnchor = arAnchor {
                 sceneView.session.remove(anchor: arAnchor)
+                
+                // REMOVES ALL NODES FROM SCENE
+                sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+                    node.removeFromParentNode()
+                }
                 self.arAnchor = nil;
             }
             if let gSession = gSession, let garAnchor = garAnchor {
@@ -382,14 +412,16 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             let timestampeInt = Int(currentTimestamp.timeIntervalSince1970 * 1000)
             let timestamp = NSNumber(value: timestampeInt)
             
-            // pass room number as string and timestamp into newRoom dictionary
+            // pass room number, anchor count, and timestamp into newRoom dictionary
             let newRoom = ["display_name" : newRoomNumber.stringValue,
+                           "hosted_anchor_count" : 0,
                            "updated_at_timestamp" : timestamp] as [String : Any]
             
             // create a new node in firebase under hotspot_list to document the new room info with newRoom variable
-            strongSelf?.firebaseReference?.child("hotspot_list").child(newRoomNumber.stringValue).setValue(newRoom)
+            strongSelf?.firebaseReference?.child("hotspot_list")
+                .child(newRoomNumber.stringValue).setValue(newRoom)
             
-            // update node "last_rooom_code" as reference for next room creation
+            // update node "last_room_code" as reference for next room creation
             currentData.value = newRoomNumber
             return TransactionResult.success(withValue: currentData)
             
@@ -398,8 +430,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                 if error != nil{
                     weakSelf?.enterState(state: .Default)
                 }else {
-                    if let roomNumber = snapshot?.value as? NSNumber{
-                        weakSelf?.roomCreated(roomCode: roomNumber.stringValue)
+                    if let roomCodeValue = snapshot?.value as? NSNumber{
+                        weakSelf?.roomCreated(roomCode: roomCodeValue.stringValue)
                     }
                 }
             }
@@ -412,35 +444,43 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     // Mark - ARSCNViewDelegate
-    
     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
         // render SCN object
         if !(anchor.isMember(of: ARPlaneAnchor.self)) {
             let scene = SCNScene(named: "example.scnassets/andy.scn")
-            return scene?.rootNode.childNode(withName: "andy", recursively: false)
+            let anchorNode = scene?.rootNode.childNode(withName: "andy", recursively: false)
+            
+            let tableTop = SCNBox(width: 1.0, height: 0.01, length: 2.5, chamferRadius: 0)
+            let tableTopNode = SCNNode()
+            tableTopNode.geometry = tableTop
+            tableTopNode.position = SCNVector3(0, 0, 0)
+            
+            anchorNode?.addChildNode(tableTopNode)
+            return anchorNode
         }
         let scnNode = SCNNode()
         return scnNode
     }
     
+    // NOTE: use this method to show where the cup placements on the table will go
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         // determine position and size of the plane anchor
         if anchor.isMember(of: ARPlaneAnchor.self) {
-            let planeAnchor = anchor as? ARPlaneAnchor
+            guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
             
-            guard let width = planeAnchor?.extent.x, let height = planeAnchor?.extent.z else {
-                return
-            }
+            let width = planeAnchor.extent.x
+            let height = planeAnchor.extent.z
             let plane = SCNPlane.init(width: CGFloat(width), height: CGFloat(height))
             
             plane.materials.first?.diffuse.contents = UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 0.3)
             
             let planeNode = SCNNode(geometry: plane)
             
-            if let x = planeAnchor?.center.x, let y = planeAnchor?.center.y, let z = planeAnchor?.center.z {
-                planeNode.position = SCNVector3Make(x, y, z)
-                planeNode.eulerAngles = SCNVector3Make(Float(-Double.pi / 2), 0, 0)
-            }
+            let x = planeAnchor.center.x
+            let y = planeAnchor.center.y
+            let z = planeAnchor.center.z
+            planeNode.position = SCNVector3Make(x, y, z)
+            planeNode.eulerAngles = SCNVector3Make(Float(-Double.pi / 2), 0, 0)
             
             node.addChildNode(planeNode)
         }
@@ -464,7 +504,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             if let x = planeAnchor?.center.x, let y = planeAnchor?.center.y, let z = planeAnchor?.center.z {
                 planeNode?.position = SCNVector3Make(x, y, z)
             }
-            
         }
     }
     
@@ -476,5 +515,12 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
     }
     
+}
+
+extension float4x4 {
+    var translation: float3 {
+        let translation = self.columns.3
+        return float3(translation.x, translation.y, translation.z)
+    }
 }
 
