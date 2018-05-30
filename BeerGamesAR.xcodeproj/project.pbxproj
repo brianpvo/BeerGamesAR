@@ -70,11 +70,11 @@
 				7AB26A5E20B928490066908D /* AppDelegate.swift */,
 				7AB26A6020B928490066908D /* GameViewController.swift */,
 				7AB26A6220B928490066908D /* Main.storyboard */,
-				7AB26A6520B9284A0066908D /* Assets.xcassets */,
-				7AB26A6720B9284A0066908D /* LaunchScreen.storyboard */,
 				7AB26A7420BA83EB0066908D /* Secret.swift */,
+				7AB26A6720B9284A0066908D /* LaunchScreen.storyboard */,
 				7AB26A6A20B9284A0066908D /* Info.plist */,
 				7AB26A7220B92E120066908D /* GoogleService-Info.plist */,
+				7AB26A6520B9284A0066908D /* Assets.xcassets */,
 				7AB26A7620BB3EFE0066908D /* example.scnassets */,
 			);
 			path = BeerGamesAR;

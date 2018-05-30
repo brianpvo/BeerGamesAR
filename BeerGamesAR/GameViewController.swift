@@ -137,9 +137,9 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         guard let gSession = gSession else { return }
         do {
             self.garAnchor = try gSession.resolveCloudAnchor(withIdentifier: identifier)
-            if let garAnchor = self.garAnchor {
-                self.garAnchorArray.append(garAnchor)
-            }
+//            if let garAnchor = self.garAnchor {
+//                self.garAnchorArray.append(garAnchor)
+//            }
         } catch {
             print("Couldn't resolve cloud anchor")
         }
@@ -205,6 +205,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                     .child("hosted_anchor_id").child(NSNumber(value: anchorIndex).stringValue)
                     .setValue(anchor.cloudIdentifier)
                 
+                print("hosting garAnchor: x = \(anchor.transform.translation.x), y = \(anchor.transform.translation.y), z = \(anchor.transform.translation.z) ")
+                
                 // create timestamp for the room number
                 let timestampeInt = Int(Date().timeIntervalSince1970 * 1000)
                 let timestamp = NSNumber(value: timestampeInt)
@@ -229,13 +231,13 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         if state != ARState.Resolving || !(anchor.isEqual(garAnchor)) {
             return
         }
-        
         garAnchor = anchor
         arAnchor = ARAnchor(transform: anchor.transform)
         if let arAnchor = arAnchor {
             sceneView.session.add(anchor: arAnchor)
+            print("resolving garAnchor: x = \(anchor.transform.translation.x), y = \(anchor.transform.translation.y), z = \(anchor.transform.translation.z) ")
         }
-        //enterState(state: ARState.ResolvingFinished)
+        enterState(state: ARState.ResolvingFinished)
     }
     
     func session(_ session: GARSession, didFailToResolve anchor: GARAnchor) {
@@ -450,10 +452,18 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             let scene = SCNScene(named: "example.scnassets/andy.scn")
             let anchorNode = scene?.rootNode.childNode(withName: "andy", recursively: false)
             
+            // add Table Top
             let tableTop = SCNBox(width: 1.0, height: 0.01, length: 2.5, chamferRadius: 0)
             let tableTopNode = SCNNode()
             tableTopNode.geometry = tableTop
             tableTopNode.position = SCNVector3(0, 0, 0)
+            
+            // add Red Cup
+            let redCup = SCNBox(width: 0.05, height: 0.15, length: 0.05, chamferRadius: 0)
+            let redCupNode = SCNNode(geometry: redCup)
+            redCupNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+            redCupNode.position = SCNVector3(0, 0, 1.0)
+            tableTopNode.addChildNode(redCupNode)
             
             anchorNode?.addChildNode(tableTopNode)
             return anchorNode
