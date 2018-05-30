@@ -34,7 +34,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     var gSession: GARSession?
     var arAnchor: ARAnchor?
     var garAnchor: GARAnchor?
-    var garAnchorArray = [GARAnchor]()
     
     // ENUM VARIABLES
     var state: ARState?
@@ -137,9 +136,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         guard let gSession = gSession else { return }
         do {
             self.garAnchor = try gSession.resolveCloudAnchor(withIdentifier: identifier)
-//            if let garAnchor = self.garAnchor {
-//                self.garAnchorArray.append(garAnchor)
-//            }
         } catch {
             print("Couldn't resolve cloud anchor")
         }
@@ -445,25 +441,35 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         self.enterState(state: .RoomCreated)
     }
     
+    func createRedCup(position: SCNVector3) -> SCNNode {
+        let redCup = SCNBox(width: 0.05, height: 0.15, length: 0.05, chamferRadius: 0)
+        let redCupNode = SCNNode(geometry: redCup)
+        redCupNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        redCupNode.position = position
+        
+        return redCupNode
+    }
+    
     // Mark - ARSCNViewDelegate
+    
     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        // render SCN object
+        // render SCN with objects
         if !(anchor.isMember(of: ARPlaneAnchor.self)) {
             let scene = SCNScene(named: "example.scnassets/andy.scn")
             let anchorNode = scene?.rootNode.childNode(withName: "andy", recursively: false)
             
             // add Table Top
             let tableTop = SCNBox(width: 1.0, height: 0.01, length: 2.5, chamferRadius: 0)
-            let tableTopNode = SCNNode()
-            tableTopNode.geometry = tableTop
+            let tableTopNode = SCNNode(geometry: tableTop)
             tableTopNode.position = SCNVector3(0, 0, 0)
             
-            // add Red Cup
-            let redCup = SCNBox(width: 0.05, height: 0.15, length: 0.05, chamferRadius: 0)
-            let redCupNode = SCNNode(geometry: redCup)
-            redCupNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-            redCupNode.position = SCNVector3(0, 0, 1.0)
-            tableTopNode.addChildNode(redCupNode)
+            // add Red Cups
+            let redCup1 = createRedCup(position: SCNVector3(0.0, 0.01, 1.0))
+            tableTopNode.addChildNode(redCup1)
+            let redCup2 = createRedCup(position: SCNVector3(0.075, 0.01, 1.05))
+            tableTopNode.addChildNode(redCup2)
+            let redCup3 = createRedCup(position: SCNVector3(-0.075, 0.01, 1.05))
+            tableTopNode.addChildNode(redCup3)
             
             anchorNode?.addChildNode(tableTopNode)
             return anchorNode
