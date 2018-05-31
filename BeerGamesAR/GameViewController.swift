@@ -28,6 +28,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     @IBOutlet weak var resolveButton: UIButton!
     @IBOutlet weak var roomCodeLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var menuWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var menuBarView: UIView!
     
     // API VARIABLES
     var firebaseReference: DatabaseReference?
@@ -41,6 +43,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     // NORMAL VARIABLES
     var message: String?
     var roomCode: String?
+    var hostButton2: UIButton!
+    var resolveButton2: UIButton!
     
     // MARK - Overriding UIViewController
     
@@ -65,6 +69,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             gSession.delegateQueue = DispatchQueue.main
             enterState(state: .Default)
         }
+        
+        self.setupButtons()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -83,7 +89,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if touches.count < 1 {//|| state != ARState.RoomCreated {
+        if touches.count < 1 || state != ARState.RoomCreated {
             return
         }
         let touch = touches.first!
@@ -105,26 +111,16 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         firebaseReference?.child("hotspot_list").child(roomCode)
             .observe(.value, with: { (snapshot) in
                 DispatchQueue.main.async {
-                    let strongSelf = weakSelf
-                    if strongSelf == nil || strongSelf?.state != ARState.Resolving ||
-                        !(strongSelf?.roomCode == roomCode) {
+                    guard let strongSelf = weakSelf, let value = snapshot.value as? NSDictionary else { return }
+                    if strongSelf.state != ARState.Resolving || !(strongSelf.roomCode == roomCode) {
                         return
                     }
-                    //var anchorId: String?
-                    guard let value = snapshot.value as? NSDictionary else { return }
-                    print("value: \(value)")
-                    // TODO: read different ids for many objects on the plane
                     guard let anchors = value["hosted_anchor_id"] as? [String] else { return }
                     for anchorId in anchors {
-                        print("anchorId: \(anchorId)")
-                        
-                       // if let anchorId = anchorId, let strongSelf = strongSelf {
-                            // After retrieving anchor ID, remove the observer
-                            // TODO: allow continued observer to find new objects
-                            //strongSelf.firebaseReference?.child("hotspot_list").child(roomCode).removeAllObservers()
-                            strongSelf?.resolveAnchorWithIdentifier(identifier: anchorId)
-                       // }
+                        print(anchorId)
+                        strongSelf.resolveAnchorWithIdentifier(identifier: anchorId)
                     }
+                    strongSelf.firebaseReference?.child("hotspot_list").child(roomCode).removeAllObservers()
                 }
             })
     }
@@ -174,7 +170,16 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
     }
     
-    // MARK - GARSessionDelegate
+    @IBAction func menuButtonPressed(_ sender: UIButton) {
+        self.menuWidthConstraint.constant = self.menuWidthConstraint.constant == 200 ? 20 : 200
+        UIView.animate(withDuration: 1.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 3, options: .curveEaseInOut, animations: {
+            self.view.layoutIfNeeded()
+            self.hostButton2.isHidden = false
+            self.resolveButton2.isHidden = false
+        }, completion: nil)
+    }
+    
+    // MARK: GARSessionDelegate
     
     func session(_ session: GARSession, didHostAnchor anchor: GARAnchor) {
         if state != ARState.Hosting || anchor != garAnchor {
@@ -200,8 +205,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                 strongSelf?.firebaseReference?.child("hotspot_list").child(roomCode)
                     .child("hosted_anchor_id").child(NSNumber(value: anchorIndex).stringValue)
                     .setValue(anchor.cloudIdentifier)
-                
-                print("hosting garAnchor: x = \(anchor.transform.translation.x), y = \(anchor.transform.translation.y), z = \(anchor.transform.translation.z) ")
                 
                 // create timestamp for the room number
                 let timestampeInt = Int(Date().timeIntervalSince1970 * 1000)
@@ -231,7 +234,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         arAnchor = ARAnchor(transform: anchor.transform)
         if let arAnchor = arAnchor {
             sceneView.session.add(anchor: arAnchor)
-            print("resolving garAnchor: x = \(anchor.transform.translation.x), y = \(anchor.transform.translation.y), z = \(anchor.transform.translation.z) ")
         }
         enterState(state: ARState.ResolvingFinished)
     }
@@ -256,6 +258,31 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     // MARK: Helper Methods
+    
+    func setupButtons() {
+        hostButton2 = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+        hostButton2.setTitle("HOST", for: .normal)
+        hostButton2.addTarget(self, action: #selector(hostButtonPressed(_:)), for: .touchUpInside)
+        menuBarView.addSubview(hostButton2)
+        hostButton2.translatesAutoresizingMaskIntoConstraints = false
+        
+        resolveButton2 = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+        resolveButton2.setTitle("RESOLVE", for: .normal)
+        resolveButton2.addTarget(self, action: #selector(resolveButtonPressed(_:)), for: .touchUpInside)
+        menuBarView.addSubview(resolveButton2)
+        resolveButton2.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.hostButton2.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
+        self.resolveButton2.rightAnchor.constraint(equalTo: self.menuBarView.rightAnchor, constant: -50).isActive = true
+        self.resolveButton2.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
+        self.hostButton2.rightAnchor.constraint(equalTo: self.resolveButton2.leftAnchor, constant: -10).isActive = true
+        
+        hostButton2.isHidden = true
+        resolveButton2.isHidden = true
+        
+        hostButton.isHidden = true
+        resolveButton.isHidden = true
+    }
     
     func updateMessageLabel() {
         self.messageLabel.text = self.message
@@ -442,37 +469,84 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     func createRedCup(position: SCNVector3) -> SCNNode {
-        let redCup = SCNBox(width: 0.05, height: 0.15, length: 0.05, chamferRadius: 0)
-        let redCupNode = SCNNode(geometry: redCup)
-        redCupNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-        redCupNode.position = position
-        
-        return redCupNode
+        let redCupScene = SCNScene(named: "cup.scnassets/RedSoloCup.scn")
+        let redCupNode = redCupScene?.rootNode.childNode(withName: "redCup", recursively: false)
+        redCupNode?.name = "cup"
+        redCupNode?.position = position
+        return redCupNode!
     }
     
-    // Mark - ARSCNViewDelegate
+    func setupGameScene() -> SCNNode {
+        let scene = SCNScene(named: "example.scnassets/andy.scn")
+        guard let anchorNode = scene?.rootNode.childNode(withName: "andy", recursively: false) else {
+            return SCNNode()
+        }
+        
+        // add Table Top
+        let tableScene = SCNScene(named: "table.scnassets/Table.scn")
+        guard let tableNode = tableScene?.rootNode.childNode(withName: "table", recursively: false),
+        let tableTopNode = tableScene?.rootNode.childNode(withName: "tableTopCenter", recursively: false) else {
+            return SCNNode()
+        }
+        tableNode.name = "table"
+        tableTopNode.name = "tableTop"
+        tableTopNode.addChildNode(anchorNode)
+        
+        // setup my red cups
+        let myRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, 2.38))
+        tableTopNode.addChildNode(myRedCup1)
+        let myRedCup2 = createRedCup(position: SCNVector3(0.18, 0.01, 2.69))
+        tableTopNode.addChildNode(myRedCup2)
+        let myRedCup3 = createRedCup(position: SCNVector3(-0.18, 0.01, 2.69))
+        tableTopNode.addChildNode(myRedCup3)
+        let myRedCup4 = createRedCup(position: SCNVector3(0.37, 0.01, 3.0))
+        tableTopNode.addChildNode(myRedCup4)
+        let myRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, 3.0))
+        tableTopNode.addChildNode(myRedCup5)
+        let myRedCup6 = createRedCup(position: SCNVector3(-0.37, 0.01, 3.0))
+        tableTopNode.addChildNode(myRedCup6)
+        
+        // setup opponents red cups
+        let yourRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, -2.38))
+        tableTopNode.addChildNode(yourRedCup1)
+        let yourRedCup2 = createRedCup(position: SCNVector3(0.18, 0.01, -2.69))
+        tableTopNode.addChildNode(yourRedCup2)
+        let yourRedCup3 = createRedCup(position: SCNVector3(-0.18, 0.01, -2.69))
+        tableTopNode.addChildNode(yourRedCup3)
+        let yourRedCup4 = createRedCup(position: SCNVector3(0.37, 0.01, -3.0))
+        tableTopNode.addChildNode(yourRedCup4)
+        let yourRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, -3.0))
+        tableTopNode.addChildNode(yourRedCup5)
+        let yourRedCup6 = createRedCup(position: SCNVector3(-0.37, 0.01, -3.0))
+        tableTopNode.addChildNode(yourRedCup6)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.nodeResize()
+        }
+        tableNode.addChildNode(tableTopNode)
+        return tableNode
+    }
+    
+    func nodeResize() {
+        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+            if node.name == "cup" {
+                node.scale = SCNVector3(x: 1.2, y: 1.2, z: 1.2)
+            }
+            if node.name == "table" {
+                node.scale = SCNVector3(x: 0.2, y: 0.4, z: 0.3)
+            }
+            if node.name == "tableTop" {
+                node.position = SCNVector3(0, 1.65, 0)
+            }
+        }
+    }
+    
+    // MARK: ARSCNViewDelegate
     
     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
         // render SCN with objects
         if !(anchor.isMember(of: ARPlaneAnchor.self)) {
-            let scene = SCNScene(named: "example.scnassets/andy.scn")
-            let anchorNode = scene?.rootNode.childNode(withName: "andy", recursively: false)
-            
-            // add Table Top
-            let tableTop = SCNBox(width: 1.0, height: 0.01, length: 2.5, chamferRadius: 0)
-            let tableTopNode = SCNNode(geometry: tableTop)
-            tableTopNode.position = SCNVector3(0, 0, 0)
-            
-            // add Red Cups
-            let redCup1 = createRedCup(position: SCNVector3(0.0, 0.01, 1.0))
-            tableTopNode.addChildNode(redCup1)
-            let redCup2 = createRedCup(position: SCNVector3(0.075, 0.01, 1.05))
-            tableTopNode.addChildNode(redCup2)
-            let redCup3 = createRedCup(position: SCNVector3(-0.075, 0.01, 1.05))
-            tableTopNode.addChildNode(redCup3)
-            
-            anchorNode?.addChildNode(tableTopNode)
-            return anchorNode
+            return self.setupGameScene()
         }
         let scnNode = SCNNode()
         return scnNode
