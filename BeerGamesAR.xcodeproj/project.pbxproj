@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */; };
+		7A6E890220C07C5A00BD6C6B /* table.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A6E890120C07C5A00BD6C6B /* table.scnassets */; };
 		7AB26A5F20B928490066908D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB26A5E20B928490066908D /* AppDelegate.swift */; };
 		7AB26A6120B928490066908D /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB26A6020B928490066908D /* GameViewController.swift */; };
 		7AB26A6420B928490066908D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6220B928490066908D /* Main.storyboard */; };
@@ -22,6 +23,7 @@
 /* Begin PBXFileReference section */
 		0B6224FC584954427FA2DE89 /* Pods_BeerGamesAR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeerGamesAR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = cup.scnassets; sourceTree = "<group>"; };
+		7A6E890120C07C5A00BD6C6B /* table.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = table.scnassets; sourceTree = "<group>"; };
 		7AB26A5B20B928490066908D /* BeerGamesAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeerGamesAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AB26A5E20B928490066908D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AB26A6020B928490066908D /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 				7AB26A6A20B9284A0066908D /* Info.plist */,
 				7AB26A7220B92E120066908D /* GoogleService-Info.plist */,
 				7AB26A6520B9284A0066908D /* Assets.xcassets */,
+				7A6E890120C07C5A00BD6C6B /* table.scnassets */,
 				7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */,
 				7AB26A7620BB3EFE0066908D /* example.scnassets */,
 			);
@@ -163,6 +166,7 @@
 			files = (
 				7AB26A6920B9284A0066908D /* LaunchScreen.storyboard in Resources */,
 				7AB26A6620B9284A0066908D /* Assets.xcassets in Resources */,
+				7A6E890220C07C5A00BD6C6B /* table.scnassets in Resources */,
 				7AB26A7720BB3EFE0066908D /* example.scnassets in Resources */,
 				7AB26A6420B928490066908D /* Main.storyboard in Resources */,
 				7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */,

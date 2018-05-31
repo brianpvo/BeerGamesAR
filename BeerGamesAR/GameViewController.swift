@@ -483,50 +483,60 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
         
         // add Table Top
-        let tableTop = SCNBox(width: 1.0, height: 0.01, length: 2.5, chamferRadius: 0)
-        let tableTopNode = SCNNode(geometry: tableTop)
-        tableTopNode.position = SCNVector3(0, 0, 0)
-        tableTopNode.geometry?.firstMaterial?.diffuse.contents = UIColor.brown
+        let tableScene = SCNScene(named: "table.scnassets/Table.scn")
+        guard let tableNode = tableScene?.rootNode.childNode(withName: "table", recursively: false),
+        let tableTopNode = tableScene?.rootNode.childNode(withName: "tableTopCenter", recursively: false) else {
+            return SCNNode()
+        }
+        tableNode.name = "table"
+        tableTopNode.name = "tableTop"
+        tableTopNode.addChildNode(anchorNode)
         
         // setup my red cups
-        let myRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, 0.8))
+        let myRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, 2.38))
         tableTopNode.addChildNode(myRedCup1)
-        let myRedCup2 = createRedCup(position: SCNVector3(0.08, 0.01, 0.93))
+        let myRedCup2 = createRedCup(position: SCNVector3(0.18, 0.01, 2.69))
         tableTopNode.addChildNode(myRedCup2)
-        let myRedCup3 = createRedCup(position: SCNVector3(-0.08, 0.01, 0.93))
+        let myRedCup3 = createRedCup(position: SCNVector3(-0.18, 0.01, 2.69))
         tableTopNode.addChildNode(myRedCup3)
-        let myRedCup4 = createRedCup(position: SCNVector3(0.15, 0.01, 1.07))
+        let myRedCup4 = createRedCup(position: SCNVector3(0.37, 0.01, 3.0))
         tableTopNode.addChildNode(myRedCup4)
-        let myRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, 1.07))
+        let myRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, 3.0))
         tableTopNode.addChildNode(myRedCup5)
-        let myRedCup6 = createRedCup(position: SCNVector3(-0.15, 0.01, 1.07))
+        let myRedCup6 = createRedCup(position: SCNVector3(-0.37, 0.01, 3.0))
         tableTopNode.addChildNode(myRedCup6)
         
         // setup opponents red cups
-        let yourRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, -0.8))
+        let yourRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, -2.38))
         tableTopNode.addChildNode(yourRedCup1)
-        let yourRedCup2 = createRedCup(position: SCNVector3(0.08, 0.01, -0.93))
+        let yourRedCup2 = createRedCup(position: SCNVector3(0.18, 0.01, -2.69))
         tableTopNode.addChildNode(yourRedCup2)
-        let yourRedCup3 = createRedCup(position: SCNVector3(-0.08, 0.01, -0.93))
+        let yourRedCup3 = createRedCup(position: SCNVector3(-0.18, 0.01, -2.69))
         tableTopNode.addChildNode(yourRedCup3)
-        let yourRedCup4 = createRedCup(position: SCNVector3(0.15, 0.01, -1.07))
+        let yourRedCup4 = createRedCup(position: SCNVector3(0.37, 0.01, -3.0))
         tableTopNode.addChildNode(yourRedCup4)
-        let yourRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, -1.07))
+        let yourRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, -3.0))
         tableTopNode.addChildNode(yourRedCup5)
-        let yourRedCup6 = createRedCup(position: SCNVector3(-0.15, 0.01, -1.07))
+        let yourRedCup6 = createRedCup(position: SCNVector3(-0.37, 0.01, -3.0))
         tableTopNode.addChildNode(yourRedCup6)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.nodeResize()
         }
-        anchorNode.addChildNode(tableTopNode)
-        return anchorNode
+        tableNode.addChildNode(tableTopNode)
+        return tableNode
     }
     
     func nodeResize() {
         sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
             if node.name == "cup" {
-                node.scale = SCNVector3(x: 0.5, y: 0.5, z: 0.5)
+                node.scale = SCNVector3(x: 1.2, y: 1.2, z: 1.2)
+            }
+            if node.name == "table" {
+                node.scale = SCNVector3(x: 0.2, y: 0.4, z: 0.3)
+            }
+            if node.name == "tableTop" {
+                node.position = SCNVector3(0, 1.65, 0)
             }
         }
     }
