@@ -28,6 +28,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     @IBOutlet weak var resolveButton: UIButton!
     @IBOutlet weak var roomCodeLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var menuWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var menuBarView: UIView!
     
     // API VARIABLES
     var firebaseReference: DatabaseReference?
@@ -41,6 +43,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     // NORMAL VARIABLES
     var message: String?
     var roomCode: String?
+    var hostButton2: UIButton!
+    var resolveButton2: UIButton!
     
     // MARK - Overriding UIViewController
     
@@ -65,6 +69,29 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             gSession.delegateQueue = DispatchQueue.main
             enterState(state: .Default)
         }
+        
+        hostButton2 = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+        hostButton2.setTitle("HOST", for: .normal)
+        hostButton2.addTarget(self, action: #selector(hostButtonPressed(_:)), for: .touchUpInside)
+        menuBarView.addSubview(hostButton2)
+        hostButton2.translatesAutoresizingMaskIntoConstraints = false
+
+        resolveButton2 = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+        resolveButton2.setTitle("RESOLVE", for: .normal)
+        resolveButton2.addTarget(self, action: #selector(resolveButtonPressed(_:)), for: .touchUpInside)
+        menuBarView.addSubview(resolveButton2)
+        resolveButton2.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.hostButton2.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
+        self.resolveButton2.rightAnchor.constraint(equalTo: self.menuBarView.rightAnchor, constant: -50).isActive = true
+        self.resolveButton2.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
+        self.hostButton2.rightAnchor.constraint(equalTo: self.resolveButton2.leftAnchor, constant: -10).isActive = true
+        
+        hostButton2.isHidden = true
+        resolveButton2.isHidden = true
+        
+        hostButton.isHidden = true
+        resolveButton.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -83,7 +110,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if touches.count < 1 {//|| state != ARState.RoomCreated {
+        if touches.count < 1 || state != ARState.RoomCreated {
             return
         }
         let touch = touches.first!
@@ -174,7 +201,16 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
     }
     
-    // MARK - GARSessionDelegate
+    @IBAction func menuButtonPressed(_ sender: UIButton) {
+        self.menuWidthConstraint.constant = self.menuWidthConstraint.constant == 200 ? 20 : 200
+        UIView.animate(withDuration: 1.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 3, options: .curveEaseInOut, animations: {
+            self.view.layoutIfNeeded()
+            self.hostButton2.isHidden = false
+            self.resolveButton2.isHidden = false
+        }, completion: nil)
+    }
+    
+    // MARK: GARSessionDelegate
     
     func session(_ session: GARSession, didHostAnchor anchor: GARAnchor) {
         if state != ARState.Hosting || anchor != garAnchor {
