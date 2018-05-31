@@ -442,12 +442,19 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     }
     
     func createRedCup(position: SCNVector3) -> SCNNode {
-        let redCup = SCNBox(width: 0.05, height: 0.15, length: 0.05, chamferRadius: 0)
-        let redCupNode = SCNNode(geometry: redCup)
-        redCupNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-        redCupNode.position = position
-        
-        return redCupNode
+        let redCupScene = SCNScene(named: "cup.scnassets/RedSoloCup.scn")
+        let redCupNode = redCupScene?.rootNode.childNode(withName: "redCup", recursively: false)
+        redCupNode?.name = "cup"
+        redCupNode?.position = position
+        return redCupNode!
+    }
+    
+    func nodeResize() {
+        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
+            if node.name == "cup" {
+                node.scale = SCNVector3(x: 0.5, y: 0.5, z: 0.5)
+            }
+        }
     }
     
     // Mark - ARSCNViewDelegate
@@ -462,15 +469,39 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             let tableTop = SCNBox(width: 1.0, height: 0.01, length: 2.5, chamferRadius: 0)
             let tableTopNode = SCNNode(geometry: tableTop)
             tableTopNode.position = SCNVector3(0, 0, 0)
+            tableTopNode.geometry?.firstMaterial?.diffuse.contents = UIColor.brown
             
-            // add Red Cups
-            let redCup1 = createRedCup(position: SCNVector3(0.0, 0.01, 1.0))
-            tableTopNode.addChildNode(redCup1)
-            let redCup2 = createRedCup(position: SCNVector3(0.075, 0.01, 1.05))
-            tableTopNode.addChildNode(redCup2)
-            let redCup3 = createRedCup(position: SCNVector3(-0.075, 0.01, 1.05))
-            tableTopNode.addChildNode(redCup3)
+            // setup my red cups
+            let myRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, 0.8))
+            tableTopNode.addChildNode(myRedCup1)
+            let myRedCup2 = createRedCup(position: SCNVector3(0.08, 0.01, 0.93))
+            tableTopNode.addChildNode(myRedCup2)
+            let myRedCup3 = createRedCup(position: SCNVector3(-0.08, 0.01, 0.93))
+            tableTopNode.addChildNode(myRedCup3)
+            let myRedCup4 = createRedCup(position: SCNVector3(0.15, 0.01, 1.07))
+            tableTopNode.addChildNode(myRedCup4)
+            let myRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, 1.07))
+            tableTopNode.addChildNode(myRedCup5)
+            let myRedCup6 = createRedCup(position: SCNVector3(-0.15, 0.01, 1.07))
+            tableTopNode.addChildNode(myRedCup6)
             
+            // setup opponents red cups
+            let yourRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, -0.8))
+            tableTopNode.addChildNode(yourRedCup1)
+            let yourRedCup2 = createRedCup(position: SCNVector3(0.08, 0.01, -0.93))
+            tableTopNode.addChildNode(yourRedCup2)
+            let yourRedCup3 = createRedCup(position: SCNVector3(-0.08, 0.01, -0.93))
+            tableTopNode.addChildNode(yourRedCup3)
+            let yourRedCup4 = createRedCup(position: SCNVector3(0.15, 0.01, -1.07))
+            tableTopNode.addChildNode(yourRedCup4)
+            let yourRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, -1.07))
+            tableTopNode.addChildNode(yourRedCup5)
+            let yourRedCup6 = createRedCup(position: SCNVector3(-0.15, 0.01, -1.07))
+            tableTopNode.addChildNode(yourRedCup6)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.nodeResize()
+            }
             anchorNode?.addChildNode(tableTopNode)
             return anchorNode
         }
