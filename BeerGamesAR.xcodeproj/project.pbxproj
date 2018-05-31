@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		38CA319820C0A8E500E40328 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 38CA319720C0A8E400E40328 /* GoogleService-Info.plist */; };
+		38CA319A20C0A8EF00E40328 /* Secret.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38CA319920C0A8EF00E40328 /* Secret.swift */; };
 		7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */; };
 		7A6E890220C07C5A00BD6C6B /* table.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A6E890120C07C5A00BD6C6B /* table.scnassets */; };
 		7AB26A5F20B928490066908D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB26A5E20B928490066908D /* AppDelegate.swift */; };
@@ -14,8 +16,6 @@
 		7AB26A6420B928490066908D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6220B928490066908D /* Main.storyboard */; };
 		7AB26A6620B9284A0066908D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6520B9284A0066908D /* Assets.xcassets */; };
 		7AB26A6920B9284A0066908D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6720B9284A0066908D /* LaunchScreen.storyboard */; };
-		7AB26A7320B92E120066908D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A7220B92E120066908D /* GoogleService-Info.plist */; };
-		7AB26A7520BA83EB0066908D /* Secret.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB26A7420BA83EB0066908D /* Secret.swift */; };
 		7AB26A7720BB3EFE0066908D /* example.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A7620BB3EFE0066908D /* example.scnassets */; };
 		7ECC85DA20C09F3200CF0531 /* ball.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7ECC85D920C09F3200CF0531 /* ball.scnassets */; };
 		A3A9E81429EA57B5977F1A5A /* Pods_BeerGamesAR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B6224FC584954427FA2DE89 /* Pods_BeerGamesAR.framework */; };
@@ -23,6 +23,8 @@
 
 /* Begin PBXFileReference section */
 		0B6224FC584954427FA2DE89 /* Pods_BeerGamesAR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BeerGamesAR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		38CA319720C0A8E400E40328 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		38CA319920C0A8EF00E40328 /* Secret.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secret.swift; sourceTree = "<group>"; };
 		7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = cup.scnassets; sourceTree = "<group>"; };
 		7A6E890120C07C5A00BD6C6B /* table.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = table.scnassets; sourceTree = "<group>"; };
 		7AB26A5B20B928490066908D /* BeerGamesAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeerGamesAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -32,8 +34,6 @@
 		7AB26A6520B9284A0066908D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7AB26A6820B9284A0066908D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7AB26A6A20B9284A0066908D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7AB26A7220B92E120066908D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7AB26A7420BA83EB0066908D /* Secret.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secret.swift; sourceTree = "<group>"; };
 		7AB26A7620BB3EFE0066908D /* example.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = example.scnassets; sourceTree = "<group>"; };
 		7ECC85D920C09F3200CF0531 /* ball.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = ball.scnassets; sourceTree = "<group>"; };
 		8E51913D20667A4C7520C5A5 /* Pods-BeerGamesAR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeerGamesAR.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR.release.xcconfig"; sourceTree = "<group>"; };
@@ -76,10 +76,10 @@
 				7AB26A5E20B928490066908D /* AppDelegate.swift */,
 				7AB26A6020B928490066908D /* GameViewController.swift */,
 				7AB26A6220B928490066908D /* Main.storyboard */,
-				7AB26A7420BA83EB0066908D /* Secret.swift */,
+				38CA319920C0A8EF00E40328 /* Secret.swift */,
 				7AB26A6720B9284A0066908D /* LaunchScreen.storyboard */,
+				38CA319720C0A8E400E40328 /* GoogleService-Info.plist */,
 				7AB26A6A20B9284A0066908D /* Info.plist */,
-				7AB26A7220B92E120066908D /* GoogleService-Info.plist */,
 				7ECC85D920C09F3200CF0531 /* ball.scnassets */,
 				7AB26A6520B9284A0066908D /* Assets.xcassets */,
 				7A6E890120C07C5A00BD6C6B /* table.scnassets */,
@@ -168,13 +168,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ECC85DA20C09F3200CF0531 /* ball.scnassets in Resources */,
+				38CA319820C0A8E500E40328 /* GoogleService-Info.plist in Resources */,
 				7AB26A6920B9284A0066908D /* LaunchScreen.storyboard in Resources */,
 				7AB26A6620B9284A0066908D /* Assets.xcassets in Resources */,
 				7A6E890220C07C5A00BD6C6B /* table.scnassets in Resources */,
 				7AB26A7720BB3EFE0066908D /* example.scnassets in Resources */,
 				7AB26A6420B928490066908D /* Main.storyboard in Resources */,
 				7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */,
-				7AB26A7320B92E120066908D /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,7 +249,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7AB26A6120B928490066908D /* GameViewController.swift in Sources */,
-				7AB26A7520BA83EB0066908D /* Secret.swift in Sources */,
+				38CA319A20C0A8EF00E40328 /* Secret.swift in Sources */,
 				7AB26A5F20B928490066908D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,7 +396,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3WQXF9B9M3;
+				DEVELOPMENT_TEAM = 6FGZ4M8EYW;
 				INFOPLIST_FILE = BeerGamesAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -416,7 +416,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3WQXF9B9M3;
+				DEVELOPMENT_TEAM = 6FGZ4M8EYW;
 				INFOPLIST_FILE = BeerGamesAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
