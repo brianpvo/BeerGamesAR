@@ -56,7 +56,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         sceneView.session.delegate = self
         
         do {
-            gSession = try GARSession.init(apiKey: ARCoreAPIKey, bundleIdentifier: nil)
+            gSession = try GARSession.init(apiKey: "AIzaSyCMrbbT3akplDeQCChRGUMb7Drf5SWAgSs", bundleIdentifier: nil)
         } catch {
             print("Couldn't initialize GAR session")
         }
