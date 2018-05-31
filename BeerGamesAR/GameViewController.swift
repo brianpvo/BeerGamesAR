@@ -24,8 +24,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     // OUTLETS
     @IBOutlet weak var sceneView: ARSCNView!
-    @IBOutlet weak var hostButton: UIButton!
-    @IBOutlet weak var resolveButton: UIButton!
     @IBOutlet weak var roomCodeLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var menuWidthConstraint: NSLayoutConstraint!
@@ -43,8 +41,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     // NORMAL VARIABLES
     var message: String?
     var roomCode: String?
-    var hostButton2: UIButton!
-    var resolveButton2: UIButton!
+    var hostButton: UIButton!
+    var resolveButton: UIButton!
     
     // MARK - Overriding UIViewController
     
@@ -139,8 +137,9 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     func addAnchorWithTransform(transform: matrix_float4x4) {
         arAnchor = ARAnchor(transform: transform)
-        sceneView.session.add(anchor: arAnchor!)
         sceneView.pointOfView?.addChildNode(createBall())
+        sceneView.session.add(anchor: arAnchor!)
+//        sceneView.pointOfView?.addChildNode(createBall())
         
         // To share an anchor, we call host anchor here on the ARCore session.
         // session:didHostAnchor: session:didFailToHostAnchor: will get called appropriately.
@@ -154,7 +153,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     // MARK: Actions
     
-    @IBAction func hostButtonPressed(_ sender: UIButton) {
+    @objc func hostButtonPressed(_ sender: UIButton) {
         if state == ARState.Default {
             enterState(state: .CreatingRoom)
             createRoom()
@@ -163,7 +162,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
     }
     
-    @IBAction func resolveButtonPressed(_ sender: UIButton) {
+    @objc func resolveButtonPressed(_ sender: UIButton) {
         if state == ARState.Default {
             enterState(state: .EnterRoomCode)
         } else {
@@ -173,10 +172,10 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     @IBAction func menuButtonPressed(_ sender: UIButton) {
         self.menuWidthConstraint.constant = self.menuWidthConstraint.constant == 200 ? 20 : 200
-        UIView.animate(withDuration: 1.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 3, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: 1.5, delay: 0.0, usingSpringWithDamping: 0.3, initialSpringVelocity: 3, options: .curveEaseInOut, animations: {
             self.view.layoutIfNeeded()
-            self.hostButton2.isHidden = false
-            self.resolveButton2.isHidden = false
+            self.hostButton.isHidden = false
+            self.resolveButton.isHidden = false
         }, completion: nil)
     }
     
@@ -261,25 +260,22 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     // MARK: Helper Methods
     
     func setupButtons() {
-        hostButton2 = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
-        hostButton2.setTitle("HOST", for: .normal)
-        hostButton2.addTarget(self, action: #selector(hostButtonPressed(_:)), for: .touchUpInside)
-        menuBarView.addSubview(hostButton2)
-        hostButton2.translatesAutoresizingMaskIntoConstraints = false
+        hostButton = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+        hostButton.setTitle("HOST", for: .normal)
+        hostButton.addTarget(self, action: #selector(hostButtonPressed(_:)), for: .touchUpInside)
+        menuBarView.addSubview(hostButton)
+        hostButton.translatesAutoresizingMaskIntoConstraints = false
         
-        resolveButton2 = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
-        resolveButton2.setTitle("RESOLVE", for: .normal)
-        resolveButton2.addTarget(self, action: #selector(resolveButtonPressed(_:)), for: .touchUpInside)
-        menuBarView.addSubview(resolveButton2)
-        resolveButton2.translatesAutoresizingMaskIntoConstraints = false
+        resolveButton = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+        resolveButton.setTitle("RESOLVE", for: .normal)
+        resolveButton.addTarget(self, action: #selector(resolveButtonPressed(_:)), for: .touchUpInside)
+        menuBarView.addSubview(resolveButton)
+        resolveButton.translatesAutoresizingMaskIntoConstraints = false
         
-        self.hostButton2.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
-        self.resolveButton2.rightAnchor.constraint(equalTo: self.menuBarView.rightAnchor, constant: -50).isActive = true
-        self.resolveButton2.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
-        self.hostButton2.rightAnchor.constraint(equalTo: self.resolveButton2.leftAnchor, constant: -10).isActive = true
-        
-        hostButton2.isHidden = true
-        resolveButton2.isHidden = true
+        self.hostButton.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
+        self.resolveButton.rightAnchor.constraint(equalTo: self.menuBarView.rightAnchor, constant: -35).isActive = true
+        self.resolveButton.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
+        self.hostButton.rightAnchor.constraint(equalTo: self.resolveButton.leftAnchor, constant: -10).isActive = true
         
         hostButton.isHidden = true
         resolveButton.isHidden = true
@@ -469,6 +465,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         self.enterState(state: .RoomCreated)
     }
     
+    // MARK: Setup Scene
+    
     func createRedCup(position: SCNVector3) -> SCNNode {
         let redCupScene = SCNScene(named: "cup.scnassets/RedSoloCup.scn")
         let redCupNode = redCupScene?.rootNode.childNode(withName: "redCup", recursively: false)
@@ -492,6 +490,9 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         tableNode.name = "table"
         tableTopNode.name = "tableTop"
         tableTopNode.addChildNode(anchorNode)
+        let beerPongText = createText(text: "BEER PONG")
+        beerPongText.runAction(rotateAnimation())
+        tableTopNode.addChildNode(beerPongText)
         
         // setup my red cups
         let myRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, 2.38))
@@ -540,6 +541,24 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         ballNode.position = SCNVector3(x: 0, y: 0, z: -10)
         
         return ballNode
+    }
+    
+    func createText(text: String) -> SCNNode {
+        let text = SCNText(string: text, extrusionDepth: 2)
+        
+        let material = SCNMaterial()
+        material.diffuse.contents = UIColor.black
+        text.materials = [material]
+        
+        let node = SCNNode(geometry: text)
+        node.position = SCNVector3(0, 1, 0)
+        node.scale = SCNVector3(0.01, 0.01, 0.01)
+        return node
+    }
+    
+    func rotateAnimation() -> SCNAction {
+        let rotateAction = SCNAction.rotate(by: 2 * CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 10)
+        return SCNAction.repeatForever(rotateAction)
     }
   
     func nodeResize() {

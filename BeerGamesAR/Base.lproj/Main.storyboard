@@ -20,20 +20,6 @@
                             <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bXb-eF-poO">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </arscnView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kgW-Kq-3zM">
-                                <rect key="frame" x="20" y="20" width="33" height="30"/>
-                                <state key="normal" title="Host"/>
-                                <connections>
-                                    <action selector="hostButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dHO-1n-ikx"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PDp-QC-aY8">
-                                <rect key="frame" x="61" y="20" width="54" height="30"/>
-                                <state key="normal" title="Resolve"/>
-                                <connections>
-                                    <action selector="resolveButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="v3y-ax-NgV"/>
-                                </connections>
-                            </button>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mvS-uE-qJ9">
                                 <rect key="frame" x="245" y="20" width="120" height="40"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Rh1-Iz-dOZ">
@@ -109,7 +95,10 @@
                                         <constraints>
                                             <constraint firstAttribute="width" constant="25" id="cH7-XM-C59"/>
                                         </constraints>
-                                        <state key="normal" title="&gt;"/>
+                                        <fontDescription key="fontDescription" type="system" weight="black" pointSize="20"/>
+                                        <state key="normal" title="&gt;">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
                                         <connections>
                                             <action selector="menuButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hyF-bA-44G"/>
                                         </connections>
@@ -127,31 +116,24 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="PDp-QC-aY8" secondAttribute="trailing" constant="260" id="0J5-Sg-ca4"/>
                             <constraint firstItem="V4r-pE-E9w" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="9po-e5-VUL"/>
-                            <constraint firstItem="kgW-Kq-3zM" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="FXX-vr-QP7"/>
                             <constraint firstItem="mvS-uE-qJ9" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="GnV-SW-ZPY"/>
                             <constraint firstItem="xmw-3o-Tqp" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="IiL-Pe-6Hi"/>
-                            <constraint firstItem="PDp-QC-aY8" firstAttribute="leading" secondItem="kgW-Kq-3zM" secondAttribute="trailing" constant="8" id="KaP-Ot-fr3"/>
                             <constraint firstItem="bXb-eF-poO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="MgS-n0-PFH"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="mvS-uE-qJ9" secondAttribute="trailing" constant="10" id="P3D-7I-Y08"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="V4r-pE-E9w" secondAttribute="trailing" id="ZEn-Cw-rCQ"/>
                             <constraint firstItem="bXb-eF-poO" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="ZXu-ip-t5T"/>
-                            <constraint firstItem="PDp-QC-aY8" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="dw7-pc-Dfe"/>
                             <constraint firstItem="bXb-eF-poO" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="eKL-d5-Kh1"/>
                             <constraint firstItem="xmw-3o-Tqp" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="hks-TA-04L"/>
                             <constraint firstItem="bXb-eF-poO" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="rns-f4-5y1"/>
                             <constraint firstItem="V4r-pE-E9w" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="tjR-fM-j03"/>
-                            <constraint firstItem="kgW-Kq-3zM" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="vUs-Sl-V0k"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="hostButton" destination="kgW-Kq-3zM" id="Qwr-1Z-FbP"/>
                         <outlet property="menuBarView" destination="xmw-3o-Tqp" id="sRl-Ll-wCB"/>
                         <outlet property="menuWidthConstraint" destination="1ra-Si-CKh" id="zD5-9X-0PV"/>
                         <outlet property="messageLabel" destination="6Xa-Me-XB4" id="Eje-X3-3cz"/>
-                        <outlet property="resolveButton" destination="PDp-QC-aY8" id="9XL-9H-F8R"/>
                         <outlet property="roomCodeLabel" destination="5B0-IN-Qkl" id="Hdt-OR-71q"/>
                         <outlet property="sceneView" destination="bXb-eF-poO" id="fjm-7Y-6NE"/>
                     </connections>
