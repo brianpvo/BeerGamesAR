@@ -140,6 +140,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     func addAnchorWithTransform(transform: matrix_float4x4) {
         arAnchor = ARAnchor(transform: transform)
         sceneView.session.add(anchor: arAnchor!)
+        sceneView.pointOfView?.addChildNode(createBall())
         
         // To share an anchor, we call host anchor here on the ARCore session.
         // session:didHostAnchor: session:didFailToHostAnchor: will get called appropriately.
@@ -527,6 +528,20 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         return tableNode
     }
     
+    func createBall() -> SCNNode{
+        let ballGeo = SCNSphere(radius: 0.25)
+        let ballNode = SCNNode(geometry: ballGeo)
+        let ballMaterial = SCNMaterial()
+        ballMaterial.diffuse.contents = UIImage(named: "ball.scnassets/ballTextureWhite.tif")
+        ballNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: ballGeo, options: nil))
+        ballGeo.materials = [ballMaterial]
+        ballNode.physicsBody?.isAffectedByGravity = false
+        
+        ballNode.position = SCNVector3(x: 0, y: 0, z: -10)
+        
+        return ballNode
+    }
+  
     func nodeResize() {
         sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
             if node.name == "cup" {
