@@ -43,6 +43,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     var roomCode: String?
     var hostButton: UIButton!
     var resolveButton: UIButton!
+    var nodePhysics: NodePhysics!
     
     // MARK - Overriding UIViewController
     
@@ -52,10 +53,12 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         firebaseReference = Database.database().reference()
         sceneView.delegate = self
         sceneView.session.delegate = self
+        
+        nodePhysics = NodePhysics(scene: self.sceneView.scene)
+        self.sceneView.scene.physicsWorld.contactDelegate = nodePhysics
         
         do {
             gSession = try GARSession.init(apiKey: ARCoreAPIKey, bundleIdentifier: nil)
@@ -69,6 +72,12 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }
         
         self.setupButtons()
+        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
+        button.backgroundColor = UIColor.green
+        button.setTitle("Shoot Ball", for: UIControlState.normal)
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        
+        self.view.addSubview(button)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -97,6 +106,13 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         guard let result = hitTestResult.first else { return }
         self.addAnchorWithTransform(transform: result.worldTransform)
     }
+    
+//    @IBAction func testTap(_ sender: Any) {
+//        let storyboard = UIStoryboard.init(name: "AR", bundle: nil)
+//        let vc = storyboard.instantiateInitialViewController()
+//        vc?.modalTransitionStyle = .coverVertical
+//        present(vc!, animated: true, completion: nil)
+//    }
     
     // MARK: Anchor Hosting / Resolving
     
@@ -467,6 +483,35 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     // MARK: Setup Scene
     
+    func shootBall() {
+        let power:Float = 3.0
+        guard let pointOfView = sceneView.pointOfView else { return }
+        let transform = pointOfView.transform
+        let orientation = SCNVector3(-transform.m31,-transform.m32,-transform.m33)
+        let location = SCNVector3(transform.m41,transform.m42,transform.m43)
+        let position = orientation + location
+        
+        let ball = createBall(_with: position)
+        
+        nodePhysics.ballBitMaskAndPhysicsBody(_to: ball)
+        ball.physicsBody?.applyForce(SCNVector3(orientation.x*power, orientation.y*power, orientation.z*power), asImpulse: true)
+        self.sceneView.scene.rootNode.addChildNode(ball)
+    }
+    
+    func createBall(_with position:SCNVector3) -> SCNNode {
+        
+        let ball = SCNNode(geometry: SCNSphere(radius: 0.02))
+        ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        ball.position = position
+        ball.name = "ball"
+        
+        return ball
+    }
+    
+    @objc func buttonAction(sender: UIButton!) {
+        shootBall()
+    }
+    
     func createRedCup(position: SCNVector3) -> SCNNode {
         let redCupScene = SCNScene(named: "cup.scnassets/RedSoloCup.scn")
         let redCupNode = redCupScene?.rootNode.childNode(withName: "redCup", recursively: false)
@@ -538,7 +583,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         ballGeo.materials = [ballMaterial]
         ballNode.physicsBody?.isAffectedByGravity = false
         
-        ballNode.position = SCNVector3(x: 0, y: 0, z: -10)
+        ballNode.position = SCNVector3(x: 0, y: 0, z: -5)
         
         return ballNode
     }
@@ -565,6 +610,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
             if node.name == "cup" {
                 node.scale = SCNVector3(x: 1.2, y: 1.2, z: 1.2)
+               // nodePhysics.cupBitMaskAndPhysicsBody(_to: node)
             }
             if node.name == "table" {
                 node.scale = SCNVector3(x: 0.2, y: 0.4, z: 0.3)
@@ -586,7 +632,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         return scnNode
     }
     
-    // NOTE: use this method to show where the cup placements on the table will go
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         // determine position and size of the plane anchor
         if anchor.isMember(of: ARPlaneAnchor.self) {
@@ -612,7 +657,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         // Update position and size of plane anchor
-        if anchor.isMember(of: ARPlaneAnchor.self){
+        if anchor.isMember(of: ARPlaneAnchor.self) {
             let planeAnchor = anchor as? ARPlaneAnchor
             
             let planeNode = node.childNodes.first
@@ -641,10 +686,14 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
 }
 
-extension float4x4 {
-    var translation: float3 {
-        let translation = self.columns.3
-        return float3(translation.x, translation.y, translation.z)
-    }
+func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {
+    return SCNVector3Make(left.x + right.x, left.y + right.y, left.z + right.z)
 }
+
+//extension float4x4 {
+//    var translation: float3 {
+//        let translation = self.columns.3
+//        return float3(translation.x, translation.y, translation.z)
+//    }
+//}
 
