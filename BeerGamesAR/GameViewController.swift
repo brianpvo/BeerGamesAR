@@ -89,6 +89,9 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan(_:)))
         panGesture.delegate = self
         sceneView.addGestureRecognizer(panGesture)
+        createBall(position: SCNVector3((sceneView.pointOfView?.presentation.position.x)!,
+                                        (sceneView.pointOfView?.presentation.position.y)!,
+                                        (sceneView.pointOfView?.presentation.position.z)! - 0.5))
     }
     
     @objc private func didPan(_ gesture: UIPanGestureRecognizer){
@@ -96,18 +99,22 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         let hitTestResults = sceneView.hitTest(touchLocation, types: .featurePoint)
         guard let resultPoint = hitTestResults.first else {return}
         
-        if isGestureEnabled == true{
+        //if resultPoint.worldTransform.translation
+        
+        if isGestureEnabled {
             switch gesture.state {
             case .changed:
                 let position = SCNVector3Make(
-                    resultPoint.worldTransform.columns.3.x,
-                    resultPoint.worldTransform.columns.3.y,
-                    resultPoint.worldTransform.columns.3.z
+                    resultPoint.worldTransform.translation.x,
+                    resultPoint.worldTransform.translation.y,
+                    resultPoint.worldTransform.translation.z
                 )
                 ballNode.position = position
             case .ended:
                 let velocity = gesture.velocity(in: sceneView)
                 let transform = sceneView.transform
+//                guard let pointOfView = sceneView.pointOfView else { return }
+//                let transform = pointOfView.transform
                 velocity.applying(transform)
                 
                 let velocityX: Float = Float(velocity.x / 100)
@@ -115,10 +122,19 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                 let velocityZ: Float = Float(velocity.y / 300)
                 let physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
                 let direction = SCNVector3(
-                    velocityX,
+                    0,
                     velocityY,
                     velocityZ
                 )
+//                let power: Float = 0.5
+//                cameraOrientation = SCNVector3(-transform.m31,
+//                                               -transform.m32,
+//                                               -transform.m33)
+                nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
+//                ballNode.physicsBody?.applyForce(SCNVector3(cameraOrientation.x*power,
+//                                                            cameraOrientation.y*power,
+//                                                            cameraOrientation.z*power),
+//                                                 asImpulse: true)
                 physicsBody.applyForce(direction, asImpulse: true)
                 ballNode.physicsBody = physicsBody
                 
@@ -316,13 +332,16 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
         guard let frame = sceneView.session.currentFrame else {return}
-        cameraOrientation = SCNVector3(-transform.m31, -transform.m32, transform.m33)
+        cameraOrientation = SCNVector3(-transform.m31,
+                                       -transform.m32,
+                                       -transform.m33)
         cameraPosition = SCNVector3(transform.m41,
-                                    transform.m42, transform.m43)
-        
+                                    transform.m42,
+                                    transform.m43)
+        let position = cameraOrientation + cameraPosition
         if ballNode.presentation.position.y <= -50{
             ballNode.removeFromParentNode()
-            createBall()
+            createBall(position: position)
             isGestureEnabled = true
         }
         
@@ -544,7 +563,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     // MARK: Setup Scene
     
     func shootBall() {
-        let power:Float = 3.0
+        let power:Float = 20.0
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
         let orientation = SCNVector3(-transform.m31,-transform.m32,-transform.m33)
@@ -560,7 +579,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     func createBallShoot(_with position:SCNVector3) -> SCNNode {
         
-        let ball = SCNNode(geometry: SCNSphere(radius: 0.02))
+        let ball = SCNNode(geometry: SCNSphere(radius: 0.15))
         ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
         ball.position = position
         ball.name = "ball"
@@ -634,16 +653,15 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         return tableNode
     }
     
-    @objc func createBall(){
+    @objc func createBall(position: SCNVector3){
         let ballGeo = SCNSphere(radius: 0.15)
         ballNode = SCNNode(geometry: ballGeo)
         let ballMaterial = SCNMaterial()
-        ballMaterial.diffuse.contents = UIImage(named: "ball.scnassets/ballTextDirty.png")
+        ballMaterial.diffuse.contents = UIImage(named: "ball.scnassets/ballTextWhite.tif")
         ballNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: ballGeo, options: nil))
         ballGeo.materials = [ballMaterial]
         ballNode.physicsBody?.isAffectedByGravity = false
-        ballNode.position = SCNVector3(0, -0.5, -1)
-        ballNode.position = SCNVector3(x: 0, y: 0, z: -5)
+        ballNode.position = position
         
         sceneView.scene.rootNode.addChildNode(ballNode)
     }

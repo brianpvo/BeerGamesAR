@@ -132,9 +132,9 @@
 				7A291B8B20C1F1C40069A09D /* VirtualObject.swift */,
 				7A291B8A20C1F1C40069A09D /* VirtualObjectLoader.swift */,
 				7A291B6520C1EFDD0069A09D /* ThresholdPanGesture.swift */,
+				7A291B8920C1F0F50069A09D /* AR.storyboard */,
 				7A291B8720C1F0E80069A09D /* Assets.xcassets */,
 				7A291B8620C1F0E80069A09D /* Info.plist */,
-				7A291B8920C1F0F50069A09D /* AR.storyboard */,
 				7A291B8820C1F0EA0069A09D /* Models.scnassets */,
 			);
 			path = AR;
