@@ -26,12 +26,14 @@
 		7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */; };
 		7A6E890220C07C5A00BD6C6B /* table.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A6E890120C07C5A00BD6C6B /* table.scnassets */; };
 		7AA37C0520C31C9B001C572D /* NodePhysics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA37C0420C31C9B001C572D /* NodePhysics.swift */; };
+		7AA37C0A20C32BD7001C572D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7AA37C0920C32BD7001C572D /* GoogleService-Info.plist */; };
+		7AA37C0C20C32BE0001C572D /* Secret.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA37C0B20C32BE0001C572D /* Secret.swift */; };
 		7AB26A5F20B928490066908D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB26A5E20B928490066908D /* AppDelegate.swift */; };
 		7AB26A6120B928490066908D /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB26A6020B928490066908D /* GameViewController.swift */; };
 		7AB26A6420B928490066908D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6220B928490066908D /* Main.storyboard */; };
 		7AB26A6620B9284A0066908D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6520B9284A0066908D /* Assets.xcassets */; };
-		7AB26A7320B92E120066908D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A7220B92E120066908D /* GoogleService-Info.plist */; };
-		7AB26A7520BA83EB0066908D /* Secret.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB26A7420BA83EB0066908D /* Secret.swift */; };
+		7AB26A7320B92E120066908D /* (null) in Resources */ = {isa = PBXBuildFile; };
+		7AB26A7520BA83EB0066908D /* (null) in Sources */ = {isa = PBXBuildFile; };
 		7AB26A7720BB3EFE0066908D /* example.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A7620BB3EFE0066908D /* example.scnassets */; };
 		7ECC85DA20C09F3200CF0531 /* ball.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7ECC85D920C09F3200CF0531 /* ball.scnassets */; };
 		A3A9E81429EA57B5977F1A5A /* Pods_BeerGamesAR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B6224FC584954427FA2DE89 /* Pods_BeerGamesAR.framework */; };
@@ -79,14 +81,14 @@
 		7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = cup.scnassets; sourceTree = "<group>"; };
 		7A6E890120C07C5A00BD6C6B /* table.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = table.scnassets; sourceTree = "<group>"; };
 		7AA37C0420C31C9B001C572D /* NodePhysics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePhysics.swift; sourceTree = "<group>"; };
+		7AA37C0920C32BD7001C572D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7AA37C0B20C32BE0001C572D /* Secret.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secret.swift; sourceTree = "<group>"; };
 		7AB26A5B20B928490066908D /* BeerGamesAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeerGamesAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7AB26A5E20B928490066908D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7AB26A6020B928490066908D /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		7AB26A6320B928490066908D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7AB26A6520B9284A0066908D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7AB26A6A20B9284A0066908D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7AB26A7220B92E120066908D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7AB26A7420BA83EB0066908D /* Secret.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secret.swift; sourceTree = "<group>"; };
 		7AB26A7620BB3EFE0066908D /* example.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = example.scnassets; sourceTree = "<group>"; };
 		7ECC85D920C09F3200CF0531 /* ball.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = ball.scnassets; sourceTree = "<group>"; };
 		8E51913D20667A4C7520C5A5 /* Pods-BeerGamesAR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeerGamesAR.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR.release.xcconfig"; sourceTree = "<group>"; };
@@ -163,11 +165,11 @@
 				7AB26A5E20B928490066908D /* AppDelegate.swift */,
 				7AB26A6020B928490066908D /* GameViewController.swift */,
 				7AA37C0420C31C9B001C572D /* NodePhysics.swift */,
+				7AA37C0B20C32BE0001C572D /* Secret.swift */,
 				7AB26A6220B928490066908D /* Main.storyboard */,
 				7A291B8E20C1FB660069A09D /* LaunchScreen.storyboard */,
-				7AB26A7420BA83EB0066908D /* Secret.swift */,
 				7AB26A6A20B9284A0066908D /* Info.plist */,
-				7AB26A7220B92E120066908D /* GoogleService-Info.plist */,
+				7AA37C0920C32BD7001C572D /* GoogleService-Info.plist */,
 				7AB26A6520B9284A0066908D /* Assets.xcassets */,
 				7ECC85D920C09F3200CF0531 /* ball.scnassets */,
 				7A6E890120C07C5A00BD6C6B /* table.scnassets */,
@@ -280,7 +282,8 @@
 				7AB26A7720BB3EFE0066908D /* example.scnassets in Resources */,
 				7AB26A6420B928490066908D /* Main.storyboard in Resources */,
 				7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */,
-				7AB26A7320B92E120066908D /* GoogleService-Info.plist in Resources */,
+				7AA37C0A20C32BD7001C572D /* GoogleService-Info.plist in Resources */,
+				7AB26A7320B92E120066908D /* (null) in Resources */,
 				7A291B9020C203310069A09D /* AR.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -359,11 +362,12 @@
 				7A291B6D20C1EFDF0069A09D /* ViewController+ARSCNViewDelegate.swift in Sources */,
 				7AA37C0520C31C9B001C572D /* NodePhysics.swift in Sources */,
 				7AB26A6120B928490066908D /* GameViewController.swift in Sources */,
-				7AB26A7520BA83EB0066908D /* Secret.swift in Sources */,
+				7AB26A7520BA83EB0066908D /* (null) in Sources */,
 				7A291B6E20C1EFDF0069A09D /* ViewController.swift in Sources */,
 				7A291B8420C1F0CF0069A09D /* Utilities.swift in Sources */,
 				7A291B8C20C1F1C40069A09D /* VirtualObjectLoader.swift in Sources */,
 				7A291B7720C1EFDF0069A09D /* ViewController+ObjectSelection.swift in Sources */,
+				7AA37C0C20C32BE0001C572D /* Secret.swift in Sources */,
 				7A291B7120C1EFDF0069A09D /* ViewController+Actions.swift in Sources */,
 				7A291B7D20C1F0620069A09D /* FocusSquareSegment.swift in Sources */,
 				7A291B7E20C1F0620069A09D /* FocusSquare.swift in Sources */,
@@ -520,7 +524,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3WQXF9B9M3;
 				INFOPLIST_FILE = BeerGamesAR/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -540,7 +544,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3WQXF9B9M3;
 				INFOPLIST_FILE = BeerGamesAR/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

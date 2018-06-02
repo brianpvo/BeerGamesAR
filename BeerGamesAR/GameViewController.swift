@@ -20,7 +20,7 @@ enum ARState {
 };
 
 
-class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, GARSessionDelegate {
+class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, GARSessionDelegate, UIGestureRecognizerDelegate {
     
     // OUTLETS
     @IBOutlet weak var sceneView: ARSCNView!
@@ -44,6 +44,13 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     var hostButton: UIButton!
     var resolveButton: UIButton!
     var nodePhysics: NodePhysics!
+    var ballNode: SCNNode!
+    var cameraOrientation: SCNVector3!
+    var cameraPosition: SCNVector3!
+    var panGesture: UIPanGestureRecognizer!
+    var timer = Timer()
+    var isGestureEnabled = true
+    var camera: SCNNode!
     
     // MARK - Overriding UIViewController
     
@@ -78,6 +85,48 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         
         self.view.addSubview(button)
+        
+        panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan(_:)))
+        panGesture.delegate = self
+        sceneView.addGestureRecognizer(panGesture)
+    }
+    
+    @objc private func didPan(_ gesture: UIPanGestureRecognizer){
+        let touchLocation = gesture.location(in: sceneView)
+        let hitTestResults = sceneView.hitTest(touchLocation, types: .featurePoint)
+        guard let resultPoint = hitTestResults.first else {return}
+        
+        if isGestureEnabled == true{
+            switch gesture.state {
+            case .changed:
+                let position = SCNVector3Make(
+                    resultPoint.worldTransform.columns.3.x,
+                    resultPoint.worldTransform.columns.3.y,
+                    resultPoint.worldTransform.columns.3.z
+                )
+                ballNode.position = position
+            case .ended:
+                let velocity = gesture.velocity(in: sceneView)
+                let transform = sceneView.transform
+                velocity.applying(transform)
+                
+                let velocityX: Float = Float(velocity.x / 100)
+                let velocityY: Float = Float(abs(velocity.y / 400))
+                let velocityZ: Float = Float(velocity.y / 300)
+                let physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+                let direction = SCNVector3(
+                    velocityX,
+                    velocityY,
+                    velocityZ
+                )
+                physicsBody.applyForce(direction, asImpulse: true)
+                ballNode.physicsBody = physicsBody
+                
+                isGestureEnabled = false
+            default:
+                print(" ")
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -131,7 +180,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                     }
                     guard let anchors = value["hosted_anchor_id"] as? [String] else { return }
                     for anchorId in anchors {
-                        print(anchorId)
+                        //                        print(anchorId)
                         strongSelf.resolveAnchorWithIdentifier(identifier: anchorId)
                     }
                     strongSelf.firebaseReference?.child("hotspot_list").child(roomCode).removeAllObservers()
@@ -153,10 +202,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     func addAnchorWithTransform(transform: matrix_float4x4) {
         arAnchor = ARAnchor(transform: transform)
-        sceneView.pointOfView?.addChildNode(createBall())
         sceneView.session.add(anchor: arAnchor!)
-//        sceneView.pointOfView?.addChildNode(createBall())
-        
+
         // To share an anchor, we call host anchor here on the ARCore session.
         // session:didHostAnchor: session:didFailToHostAnchor: will get called appropriately.
         do {
@@ -206,8 +253,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         
         guard let roomCode = roomCode else { return }
         weak var weakSelf = self
-         var anchorCount = 0
-       firebaseReference?.child("hotspot_list").child(roomCode)
+        var anchorCount = 0
+        firebaseReference?.child("hotspot_list").child(roomCode)
             .child("hosted_anchor_count").runTransactionBlock({ (currentData) -> TransactionResult in
                 let strongSelf = weakSelf
                 if let lastAnchorCount = currentData.value as? Int {
@@ -230,7 +277,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
                 
                 currentData.value = anchorNumber
                 return TransactionResult.success(withValue: currentData)
-        })
+            })
     }
     
     func session(_ session: GARSession, didFailToHostAnchor anchor: GARAnchor) {
@@ -265,6 +312,20 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
     
     // MARK - ARSessionDelegate
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        //  capture camera position and orientation
+        guard let pointOfView = sceneView.pointOfView else { return }
+        let transform = pointOfView.transform
+        guard let frame = sceneView.session.currentFrame else {return}
+        cameraOrientation = SCNVector3(-transform.m31, -transform.m32, transform.m33)
+        cameraPosition = SCNVector3(transform.m41,
+                                    transform.m42, transform.m43)
+        
+        if ballNode.presentation.position.y <= -50{
+            ballNode.removeFromParentNode()
+            createBall()
+            isGestureEnabled = true
+        }
+        
         // Forward ARKit's update to ARCore session
         do {
             try gSession?.update(frame)
@@ -331,7 +392,7 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         case .errorResolvingSdkVersionTooNew:
             return "ErrorResolvingSdkVersionTooNew";
         case .errorResolvingSdkVersionTooOld:
-            return "ErrorResolvingSdkVersionTooOld";
+            return "ErrorResolvingSdkVersfionTooOld";
         case .errorResolvingLocalizationNoMatch:
             return "ErrorResolvingLocalizationNoMatch";
         }
@@ -358,7 +419,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         alertController.addAction(okAction)
         alertController.addAction(cancelAction)
         self.present(alertController, animated: false, completion: nil)
-        
     }
     
     func enterState(state: ARState) {
@@ -491,14 +551,14 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         let location = SCNVector3(transform.m41,transform.m42,transform.m43)
         let position = orientation + location
         
-        let ball = createBall(_with: position)
+        let ball = createBallShoot(_with: position)
         
         nodePhysics.ballBitMaskAndPhysicsBody(_to: ball)
         ball.physicsBody?.applyForce(SCNVector3(orientation.x*power, orientation.y*power, orientation.z*power), asImpulse: true)
         self.sceneView.scene.rootNode.addChildNode(ball)
     }
     
-    func createBall(_with position:SCNVector3) -> SCNNode {
+    func createBallShoot(_with position:SCNVector3) -> SCNNode {
         
         let ball = SCNNode(geometry: SCNSphere(radius: 0.02))
         ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
@@ -529,8 +589,8 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         // add Table Top
         let tableScene = SCNScene(named: "table.scnassets/Table.scn")
         guard let tableNode = tableScene?.rootNode.childNode(withName: "table", recursively: false),
-        let tableTopNode = tableScene?.rootNode.childNode(withName: "tableTopCenter", recursively: false) else {
-            return SCNNode()
+            let tableTopNode = tableScene?.rootNode.childNode(withName: "tableTopCenter", recursively: false) else {
+                return SCNNode()
         }
         tableNode.name = "table"
         tableTopNode.name = "tableTop"
@@ -574,18 +634,18 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         return tableNode
     }
     
-    func createBall() -> SCNNode{
-        let ballGeo = SCNSphere(radius: 0.25)
-        let ballNode = SCNNode(geometry: ballGeo)
+    @objc func createBall(){
+        let ballGeo = SCNSphere(radius: 0.15)
+        ballNode = SCNNode(geometry: ballGeo)
         let ballMaterial = SCNMaterial()
-        ballMaterial.diffuse.contents = UIImage(named: "ball.scnassets/ballTextureWhite.tif")
+        ballMaterial.diffuse.contents = UIImage(named: "ball.scnassets/ballTextDirty.png")
         ballNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: ballGeo, options: nil))
         ballGeo.materials = [ballMaterial]
         ballNode.physicsBody?.isAffectedByGravity = false
-        
+        ballNode.position = SCNVector3(0, -0.5, -1)
         ballNode.position = SCNVector3(x: 0, y: 0, z: -5)
         
-        return ballNode
+        sceneView.scene.rootNode.addChildNode(ballNode)
     }
     
     func createText(text: String) -> SCNNode {
@@ -605,12 +665,13 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         let rotateAction = SCNAction.rotate(by: 2 * CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 10)
         return SCNAction.repeatForever(rotateAction)
     }
-  
+
+
     func nodeResize() {
         sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
             if node.name == "cup" {
                 node.scale = SCNVector3(x: 1.2, y: 1.2, z: 1.2)
-               // nodePhysics.cupBitMaskAndPhysicsBody(_to: node)
+                nodePhysics.cupBitMaskAndPhysicsBody(_to: node)
             }
             if node.name == "table" {
                 node.scale = SCNVector3(x: 0.2, y: 0.4, z: 0.3)
@@ -683,7 +744,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
             planeNode?.removeFromParentNode()
         }
     }
-    
 }
 
 func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {

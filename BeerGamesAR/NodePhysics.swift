@@ -63,11 +63,9 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         if (nodeA.name == "ball" && nodeB.name == "cup1invisbleNode") || (nodeB.name == "ball" && nodeA.name == "cup1invisibleNode") {
             print("contact established")
         }
-        
-        
-        for i in 1...2 {
-            removeCupAndBall(cupName: "cup\(i)", nodeA: nodeA, nodeB: nodeB)
-        }
+//        for i in 1...2 {
+//            removeCupAndBall(cupName: "cup\(i)", nodeA: nodeA, nodeB: nodeB)
+//        }
         
     }
     
@@ -79,8 +77,8 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
             self.scene.rootNode.enumerateChildNodes { (node, _) in
                 if node.name == cupName || node.name == "\(cupName)invisibleNode" || node.name == "ball" {
                     //                    node.removeFromParentNode()
-                    print("node A is \(nodeA.name)")
-                    print("node B is \(nodeB.name)")
+//                    print("node A is \(nodeA.name)")
+//                    print("node B is \(nodeB.name)")
                 }
             }
         }
