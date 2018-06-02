@@ -20,7 +20,7 @@ enum ARState {
 };
 
 
-class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, GARSessionDelegate, UIGestureRecognizerDelegate {
+class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     // OUTLETS
     @IBOutlet weak var sceneView: ARSCNView!
@@ -258,101 +258,6 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         }, completion: nil)
     }
     
-    // MARK: GARSessionDelegate
-    
-    func session(_ session: GARSession, didHostAnchor anchor: GARAnchor) {
-        if state != ARState.Hosting || anchor != garAnchor {
-            return
-        }
-        garAnchor = anchor
-        enterState(state: .HostingFinished)
-        
-        guard let roomCode = roomCode else { return }
-        weak var weakSelf = self
-        var anchorCount = 0
-        firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("hosted_anchor_count").runTransactionBlock({ (currentData) -> TransactionResult in
-                let strongSelf = weakSelf
-                if let lastAnchorCount = currentData.value as? Int {
-                    anchorCount = lastAnchorCount
-                }
-                
-                anchorCount += 1
-                let anchorIndex = anchorCount - 1
-                let anchorNumber = NSNumber(value: anchorCount)
-                // Set different id # for different objects
-                strongSelf?.firebaseReference?.child("hotspot_list").child(roomCode)
-                    .child("hosted_anchor_id").child(NSNumber(value: anchorIndex).stringValue)
-                    .setValue(anchor.cloudIdentifier)
-                
-                // create timestamp for the room number
-                let timestampeInt = Int(Date().timeIntervalSince1970 * 1000)
-                let timestamp = NSNumber(value: timestampeInt)
-                strongSelf?.firebaseReference?.child("hotspot_list").child(roomCode)
-                    .child("updated_at_timestamp").setValue(timestamp)
-                
-                currentData.value = anchorNumber
-                return TransactionResult.success(withValue: currentData)
-            })
-    }
-    
-    func session(_ session: GARSession, didFailToHostAnchor anchor: GARAnchor) {
-        if (state != ARState.Hosting || !(anchor.isEqual(garAnchor))){
-            return
-        }
-        
-        garAnchor = anchor
-        enterState(state: ARState.HostingFinished)
-    }
-    
-    func session(_ session: GARSession, didResolve anchor: GARAnchor) {
-        if state != ARState.Resolving || !(anchor.isEqual(garAnchor)) {
-            return
-        }
-        garAnchor = anchor
-        arAnchor = ARAnchor(transform: anchor.transform)
-        if let arAnchor = arAnchor {
-            sceneView.session.add(anchor: arAnchor)
-        }
-        enterState(state: ARState.ResolvingFinished)
-    }
-    
-    func session(_ session: GARSession, didFailToResolve anchor: GARAnchor) {
-        if (state != ARState.Resolving || !(anchor.isEqual(garAnchor))){
-            return
-        }
-        
-        garAnchor = anchor
-        enterState(state: ARState.ResolvingFinished)
-    }
-    
-    // MARK - ARSessionDelegate
-    func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        //  capture camera position and orientation
-        guard let pointOfView = sceneView.pointOfView else { return }
-        let transform = pointOfView.transform
-        guard let frame = sceneView.session.currentFrame else {return}
-        cameraOrientation = SCNVector3(-transform.m31,
-                                       -transform.m32,
-                                       -transform.m33)
-        cameraPosition = SCNVector3(transform.m41,
-                                    transform.m42,
-                                    transform.m43)
-        let position = cameraOrientation + cameraPosition
-        if ballNode.presentation.position.y <= -50{
-            ballNode.removeFromParentNode()
-            createBall(position: position)
-            isGestureEnabled = true
-        }
-        
-        // Forward ARKit's update to ARCore session
-        do {
-            try gSession?.update(frame)
-        }catch let error{
-            print("fail to update ARKit frame to ARCore session: \(error)")
-        }
-    }
-    
     // MARK: Helper Methods
     
     func setupButtons() {
@@ -560,7 +465,9 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         self.enterState(state: .RoomCreated)
     }
     
-    // MARK: Setup Scene
+    @objc func buttonAction(sender: UIButton!) {
+        shootBall()
+    }
     
     func shootBall() {
         let power:Float = 20.0
@@ -576,202 +483,9 @@ class GameViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate
         ball.physicsBody?.applyForce(SCNVector3(orientation.x*power, orientation.y*power, orientation.z*power), asImpulse: true)
         self.sceneView.scene.rootNode.addChildNode(ball)
     }
-    
-    func createBallShoot(_with position:SCNVector3) -> SCNNode {
-        
-        let ball = SCNNode(geometry: SCNSphere(radius: 0.15))
-        ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-        ball.position = position
-        ball.name = "ball"
-        
-        return ball
-    }
-    
-    @objc func buttonAction(sender: UIButton!) {
-        shootBall()
-    }
-    
-    func createRedCup(position: SCNVector3) -> SCNNode {
-        let redCupScene = SCNScene(named: "cup.scnassets/RedSoloCup.scn")
-        let redCupNode = redCupScene?.rootNode.childNode(withName: "redCup", recursively: false)
-        redCupNode?.name = "cup"
-        redCupNode?.position = position
-        return redCupNode!
-    }
-    
-    func setupGameScene() -> SCNNode {
-        let scene = SCNScene(named: "example.scnassets/andy.scn")
-        guard let anchorNode = scene?.rootNode.childNode(withName: "andy", recursively: false) else {
-            return SCNNode()
-        }
-        
-        // add Table Top
-        let tableScene = SCNScene(named: "table.scnassets/Table.scn")
-        guard let tableNode = tableScene?.rootNode.childNode(withName: "table", recursively: false),
-            let tableTopNode = tableScene?.rootNode.childNode(withName: "tableTopCenter", recursively: false) else {
-                return SCNNode()
-        }
-        tableNode.name = "table"
-        tableTopNode.name = "tableTop"
-        tableTopNode.addChildNode(anchorNode)
-        let beerPongText = createText(text: "BEER PONG")
-        beerPongText.runAction(rotateAnimation())
-        tableTopNode.addChildNode(beerPongText)
-        
-        // setup my red cups
-        let myRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, 2.38))
-        tableTopNode.addChildNode(myRedCup1)
-        let myRedCup2 = createRedCup(position: SCNVector3(0.18, 0.01, 2.69))
-        tableTopNode.addChildNode(myRedCup2)
-        let myRedCup3 = createRedCup(position: SCNVector3(-0.18, 0.01, 2.69))
-        tableTopNode.addChildNode(myRedCup3)
-        let myRedCup4 = createRedCup(position: SCNVector3(0.37, 0.01, 3.0))
-        tableTopNode.addChildNode(myRedCup4)
-        let myRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, 3.0))
-        tableTopNode.addChildNode(myRedCup5)
-        let myRedCup6 = createRedCup(position: SCNVector3(-0.37, 0.01, 3.0))
-        tableTopNode.addChildNode(myRedCup6)
-        
-        // setup opponents red cups
-        let yourRedCup1 = createRedCup(position: SCNVector3(0.0, 0.01, -2.38))
-        tableTopNode.addChildNode(yourRedCup1)
-        let yourRedCup2 = createRedCup(position: SCNVector3(0.18, 0.01, -2.69))
-        tableTopNode.addChildNode(yourRedCup2)
-        let yourRedCup3 = createRedCup(position: SCNVector3(-0.18, 0.01, -2.69))
-        tableTopNode.addChildNode(yourRedCup3)
-        let yourRedCup4 = createRedCup(position: SCNVector3(0.37, 0.01, -3.0))
-        tableTopNode.addChildNode(yourRedCup4)
-        let yourRedCup5 = createRedCup(position: SCNVector3(0.0, 0.01, -3.0))
-        tableTopNode.addChildNode(yourRedCup5)
-        let yourRedCup6 = createRedCup(position: SCNVector3(-0.37, 0.01, -3.0))
-        tableTopNode.addChildNode(yourRedCup6)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.nodeResize()
-        }
-        tableNode.addChildNode(tableTopNode)
-        return tableNode
-    }
-    
-    @objc func createBall(position: SCNVector3){
-        let ballGeo = SCNSphere(radius: 0.15)
-        ballNode = SCNNode(geometry: ballGeo)
-        let ballMaterial = SCNMaterial()
-        ballMaterial.diffuse.contents = UIImage(named: "ball.scnassets/ballTextWhite.tif")
-        ballNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: ballGeo, options: nil))
-        ballGeo.materials = [ballMaterial]
-        ballNode.physicsBody?.isAffectedByGravity = false
-        ballNode.position = position
-        
-        sceneView.scene.rootNode.addChildNode(ballNode)
-    }
-    
-    func createText(text: String) -> SCNNode {
-        let text = SCNText(string: text, extrusionDepth: 2)
-        
-        let material = SCNMaterial()
-        material.diffuse.contents = UIColor.black
-        text.materials = [material]
-        
-        let node = SCNNode(geometry: text)
-        node.position = SCNVector3(0, 1, 0)
-        node.scale = SCNVector3(0.01, 0.01, 0.01)
-        return node
-    }
-    
-    func rotateAnimation() -> SCNAction {
-        let rotateAction = SCNAction.rotate(by: 2 * CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 10)
-        return SCNAction.repeatForever(rotateAction)
-    }
-
-
-    func nodeResize() {
-        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
-            if node.name == "cup" {
-                node.scale = SCNVector3(x: 1.2, y: 1.2, z: 1.2)
-                nodePhysics.cupBitMaskAndPhysicsBody(_to: node)
-            }
-            if node.name == "table" {
-                node.scale = SCNVector3(x: 0.2, y: 0.4, z: 0.3)
-            }
-            if node.name == "tableTop" {
-                node.position = SCNVector3(0, 1.65, 0)
-            }
-        }
-    }
-    
-    // MARK: ARSCNViewDelegate
-    
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        // render SCN with objects
-        if !(anchor.isMember(of: ARPlaneAnchor.self)) {
-            return self.setupGameScene()
-        }
-        let scnNode = SCNNode()
-        return scnNode
-    }
-    
-    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        // determine position and size of the plane anchor
-        if anchor.isMember(of: ARPlaneAnchor.self) {
-            guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-            
-            let width = planeAnchor.extent.x
-            let height = planeAnchor.extent.z
-            let plane = SCNPlane.init(width: CGFloat(width), height: CGFloat(height))
-            
-            plane.materials.first?.diffuse.contents = UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 0.3)
-            
-            let planeNode = SCNNode(geometry: plane)
-            
-            let x = planeAnchor.center.x
-            let y = planeAnchor.center.y
-            let z = planeAnchor.center.z
-            planeNode.position = SCNVector3Make(x, y, z)
-            planeNode.eulerAngles = SCNVector3Make(Float(-Double.pi / 2), 0, 0)
-            
-            node.addChildNode(planeNode)
-        }
-    }
-    
-    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        // Update position and size of plane anchor
-        if anchor.isMember(of: ARPlaneAnchor.self) {
-            let planeAnchor = anchor as? ARPlaneAnchor
-            
-            let planeNode = node.childNodes.first
-            guard let plane = planeNode?.geometry as? SCNPlane else {return}
-            
-            if let width = planeAnchor?.extent.x {
-                plane.width = CGFloat(width)
-            }
-            if let height = planeAnchor?.extent.z {
-                plane.height = CGFloat(height)
-            }
-            
-            if let x = planeAnchor?.center.x, let y = planeAnchor?.center.y, let z = planeAnchor?.center.z {
-                planeNode?.position = SCNVector3Make(x, y, z)
-            }
-        }
-    }
-    
-    func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
-        // remove plane node from parent node
-        if anchor.isMember(of: ARPlaneAnchor.self){
-            let planeNode = node.childNodes.first
-            planeNode?.removeFromParentNode()
-        }
-    }
 }
 
 func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {
     return SCNVector3Make(left.x + right.x, left.y + right.y, left.z + right.z)
 }
-
-//extension float4x4 {
-//    var translation: float3 {
-//        let translation = self.columns.3
-//        return float3(translation.x, translation.y, translation.z)
-//    }
-//}
 
