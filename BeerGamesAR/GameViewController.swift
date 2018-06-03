@@ -8,6 +8,11 @@ import ARCore
 import ModelIO
 import SceneKit
 
+struct colorBar {
+    var colorBlock: UIColor
+    var maskedCorners: CACornerMask
+}
+
 class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     // OUTLETS
@@ -25,6 +30,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     // ENUM VARIABLES
     var state: ARState?
+    var playerState: PlayerState?
     
     // NORMAL VARIABLES
     var message: String?
@@ -39,6 +45,31 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var timer = Timer()
     var isGestureEnabled = true
     var camera: SCNNode!
+    var sliderValue: Float!
+    var button: UIButton!
+    
+    // animator property
+    var sliderBottomConstraint: NSLayoutConstraint!
+    
+    let gradientStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.distribution = .fillEqually
+        stackView.layer.cornerRadius = 16
+        stackView.axis = .vertical
+        stackView.isHidden = true
+        return stackView
+    }()
+    
+    let powerSlider: UIView = {
+        let sliderView = UIView()
+        sliderView.translatesAutoresizingMaskIntoConstraints = false
+        sliderView.backgroundColor = .white
+        sliderView.clipsToBounds = true
+        sliderView.layer.cornerRadius = 16
+        sliderView.isHidden = true
+        return sliderView
+    }()
     
     // MARK - Overriding UIViewController
     
@@ -67,9 +98,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         self.setupButtons()
-        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
+        button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
         button.backgroundColor = UIColor.green
-        button.setTitle("Shoot Ball", for: UIControlState.normal)
+        button.setTitle("Ready", for: UIControlState.normal)
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         
         self.view.addSubview(button)
@@ -77,10 +108,55 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan(_:)))
         panGesture.delegate = self
         sceneView.addGestureRecognizer(panGesture)
-        createBall(position: SCNVector3((sceneView.pointOfView?.presentation.position.x)!,
-                                        (sceneView.pointOfView?.presentation.position.y)!,
-                                        (sceneView.pointOfView?.presentation.position.z)! - 0.5))
+//        createBall(position: SCNVector3((sceneView.pointOfView?.presentation.position.x)!,
+//                                        (sceneView.pointOfView?.presentation.position.y)!,
+//                                        (sceneView.pointOfView?.presentation.position.z)! - 0.5))
+        
+        // add gradient layer bar to view
+        let green = colorBar(colorBlock: UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.6), maskedCorners: [.layerMinXMaxYCorner, .layerMaxXMaxYCorner])
+        let yellow = colorBar(colorBlock: UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.6), maskedCorners: [])
+        let red = colorBar(colorBlock: UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.6), maskedCorners: [.layerMaxXMinYCorner, .layerMinXMinYCorner])
+        let yellowGreen = colorBar(colorBlock: UIColor(red: 0.5, green: 1.0, blue: 0.0, alpha: 0.6), maskedCorners: [])
+        let redYellow = colorBar(colorBlock: UIColor(red: 1.0, green: 0.5, blue: 0.0, alpha: 0.6), maskedCorners: [])
+        
+        [red, redYellow, yellow, yellowGreen, green].forEach {
+            let colorView = UIView()
+            colorView.translatesAutoresizingMaskIntoConstraints = false
+            colorView.clipsToBounds = true
+            colorView.backgroundColor = $0.colorBlock
+            colorView.layer.cornerRadius = 16
+            colorView.layer.maskedCorners = $0.maskedCorners
+            gradientStackView.addArrangedSubview(colorView)
+        }
+        
+        // adding UI elements to main UI view
+        [gradientStackView, powerSlider].forEach { view.addSubview($0)}
+        
+        //  constraint setup
+        setupConstraint()
+        
     }
+    
+    private func setupConstraint(){
+        
+        //        shootButton.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.05).isActive = true
+        //        shootButton.widthAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1).isActive = true
+        //        shootButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        //        shootButton.centerYAnchor.constraintEqualToSystemSpacingBelow(view.centerYAnchor, multiplier: 0.5).isActive = true
+        
+        gradientStackView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.7).isActive = true
+        gradientStackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.05).isActive = true
+        gradientStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        gradientStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        
+        powerSlider.heightAnchor.constraint(equalTo: gradientStackView.heightAnchor, multiplier: 0.01).isActive = true
+        powerSlider.widthAnchor.constraint(equalTo: gradientStackView.widthAnchor, multiplier: 2).isActive = true
+        powerSlider.centerXAnchor.constraint(equalTo: gradientStackView.centerXAnchor).isActive = true
+        sliderBottomConstraint = powerSlider.bottomAnchor.constraint(equalTo: gradientStackView.bottomAnchor)
+        sliderBottomConstraint.isActive = true
+        
+    }
+    
     
     @objc private func didPan(_ gesture: UIPanGestureRecognizer){
         let touchLocation = gesture.location(in: sceneView)
@@ -213,8 +289,12 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         button.setTitle(title, for: UIControlState.normal)
     }
     
-    @objc func buttonAction(sender: UIButton!) {
-        shootBall()
+    @objc func buttonAction(){
+        if button.titleLabel?.text == "Shoot Ball"{
+            enterPlayerState(state: .Result)
+        }else if button.titleLabel?.text == "Ready"{
+            enterPlayerState(state: .Begin)
+        }
     }
     
     func shootBall() {
@@ -229,14 +309,14 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                   transform.m43)
         let position = orientation + location
         
-        let ball = createBallShoot(_with: position)
+        ballNode = createBallShoot(_with: position)
         
-        nodePhysics.ballBitMaskAndPhysicsBody(_to: ball)
-        ball.physicsBody?.applyForce(SCNVector3(orientation.x * power,
+        nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
+        ballNode.physicsBody?.applyForce(SCNVector3(orientation.x * power,
                                                 orientation.y * power,
                                                 orientation.z * power),
                                      asImpulse: true)
-        self.sceneView.scene.rootNode.addChildNode(ball)
+        self.sceneView.scene.rootNode.addChildNode(ballNode)
     }
 }
 

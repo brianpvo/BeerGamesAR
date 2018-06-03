@@ -93,10 +93,11 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
                                     transform.m42,
                                     transform.m43)
         let position = cameraOrientation + cameraPosition
-        if ballNode.presentation.position.y <= -50{
-            ballNode.removeFromParentNode()
-            createBall(position: position)
-            isGestureEnabled = true
+        if ballNode != nil{
+            if ballNode.presentation.position.y <= -50 {
+                ballNode.removeFromParentNode()
+                enterPlayerState(state: .End)
+            }
         }
         
         // Forward ARKit's update to ARCore session
