@@ -73,64 +73,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         
         self.view.addSubview(button)
+        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
         
-        panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan(_:)))
-        panGesture.delegate = self
-        sceneView.addGestureRecognizer(panGesture)
-        createBall(position: SCNVector3((sceneView.pointOfView?.presentation.position.x)!,
-                                        (sceneView.pointOfView?.presentation.position.y)!,
-                                        (sceneView.pointOfView?.presentation.position.z)! - 0.5))
-    }
-    
-    @objc private func didPan(_ gesture: UIPanGestureRecognizer){
-        let touchLocation = gesture.location(in: sceneView)
-        let hitTestResults = sceneView.hitTest(touchLocation, types: .featurePoint)
-        guard let resultPoint = hitTestResults.first else {return}
-        
-        //if resultPoint.worldTransform.translation
-        
-        if isGestureEnabled {
-            switch gesture.state {
-            case .changed:
-                let position = SCNVector3Make(
-                    resultPoint.worldTransform.translation.x,
-                    resultPoint.worldTransform.translation.y,
-                    resultPoint.worldTransform.translation.z
-                )
-                ballNode.position = position
-            case .ended:
-                let velocity = gesture.velocity(in: sceneView)
-                let transform = sceneView.transform
-//                guard let pointOfView = sceneView.pointOfView else { return }
-//                let transform = pointOfView.transform
-                velocity.applying(transform)
-                
-                let velocityX: Float = Float(velocity.x / 100)
-                let velocityY: Float = Float(abs(velocity.y / 400))
-                let velocityZ: Float = Float(velocity.y / 300)
-                let physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
-                let direction = SCNVector3(
-                    0,
-                    velocityY,
-                    velocityZ
-                )
-//                let power: Float = 0.5
-//                cameraOrientation = SCNVector3(-transform.m31,
-//                                               -transform.m32,
-//                                               -transform.m33)
-                nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
-//                ballNode.physicsBody?.applyForce(SCNVector3(cameraOrientation.x*power,
-//                                                            cameraOrientation.y*power,
-//                                                            cameraOrientation.z*power),
-//                                                 asImpulse: true)
-                physicsBody.applyForce(direction, asImpulse: true)
-                ballNode.physicsBody = physicsBody
-                
-                isGestureEnabled = false
-            default:
-                print(" ")
-            }
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -214,11 +158,24 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func buttonAction(sender: UIButton!) {
-        shootBall()
+        DispatchQueue.global(qos: .background).async {
+            self.sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
+                if node.name == "ball"  {
+                    node.removeFromParentNode()
+                }
+            }
+            self.shootBall()
+        }
+//        self.sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
+//            if node.name == "ball"  {
+//                node.removeFromParentNode()
+//            }
+//        }
+//        shootBall()
     }
     
     func shootBall() {
-        let power:Float = 20.0
+        let power:Float = 2.5
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
         let orientation = SCNVector3(-transform.m31,
@@ -233,7 +190,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         nodePhysics.ballBitMaskAndPhysicsBody(_to: ball)
         ball.physicsBody?.applyForce(SCNVector3(orientation.x * power,
-                                                orientation.y * power,
+                                                -orientation.y * power,
                                                 orientation.z * power),
                                      asImpulse: true)
         self.sceneView.scene.rootNode.addChildNode(ball)
