@@ -40,7 +40,16 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var isGestureEnabled = true
     var camera: SCNNode!
     
+    // SLIDER VARIABLES
+    var slider: CustomSlider!
+    var sliderTimer = Timer()
+    var power:Float = 0.5
+    var sliderGoingUp = true
+    var sliderGoingDown = false
+    
+    
     // MARK - Overriding UIViewController
+    
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -73,7 +82,11 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         
         self.view.addSubview(button)
-        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+//        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+        
+        
+        //SLIDER SETUP
+        setupSlider()
         
     }
     
@@ -175,7 +188,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func shootBall() {
-        let power:Float = 2.5
+        
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
         let orientation = SCNVector3(-transform.m31,
@@ -194,6 +207,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                                 orientation.z * power),
                                      asImpulse: true)
         self.sceneView.scene.rootNode.addChildNode(ball)
+        
     }
 }
 
