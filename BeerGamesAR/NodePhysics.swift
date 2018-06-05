@@ -14,6 +14,7 @@ enum BitMaskCategory:Int {
     case ball = 2
     case emptyNode = 3
     case table = 4
+    case cup = 5
 }
 
 class NodePhysics: NSObject, SCNPhysicsContactDelegate {
@@ -25,17 +26,26 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
     }
     
     func ballBitMaskAndPhysicsBody(_to Node: SCNNode) {
-        let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: Node, options: nil))
+        
+        let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: SCNSphere(radius: 0.02), options: [:]))
+        
         Node.physicsBody = body
         body.isAffectedByGravity = true
         Node.physicsBody?.categoryBitMask = BitMaskCategory.ball.rawValue
         Node.physicsBody?.contactTestBitMask = BitMaskCategory.emptyNode.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
+        Node.physicsBody?.restitution = 0.2
+        Node.physicsBody?.damping = 0.1
+        Node.physicsBody?.friction = 0.1
     }
     
-    func cupBitMaskAndPhysicsBody(_to Node: SCNNode) {
-        let body = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: Node, options: [SCNPhysicsShape.Option.keepAsCompound: true, SCNPhysicsShape.Option.type:SCNPhysicsShape.ShapeType.concavePolyhedron]))
+    func cupBitMaskAndPhysicsBody(_to Node: SCNNode, scale: SCNVector3) {
+        let body = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: Node, options: [SCNPhysicsShape.Option.keepAsCompound : true,
+            SCNPhysicsShape.Option.scale: scale,
+            SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
+            ]))
         Node.physicsBody = body
+        //Node.physicsBody?.friction = 1
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
     }
     
@@ -57,35 +67,50 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
         let nodeA = contact.nodeA
         let nodeB = contact.nodeB
-        //        print("node A is \(nodeA.name)")
-        //        print("node B is \(nodeB.name)")
-        if (nodeA.name == "ball" && nodeB.name == "cup1invisbleNode") || (nodeB.name == "ball" && nodeA.name == "cup1invisibleNode") {
-            print("contact established")
-        }
-//        for i in 1...2 {
-//            removeCupAndBall(cupName: "cup\(i)", nodeA: nodeA, nodeB: nodeB)
+//        let contactMask = (contact.nodeA.physicsBody?.categoryBitMask)! |
+//            (contact.nodeB.physicsBody?.categoryBitMask)!
+//        
+//        if (contactMask == (BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue)) {
+//            
 //        }
         
+        DispatchQueue.global(qos: .background).async {
+            if (nodeA.name == "ball" && ((nodeB.name?.range(of: "invisibleNode")) != nil)) ||
+                (nodeB.name == "ball" && ((nodeA.name?.range(of: "invisibleNode")) != nil)) {
+                print("\(nodeA.name!) touched \(nodeB.name!)")
+            }
+            
+            for i in 1...9 {
+                if (nodeA.name == "ball" && nodeB.name == "yourCup\(i)invisibleNode") || (nodeB.name == "ball" && nodeA.name == "yourCup\(i)invisibleNode") {
+                    nodeA.removeFromParentNode()
+                    nodeB.removeFromParentNode()
+                    self.scene.rootNode.enumerateChildNodes { (node, _) in
+                        if node.name == "yourCup\(i)" {
+                            print("removing yourCup\(i)")
+                            node.removeFromParentNode()
+                            self.updateTableShape()
+                        }
+                    }
+                }
+            }
+        }
     }
     
     
     
-    private func removeCupAndBall(cupName:String, nodeA:SCNNode, nodeB:SCNNode) {
-        print(cupName)
-        if (nodeA.name == "ball" && nodeB.name == "\(cupName)invisibleNode") || (nodeB.name == "ball" && nodeA.name == "\(cupName)invisibleNode") {
+    private func updateTableShape() {
+        DispatchQueue.global(qos: .default).async {
             self.scene.rootNode.enumerateChildNodes { (node, _) in
-                if node.name == cupName || node.name == "\(cupName)invisibleNode" || node.name == "ball" {
-                    //                    node.removeFromParentNode()
-//                    print("node A is \(nodeA.name)")
-//                    print("node B is \(nodeB.name)")
+                if node.name == "table" {
+                    let body = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: node, options: [SCNPhysicsShape.Option.keepAsCompound: true, SCNPhysicsShape.Option.type:SCNPhysicsShape.ShapeType.concavePolyhedron]))
+                    node.physicsBody = nil
+                    node.physicsBody = body
+                    node.physicsBody?.categoryBitMask = BitMaskCategory.table.rawValue
+                    node.physicsBody?.contactTestBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
+                    node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
                 }
             }
         }
         
     }
-    
-    
-    
-    
-    
 }
