@@ -53,39 +53,34 @@ extension GameViewController {
             tableNode.physicsBody?.collisionBitMask =
                 BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
             
-            // setup my cups
-            let myRedCup1 = self.createRedCup(position: SCNVector3(0.004, 0.534, 1.027), name: "myCup1")
-            tableNode.addChildNode(myRedCup1)
-            let myRedCup2 = self.createRedCup(position: SCNVector3(-0.055, 0.534, 1.125), name: "myCup2")
-            tableNode.addChildNode(myRedCup2)
-            let myRedCup3 = self.createRedCup(position: SCNVector3(0.06, 0.534, 1.125), name: "myCup3")
-            tableNode.addChildNode(myRedCup3)
-            let myRedCup4 = self.createRedCup(position: SCNVector3(0.117, 0.534, 1.222), name: "myCup4")
-            tableNode.addChildNode(myRedCup4)
-            let myRedCup5 = self.createRedCup(position: SCNVector3(0.004, 0.534, 1.222), name: "myCup5")
-            tableNode.addChildNode(myRedCup5)
-            let myRedCup6 = self.createRedCup(position: SCNVector3(-0.11, 0.534, 1.222), name: "myCup6")
-            tableNode.addChildNode(myRedCup6)
-            
-            // setup opponents red cups
-            let yourRedCup1 = self.createRedCup(position: SCNVector3(0.004, 0.534, -0.944), name: "yourRedCup1")
-            tableNode.addChildNode(yourRedCup1)
-            let yourRedCup2 = self.createRedCup(position: SCNVector3(-0.055, 0.534, -1.042), name: "yourRedCup2")
-            tableNode.addChildNode(yourRedCup2)
-            let yourRedCup3 = self.createRedCup(position: SCNVector3(0.06, 0.534, -1.042), name: "yourRedCup3")
-            tableNode.addChildNode(yourRedCup3)
-            let yourRedCup4 = self.createRedCup(position: SCNVector3(0.117, 0.534, -1.139), name: "yourRedCup4")
-            tableNode.addChildNode(yourRedCup4)
-            let yourRedCup5 = self.createRedCup(position: SCNVector3(0.004, 0.534, -1.139), name: "yourRedCup5")
-            tableNode.addChildNode(yourRedCup5)
-            let yourRedCup6 = self.createRedCup(position: SCNVector3(-0.11, 0.534, -1.139), name: "yourRedCup6")
-            tableNode.addChildNode(yourRedCup6)
-            self.nodeResize()
-            self.addInvisibleNodeToAllCups()
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-////                self.nodeResize()
-//                self.addInvisibleNodeToAllCups()
-//            }
+//            // setup my cups
+//            let myRedCup1 = self.createRedCup(position: SCNVector3(0.004, 0.534, 1.027), name: "myCup1")
+//            tableNode.addChildNode(myRedCup1)
+//            let myRedCup2 = self.createRedCup(position: SCNVector3(-0.055, 0.534, 1.125), name: "myCup2")
+//            tableNode.addChildNode(myRedCup2)
+//            let myRedCup3 = self.createRedCup(position: SCNVector3(0.06, 0.534, 1.125), name: "myCup3")
+//            tableNode.addChildNode(myRedCup3)
+//            let myRedCup4 = self.createRedCup(position: SCNVector3(0.117, 0.534, 1.222), name: "myCup4")
+//            tableNode.addChildNode(myRedCup4)
+//            let myRedCup5 = self.createRedCup(position: SCNVector3(0.004, 0.534, 1.222), name: "myCup5")
+//            tableNode.addChildNode(myRedCup5)
+//            let myRedCup6 = self.createRedCup(position: SCNVector3(-0.11, 0.534, 1.222), name: "myCup6")
+//            tableNode.addChildNode(myRedCup6)
+//
+//            // setup opponents red cups
+//            let yourRedCup1 = self.createRedCup(position: SCNVector3(0.004, 0.534, -0.944), name: "yourRedCup1")
+//            tableNode.addChildNode(yourRedCup1)
+//            let yourRedCup2 = self.createRedCup(position: SCNVector3(-0.055, 0.534, -1.042), name: "yourRedCup2")
+//            tableNode.addChildNode(yourRedCup2)
+//            let yourRedCup3 = self.createRedCup(position: SCNVector3(0.06, 0.534, -1.042), name: "yourRedCup3")
+//            tableNode.addChildNode(yourRedCup3)
+//            let yourRedCup4 = self.createRedCup(position: SCNVector3(0.117, 0.534, -1.139), name: "yourRedCup4")
+//            tableNode.addChildNode(yourRedCup4)
+//            let yourRedCup5 = self.createRedCup(position: SCNVector3(0.004, 0.534, -1.139), name: "yourRedCup5")
+//            tableNode.addChildNode(yourRedCup5)
+//            let yourRedCup6 = self.createRedCup(position: SCNVector3(-0.11, 0.534, -1.139), name: "yourRedCup6")
+//            tableNode.addChildNode(yourRedCup6)
+            self.applyPhysics()
         }
         return tableNode
     }
@@ -121,37 +116,18 @@ extension GameViewController {
         return SCNAction.repeatForever(rotateAction)
     }
     
-    func addInvisibleNodeToAllCups() {
-        self.sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
-            if node.name == "table" {
-                let invisibleCupNames = ["myCup1invisibleNode", "myCup2invisibleNode", "myCup3invisibleNode", "myCup4invisibleNode"]
-                invisibleCupNames.forEach { addInvisibleNodeToCup(_for: node, name: $0) }
-            }
-        }
-    }
     
-    func addInvisibleNodeToCup(_for table:SCNNode, name:String) {
-        let nodeManager = NodeFactory()
-        let invisbleNode = nodeManager.createInvisibleNode(table: table, _with: name)
-        nodePhysics.invisibleNodeBitMaskAndPhysicsBody(_to: invisbleNode)
-        
-        self.sceneView.scene.rootNode.addChildNode(invisbleNode)
-    }
-    
-    
-    func nodeResize() {
+    func applyPhysics() {
         sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
             if node.name?.range(of: "yourRedCup") != nil {
                 node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
                 node.physicsBody = nil
-//                nodePhysics.cupBitMaskAndPhysicsBody(_to: node, scale: SCNVector3(x: 0.375, y: 0.468, z: 0.375))
-                print("after \(node.name)")
             }
             else if node.name?.range(of: "myCup") != nil {
                 node.physicsBody = nil
                 node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
             }
-            if node.name == "tube" {
+            if node.name?.range(of: "Tube") != nil {
                 print("resizing tube physics")
                 let body = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: node,
                                                                                 options: [SCNPhysicsShape.Option.keepAsCompound : true,
@@ -159,10 +135,9 @@ extension GameViewController {
                                                                                           SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
                     ]))
                 node.physicsBody = body
-                //Node.physicsBody?.friction = 1
                 node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
             }
-            if node.name == "plane" {
+            if  node.name?.range(of: "Plane") != nil {
                 node.physicsBody = SCNPhysicsBody.static()
                 node.physicsBody?.categoryBitMask = BitMaskCategory.plane.rawValue
             }

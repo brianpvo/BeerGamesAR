@@ -34,9 +34,10 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         Node.physicsBody?.categoryBitMask = BitMaskCategory.ball.rawValue
         Node.physicsBody?.contactTestBitMask = BitMaskCategory.emptyNode.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue
-        Node.physicsBody?.restitution = 0.2
-        Node.physicsBody?.damping = 0.1
-        Node.physicsBody?.friction = 0.1
+        Node.physicsBody?.restitution = 0.9
+        Node.physicsBody?.damping = 0.2
+        Node.physicsBody?.friction = 0.8
+        Node.physicsBody?.mass = 0.65
     }
     
     func cupBitMaskAndPhysicsBody(_to Node: SCNNode, scale: SCNVector3) {
@@ -68,34 +69,28 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         let nodeA = contact.nodeA
         let nodeB = contact.nodeB
         
-//        let contactMask = (contact.nodeA.physicsBody?.categoryBitMask)! |
-//            (contact.nodeB.physicsBody?.categoryBitMask)!
-//        
-//        if (contactMask == (BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue)) {
-//            
-//        }
-        
         DispatchQueue.global(qos: .background).async {
-            if nodeA.name == "ball" && nodeB.name == "plane" {
-                print("\(nodeA.name!) touched \(nodeB.name!)")
+            
+            if nodeA.name == "ball" && nodeB.name?.range(of: "Plane") != nil {
+                print("ball touched \(nodeB.name!)")
             }
-            if nodeA.name == "plane" && nodeB.name == "ball" {
-                print("\(nodeA.name!) touched \(nodeB.name!)")
+            if (nodeA.name?.contains("Plane"))! && nodeB.name == "ball" {
+                print("\(nodeA.name!) touched ball")
             }
             
-            for i in 1...9 {
-                if (nodeA.name == "ball" && nodeB.name == "yourCup\(i)invisibleNode") || (nodeB.name == "ball" && nodeA.name == "yourCup\(i)invisibleNode") {
-                    nodeA.removeFromParentNode()
-                    nodeB.removeFromParentNode()
-                    self.scene.rootNode.enumerateChildNodes { (node, _) in
-                        if node.name == "yourCup\(i)" {
-                            print("removing yourCup\(i)")
-                            node.removeFromParentNode()
-                            self.updateTableShape()
-                        }
-                    }
-                }
-            }
+//            for i in 1...9 {
+//                if (nodeA.name == "ball" && nodeB.name == "yourCup\(i)invisibleNode") || (nodeB.name == "ball" && nodeA.name == "yourCup\(i)invisibleNode") {
+//                    nodeA.removeFromParentNode()
+//                    nodeB.removeFromParentNode()
+//                    self.scene.rootNode.enumerateChildNodes { (node, _) in
+//                        if node.name == "yourCup\(i)" {
+//                            print("removing yourCup\(i)")
+//                            node.removeFromParentNode()
+//                            self.updateTableShape()
+//                        }
+//                    }
+//                }
+//            }
         }
     }
     

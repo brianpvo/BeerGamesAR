@@ -24,7 +24,6 @@
 		7A291B8F20C1FB660069A09D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A291B8E20C1FB660069A09D /* LaunchScreen.storyboard */; };
 		7A291B9020C203310069A09D /* AR.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A291B8920C1F0F50069A09D /* AR.storyboard */; };
 		7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */; };
-		7A6E890220C07C5A00BD6C6B /* table.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A6E890120C07C5A00BD6C6B /* table.scnassets */; };
 		7AA37C0520C31C9B001C572D /* NodePhysics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA37C0420C31C9B001C572D /* NodePhysics.swift */; };
 		7AA37C0A20C32BD7001C572D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7AA37C0920C32BD7001C572D /* GoogleService-Info.plist */; };
 		7AA37C0C20C32BE0001C572D /* Secret.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA37C0B20C32BE0001C572D /* Secret.swift */; };
@@ -83,7 +82,6 @@
 		7A291B8B20C1F1C40069A09D /* VirtualObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualObject.swift; sourceTree = "<group>"; };
 		7A291B8E20C1FB660069A09D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = cup.scnassets; sourceTree = "<group>"; };
-		7A6E890120C07C5A00BD6C6B /* table.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = table.scnassets; sourceTree = "<group>"; };
 		7AA37C0420C31C9B001C572D /* NodePhysics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePhysics.swift; sourceTree = "<group>"; };
 		7AA37C0920C32BD7001C572D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7AA37C0B20C32BE0001C572D /* Secret.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secret.swift; sourceTree = "<group>"; };
@@ -185,7 +183,6 @@
 				7AB26A6520B9284A0066908D /* Assets.xcassets */,
 				7AA37C1820C4BC4D001C572D /* customTableAndCups.scnassets */,
 				7ECC85D920C09F3200CF0531 /* ball.scnassets */,
-				7A6E890120C07C5A00BD6C6B /* table.scnassets */,
 				7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */,
 			);
 			path = BeerGamesAR;
@@ -290,7 +287,6 @@
 				7ECC85DA20C09F3200CF0531 /* ball.scnassets in Resources */,
 				7A291B8F20C1FB660069A09D /* LaunchScreen.storyboard in Resources */,
 				7AB26A6620B9284A0066908D /* Assets.xcassets in Resources */,
-				7A6E890220C07C5A00BD6C6B /* table.scnassets in Resources */,
 				7AB26A6420B928490066908D /* Main.storyboard in Resources */,
 				7AA37C1920C4BC4D001C572D /* customTableAndCups.scnassets in Resources */,
 				7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */,

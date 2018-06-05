@@ -175,7 +175,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func shootBall() {
-        let power:Float = 10.0
+        let power:Float = 2.5
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
         let orientation = SCNVector3(-transform.m31,
@@ -190,7 +190,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         nodePhysics.ballBitMaskAndPhysicsBody(_to: ball)
         ball.physicsBody?.applyForce(SCNVector3(orientation.x * power,
-                                                orientation.y * power,
+                                                -orientation.y * power,
                                                 orientation.z * power),
                                      asImpulse: true)
         self.sceneView.scene.rootNode.addChildNode(ball)

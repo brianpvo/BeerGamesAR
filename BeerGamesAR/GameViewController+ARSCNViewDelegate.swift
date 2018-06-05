@@ -82,22 +82,6 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
     
     // MARK: ARSessionDelegate
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        //  capture camera position and orientation
-//        guard let pointOfView = sceneView.pointOfView else { return }
-//        let transform = pointOfView.transform
-//        guard let frame = sceneView.session.currentFrame else {return}
-//        cameraOrientation = SCNVector3(-transform.m31,
-//                                       -transform.m32,
-//                                       -transform.m33)
-//        cameraPosition = SCNVector3(transform.m41,
-//                                    transform.m42,
-//                                    transform.m43)
-//        let position = cameraOrientation + cameraPosition
-//        if ballNode.presentation.position.y <= -50{
-//            ballNode.removeFromParentNode()
-//            createBall(position: position)
-//            isGestureEnabled = true
-//        }
         
         // Forward ARKit's update to ARCore session
         do {
