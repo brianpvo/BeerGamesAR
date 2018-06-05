@@ -14,7 +14,7 @@ enum BitMaskCategory:Int {
     case ball = 2
     case emptyNode = 3
     case table = 4
-    case cup = 5
+    case plane = 5
 }
 
 class NodePhysics: NSObject, SCNPhysicsContactDelegate {
@@ -33,7 +33,7 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         body.isAffectedByGravity = true
         Node.physicsBody?.categoryBitMask = BitMaskCategory.ball.rawValue
         Node.physicsBody?.contactTestBitMask = BitMaskCategory.emptyNode.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
-        Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
+        Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue
         Node.physicsBody?.restitution = 0.2
         Node.physicsBody?.damping = 0.1
         Node.physicsBody?.friction = 0.1
@@ -67,6 +67,7 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
         let nodeA = contact.nodeA
         let nodeB = contact.nodeB
+        
 //        let contactMask = (contact.nodeA.physicsBody?.categoryBitMask)! |
 //            (contact.nodeB.physicsBody?.categoryBitMask)!
 //        
@@ -75,8 +76,10 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
 //        }
         
         DispatchQueue.global(qos: .background).async {
-            if (nodeA.name == "ball" && ((nodeB.name?.range(of: "invisibleNode")) != nil)) ||
-                (nodeB.name == "ball" && ((nodeA.name?.range(of: "invisibleNode")) != nil)) {
+            if nodeA.name == "ball" && nodeB.name == "plane" {
+                print("\(nodeA.name!) touched \(nodeB.name!)")
+            }
+            if nodeA.name == "plane" && nodeB.name == "ball" {
                 print("\(nodeA.name!) touched \(nodeB.name!)")
             }
             

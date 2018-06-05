@@ -162,6 +162,10 @@ extension GameViewController {
                 //Node.physicsBody?.friction = 1
                 node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
             }
+            if node.name == "plane" {
+                node.physicsBody = SCNPhysicsBody.static()
+                node.physicsBody?.categoryBitMask = BitMaskCategory.plane.rawValue
+            }
         }
     }
 }
