@@ -62,10 +62,10 @@ extension GameViewController {
                     }
                     guard let anchors = value["hosted_anchor_id"] as? [String] else { return }
                     for anchorId in anchors {
-                        //                        print(anchorId)
                         strongSelf.resolveAnchorWithIdentifier(identifier: anchorId)
                     }
-                    strongSelf.firebaseReference?.child("hotspot_list").child(roomCode).removeAllObservers()
+                    strongSelf.firebaseReference?.child("hotspot_list")
+                        .child(roomCode).removeAllObservers()
                 }
             })
     }
@@ -286,27 +286,47 @@ extension GameViewController {
                 guard let player_turn = gameState["player_turn"] as? Int else { return }
                 guard let ball_in_play = gameState["ball_in_play"] as? Bool else { return }
                 guard let ball_position = gameState["ball_state"] as? [Float] else { return }
+                guard let cup_state = gameState["cup_state"] as? [Int] else { return }
                 // NOTE: this may crash cause [Float] is not NSArray explicit
                 self.ballPosition = SCNVector3(ball_position[0], ball_position[1], ball_position[2])
                 if self.playerTurn != player_turn {
                     if player_turn ==  self.myPlayerNumber {
                         // button isHidden = false
+                        self.shootButton.isHidden = false
                         
                     } else {
                         // button isHidden = true
-                        
+                        self.shootButton.isHidden = true
                     }
                 }
+                
                 if self.isBallInPlay != ball_in_play {
                     if ball_in_play {
-                        //add a ball
-                        self.ballNode = self.createBallShoot(_with: self.ballPosition)
+                       if self.ballNode == nil {
+                        // add a ball
+                        self.ballNode = self.createBall(position: self.ballPosition)
                         self.sceneView.scene.rootNode.addChildNode(self.ballNode)
+                       }
+                       else {
+                        // translate position of ball
+                        self.ballNode.position = self.ballPosition
+                        }
                     } else {
                         // remove the ball
-                        self.ballNode.removeFromParentNode()
+                        //self.ballNode.removeFromParentNode()
                     }
                 }
+                
+                for i in 0..<cup_state.count {
+                    if cup_state[i] == 0 {
+                        self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
+                            if (node.name?.range(of: "\(i)")) != nil {
+                                node.removeFromParentNode()
+                            }
+                        })
+                    }
+                }
+                
                  self.playerTurn = player_turn
             })
     }

@@ -31,6 +31,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var roomCode: String?
     var hostButton: UIButton!
     var resolveButton: UIButton!
+    var shootButton: UIButton!
     var nodePhysics: NodePhysics!
     var ballNode: SCNNode!
     
@@ -53,7 +54,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         sceneView.session.delegate = self
         
         nodePhysics = NodePhysics(scene: self.sceneView.scene)
-        self.sceneView.scene.physicsWorld.contactDelegate = nodePhysics
+        self.sceneView.scene.physicsWorld.contactDelegate = self
         
         do {
             gSession = try GARSession.init(apiKey: ARCoreAPIKey, bundleIdentifier: nil)
@@ -67,12 +68,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         self.setupButtons()
-        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
-        button.backgroundColor = UIColor.green
-        button.setTitle("Shoot Ball", for: UIControlState.normal)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        
-        self.view.addSubview(button)
         self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
         
     }
@@ -144,6 +139,13 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         hostButton.isHidden = true
         resolveButton.isHidden = true
+        
+        self.shootButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
+        self.shootButton.backgroundColor = UIColor.green
+        self.shootButton.setTitle("Shoot Ball", for: UIControlState.normal)
+        self.shootButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        
+        self.view.addSubview(self.shootButton)
     }
     
     func updateMessageLabel() {
@@ -180,7 +182,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                   transform.m43)
         let position = orientation + location
         
-        ballNode = createBallShoot(_with: position)
+        ballNode = createBall(position: position)
         
         nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
         ballNode.physicsBody?.applyForce(SCNVector3(orientation.x * power,

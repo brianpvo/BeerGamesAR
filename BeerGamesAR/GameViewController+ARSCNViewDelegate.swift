@@ -162,8 +162,11 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").child("ball_state").setValue(positionArray)
         
-        if ballNode.presentation.position.y < -50{
+        if ballNode.presentation.position.y < -50.0 {
             ballNode.removeFromParentNode()
+            let nextPlayer = myPlayerNumber == 1 ? 0 : 1
+                firebaseReference?.child("hotspot_list").child(roomCode)
+                    .child("game_state").child("player_turn").setValue(nextPlayer)
         }
     }
 }

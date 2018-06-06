@@ -8,11 +8,12 @@
 
 import ARKit
 
-extension GameViewController {
+// Scene Objects
+extension GameViewController: SCNPhysicsContactDelegate {
     
     // MARK: Setup Scene
     
-    func createBallShoot(_with position:SCNVector3) -> SCNNode {
+    func createBall(position:SCNVector3) -> SCNNode {
         
         let ball = SCNNode(geometry: SCNSphere(radius: 0.02))
         ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
@@ -36,31 +37,14 @@ extension GameViewController {
         // add Table Top
         let tableScene = SCNScene(named: "customTableAndCups.scnassets/Table.scn")
         guard let tableNode = tableScene?.rootNode else { return SCNNode() } //.childNode(withName: "table", recursively: false) else { return SCNNode() }
-//        tableNode.name = "table"
         
         DispatchQueue.global(qos: .default).async {
-            // add Table Top
-           
             let beerPongText = self.createText(text: "BEER PONG")
             beerPongText.runAction(self.rotateAnimation())
-            //tableTopNode.addChildNode(beerPongText)
             tableNode.addChildNode(beerPongText)
-            self.nodePhysics.applyPhysics()
+            self.nodePhysics.apply()
         }
         return tableNode
-    }
-    
-    @objc func createBall(position: SCNVector3){
-        let ballGeo = SCNSphere(radius: 0.15)
-        ballNode = SCNNode(geometry: ballGeo)
-        let ballMaterial = SCNMaterial()
-        ballMaterial.diffuse.contents = UIImage(named: "ball.scnassets/ballTextWhite.tif")
-        ballNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: ballGeo, options: nil))
-        ballGeo.materials = [ballMaterial]
-        ballNode.physicsBody?.isAffectedByGravity = false
-        ballNode.position = position
-        
-        sceneView.scene.rootNode.addChildNode(ballNode)
     }
     
     func createText(text: String) -> SCNNode {
@@ -79,5 +63,52 @@ extension GameViewController {
     func rotateAnimation() -> SCNAction {
         let rotateAction = SCNAction.rotate(by: 2 * CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 10)
         return SCNAction.repeatForever(rotateAction)
+    }
+    
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        let nodeA = contact.nodeA
+        let nodeB = contact.nodeB
+        
+        DispatchQueue.global(qos: .background).async {
+            
+            if nodeA.name == "ball" && nodeB.name?.range(of: "plane") != nil {
+                print("ball touched \(nodeB.name!)")
+                self.removeCupAndPhysics(contactNode: nodeB)
+                self.updatePlayerTurn()
+            }
+            if (nodeA.name?.contains("plane"))! && nodeB.name == "ball" {
+                print("\(nodeA.name!) touched ball")
+                self.removeCupAndPhysics(contactNode: nodeA)
+                self.updatePlayerTurn()
+            }
+        }
+    }
+    
+    private func removeCupAndPhysics(contactNode: SCNNode) {
+        self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
+            guard let nodeNumber = contactNode.name?.suffix(1) else { return }
+            if node.name == "cup" + nodeNumber {
+                node.removeFromParentNode()
+                self.updateCupState(nodeNumber: String(nodeNumber))
+            }
+            if node.name == "tube" + nodeNumber ||
+                node.name == "plane" + nodeNumber ||
+                node.name == "ball" {
+                node.removeFromParentNode()
+            }
+        })
+    }
+    
+    private func updateCupState(nodeNumber: String) {
+        guard let roomCode = roomCode else { return }
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").child("cup_state").updateChildValues([nodeNumber : 0])
+    }
+    
+    func updatePlayerTurn() {
+        guard let roomCode = roomCode else { return }
+        let nextPlayer = myPlayerNumber == 1 ? 0 : 1
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").child("player_turn").setValue(nextPlayer)
     }
 }
