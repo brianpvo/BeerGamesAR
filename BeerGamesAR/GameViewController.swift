@@ -33,8 +33,12 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var resolveButton: UIButton!
     var nodePhysics: NodePhysics!
     var ballNode: SCNNode!
+    
+    // Game State
+    var ballPosition: SCNVector3!
     var myPlayerNumber: Int!
     var playerTurn: Int = 0
+    var isBallInPlay = false
     
     // MARK - Overriding UIViewController
     
@@ -184,6 +188,11 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                                 orientation.z * power),
                                      asImpulse: true)
         self.sceneView.scene.rootNode.addChildNode(ballNode)
+        
+        isBallInPlay = true
+        guard let roomCode = roomCode else { return }
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").child("ball_in_play").setValue(true)
     }
 }
 

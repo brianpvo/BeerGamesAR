@@ -241,6 +241,7 @@ extension GameViewController {
             let cupState = NSArray(array: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
             let gameState = [
                 "ball_state" : ballState,
+                "ball_in_play" : false,
                 "cup_state": cupState,
                 "player_turn" : 0 // 0 - host, 1 - new player
             ] as [String: Any]
@@ -275,5 +276,38 @@ extension GameViewController {
     private func roomCreated(roomCode: String){
         self.roomCode = roomCode
         self.enterState(state: .RoomCreated)
+    }
+    
+    func observeGameState() {
+        guard let roomCode = roomCode else { return }
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").observe(.value, with: { (snapshot) in
+                guard let gameState = snapshot.value as? NSDictionary else { return }
+                guard let player_turn = gameState["player_turn"] as? Int else { return }
+                guard let ball_in_play = gameState["ball_in_play"] as? Bool else { return }
+                guard let ball_position = gameState["ball_state"] as? [Float] else { return }
+                // NOTE: this may crash cause [Float] is not NSArray explicit
+                self.ballPosition = SCNVector3(ball_position[0], ball_position[1], ball_position[2])
+                if self.playerTurn != player_turn {
+                    if player_turn ==  self.myPlayerNumber {
+                        // button isHidden = false
+                        
+                    } else {
+                        // button isHidden = true
+                        
+                    }
+                }
+                if self.isBallInPlay != ball_in_play {
+                    if ball_in_play {
+                        //add a ball
+                        self.ballNode = self.createBallShoot(_with: self.ballPosition)
+                        self.sceneView.scene.rootNode.addChildNode(self.ballNode)
+                    } else {
+                        // remove the ball
+                        self.ballNode.removeFromParentNode()
+                    }
+                }
+                 self.playerTurn = player_turn
+            })
     }
 }
