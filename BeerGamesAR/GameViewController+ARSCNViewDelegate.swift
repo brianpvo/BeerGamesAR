@@ -69,6 +69,12 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
             sceneView.session.add(anchor: arAnchor)
         }
         enterState(state: ARState.ResolvingFinished)
+        
+        // Start observing game state
+        guard let roomCode = roomCode else { return }
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").child("player_joined").setValue(true)
+        self.observeGameState()
     }
     
     func session(_ session: GARSession, didFailToResolve anchor: GARAnchor) {
