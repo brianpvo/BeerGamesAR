@@ -80,7 +80,7 @@ extension GameViewController {
    @objc func setupSlider() {
         createSlider()
         slider.value = 1.0
-        sliderTimer = Timer.scheduledTimer(timeInterval: 0.03, target: self, selector: #selector(runTimer), userInfo: nil, repeats: true)
+        sliderTimer = Timer.scheduledTimer(timeInterval: 0.06, target: self, selector: #selector(runTimer), userInfo: nil, repeats: true)
         slider.isUserInteractionEnabled = false
     }
     

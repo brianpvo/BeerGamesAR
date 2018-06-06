@@ -77,25 +77,27 @@ extension GameViewController: SCNPhysicsContactDelegate {
             if nodeA.name == "ball" && nodeB.name?.range(of: "plane") != nil {
                 print("ball touched \(nodeB.name!)")
                 self.removeCupAndPhysics(contactNode: nodeB)
-                self.updatePlayerTurn()
+                //self.updatePlayerTurn()
             }
             if (nodeA.name?.contains("plane"))! && nodeB.name == "ball" {
                 print("\(nodeA.name!) touched ball")
                 self.removeCupAndPhysics(contactNode: nodeA)
-                self.updatePlayerTurn()
+                //self.updatePlayerTurn()
             }
         }
     }
     
     private func removeCupAndPhysics(contactNode: SCNNode) {
         self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
-            guard let nodeNumber = contactNode.name?.suffix(1) else { return }
-            if node.name == "cup" + nodeNumber {
+            guard let nodeName = contactNode.name,
+                let rangeIndex = nodeName.range(of: "_") else { return }
+            let nodeNumber = nodeName[rangeIndex.upperBound...]
+            if node.name == "cup_" + nodeNumber {
                 node.removeFromParentNode()
                 self.updateCupState(nodeNumber: String(nodeNumber))
             }
-            if node.name == "tube" + nodeNumber ||
-                node.name == "plane" + nodeNumber ||
+            if node.name == "tube_" + nodeNumber ||
+                node.name == "plane_" + nodeNumber ||
                 node.name == "ball" {
                 node.removeFromParentNode()
             }
