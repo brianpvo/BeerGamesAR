@@ -166,12 +166,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             self.shootBall()
         }
-//        self.sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
-//            if node.name == "ball"  {
-//                node.removeFromParentNode()
-//            }
-//        }
-//        shootBall()
     }
     
     func shootBall() {
