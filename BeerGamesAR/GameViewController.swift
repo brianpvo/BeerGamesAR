@@ -41,7 +41,16 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var playerTurn: Int = 0
     var isBallInPlay = false
     
+    // SLIDER VARIABLES
+    var slider: CustomSlider!
+    var sliderTimer = Timer()
+    var power:Float = 0.5
+    var sliderGoingUp = true
+    var sliderGoingDown = false
+    
+    
     // MARK - Overriding UIViewController
+    
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -68,8 +77,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         self.setupButtons()
+        self.setupSlider()
+
         self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,13 +108,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         guard let result = hitTestResult.first else { return }
         self.addAnchorWithTransform(transform: result.worldTransform)
     }
-    
-//    @IBAction func testTap(_ sender: Any) {
-//        let storyboard = UIStoryboard.init(name: "AR", bundle: nil)
-//        let vc = storyboard.instantiateInitialViewController()
-//        vc?.modalTransitionStyle = .coverVertical
-//        present(vc!, animated: true, completion: nil)
-//    }
     
     // MARK: Actions
     
@@ -144,8 +147,11 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         self.shootButton.backgroundColor = UIColor.green
         self.shootButton.setTitle("Shoot Ball", for: UIControlState.normal)
         self.shootButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        
         self.view.addSubview(self.shootButton)
+        
+        self.shootButton.translatesAutoresizingMaskIntoConstraints = false
+        self.shootButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        self.shootButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -150).isActive = true
     }
     
     func updateMessageLabel() {
@@ -171,7 +177,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func shootBall() {
-        let power:Float = 2.5
+        
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
         let orientation = SCNVector3(-transform.m31,
@@ -189,13 +195,20 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                                 -orientation.y * power,
                                                 orientation.z * power),
                                      asImpulse: true)
+        
         self.sceneView.scene.rootNode.addChildNode(ballNode)
         
         isBallInPlay = true
         guard let roomCode = roomCode else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").child("ball_in_play").setValue(true)
+        
+        self.sceneView.scene.rootNode.addChildNode(ballNode)
+        
+        nodePhysics.scoreManager.numberOfThrows += 1
+        nodePhysics.scoreManager.updateScoreLabel()
     }
+    
 }
 
 func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {

@@ -20,9 +20,11 @@ enum BitMaskCategory:Int {
 class NodePhysics: NSObject {
     
     var scene: SCNScene
+    var scoreManager = ScoreManager()
     
     init(scene: SCNScene) {
         self.scene = scene
+        scoreManager.scene = scene
     }
     
     func ballBitMaskAndPhysicsBody(_to Node: SCNNode) {
@@ -32,10 +34,10 @@ class NodePhysics: NSObject {
         Node.physicsBody = body
         body.isAffectedByGravity = true
         Node.physicsBody?.categoryBitMask = BitMaskCategory.ball.rawValue
-        Node.physicsBody?.contactTestBitMask = BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue //| BitMaskCategory.plane.rawValue
-        Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue | BitMaskCategory.tube.rawValue
-        Node.physicsBody?.restitution = 0.9
-        Node.physicsBody?.damping = 0.2
+        Node.physicsBody?.contactTestBitMask = BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
+        Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue
+        Node.physicsBody?.restitution = 0.2
+        Node.physicsBody?.damping = 0.1
         Node.physicsBody?.friction = 0.8
         Node.physicsBody?.mass = 0.65
     }
@@ -101,7 +103,7 @@ class NodePhysics: NSObject {
             }
         }
     }
-    
+
 //    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
 //        let nodeA = contact.nodeA
 //        let nodeB = contact.nodeB
@@ -136,4 +138,5 @@ class NodePhysics: NSObject {
 //        firebaseReference?.child("hotspot_list").child(roomCode)
 //            .child("game_state")
 //    }
+
 }
