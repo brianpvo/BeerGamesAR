@@ -35,8 +35,8 @@ extension GameViewController {
         
         // add Table Top
         let tableScene = SCNScene(named: "customTableAndCups.scnassets/Table.scn")
-        guard let tableNode = tableScene?.rootNode.childNode(withName: "table", recursively: false) else { return SCNNode() }
-        tableNode.name = "table"
+        guard let tableNode = tableScene?.rootNode else { return SCNNode() } //.childNode(withName: "table", recursively: false) else { return SCNNode() }
+//        tableNode.name = "table"
         
         DispatchQueue.global(qos: .default).async {
             // add Table Top

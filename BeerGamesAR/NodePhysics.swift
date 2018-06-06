@@ -93,18 +93,10 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
             if node.name == "table" {
                 self.tableBitMaskAndPhysicsBody(_to: node)
             }
-//            if node.name?.range(of: "yourRedCup") != nil {
-//                node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
-//                //node.physicsBody = nil
-//            }
-//            else if node.name?.range(of: "myCup") != nil {
-////                node.physicsBody = nil
-////                node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
-//            }
-            if node.name?.range(of: "Tube") != nil {
+            if node.name?.range(of: "tube") != nil {
                 self.tubeBitMaskAndPhysicsBody(node: node)
             }
-            if  node.name?.range(of: "Plane") != nil {
+            if  node.name?.range(of: "plane") != nil {
                 self.planeBitMaskAndPhysicsBody(node: node)
             }
         }
@@ -116,11 +108,11 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         
         DispatchQueue.global(qos: .background).async {
             
-            if nodeA.name == "ball" && nodeB.name?.range(of: "Plane") != nil {
+            if nodeA.name == "ball" && nodeB.name?.range(of: "plane") != nil {
                 print("ball touched \(nodeB.name!)")
                 self.removeCupAndPhysics(contactNode: nodeB)
             }
-            if (nodeA.name?.contains("Plane"))! && nodeB.name == "ball" {
+            if (nodeA.name?.contains("plane"))! && nodeB.name == "ball" {
                 print("\(nodeA.name!) touched ball")
                 self.removeCupAndPhysics(contactNode: nodeA)
             }
@@ -130,9 +122,9 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
     private func removeCupAndPhysics(contactNode: SCNNode) {
         self.scene.rootNode.enumerateChildNodes({ (node, _) in
             guard let nodeNumber = contactNode.name?.suffix(1) else { return }
-            if node.name == "yourCup" + nodeNumber ||
-                node.name == "yourTube" + nodeNumber ||
-                node.name == "yourPlane" + nodeNumber ||
+            if node.name == "cup" + nodeNumber ||
+                node.name == "tube" + nodeNumber ||
+                node.name == "plane" + nodeNumber ||
                 node.name == "ball" {
                 node.removeFromParentNode()
             }

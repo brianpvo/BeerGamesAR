@@ -234,10 +234,20 @@ extension GameViewController {
             let timestampeInt = Int(currentTimestamp.timeIntervalSince1970 * 1000)
             let timestamp = NSNumber(value: timestampeInt)
             
+            // create gameState for multiplayer
+            let ballState = NSArray(array: [0.0, 0.0, 0.0])
+            let cupState = NSArray(array: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+            let gameState = [
+                "ball_state" : ballState,
+                "cup_state": cupState,
+                "player_turn" : 0 // 0 - host, 1 - new player
+            ] as [String: Any]
+            
             // pass room number, anchor count, and timestamp into newRoom dictionary
             let newRoom = ["display_name" : newRoomNumber.stringValue,
                            "hosted_anchor_count" : 0,
-                           "updated_at_timestamp" : timestamp] as [String : Any]
+                           "updated_at_timestamp" : timestamp,
+                           "game_state" : gameState] as [String : Any]
             
             // create a new node in firebase under hotspot_list to document the new room info with newRoom variable
             strongSelf?.firebaseReference?.child("hotspot_list")

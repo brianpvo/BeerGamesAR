@@ -33,12 +33,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var resolveButton: UIButton!
     var nodePhysics: NodePhysics!
     var ballNode: SCNNode!
-    var cameraOrientation: SCNVector3!
-    var cameraPosition: SCNVector3!
-    var panGesture: UIPanGestureRecognizer!
-    var timer = Timer()
-    var isGestureEnabled = true
-    var camera: SCNNode!
+    var myPlayerNumber: Int!
+    var playerTurn: Int!
     
     // MARK - Overriding UIViewController
     
@@ -180,18 +176,22 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                   transform.m43)
         let position = orientation + location
         
-        let ball = createBallShoot(_with: position)
+        ballNode = createBallShoot(_with: position)
         
-        nodePhysics.ballBitMaskAndPhysicsBody(_to: ball)
-        ball.physicsBody?.applyForce(SCNVector3(orientation.x * power,
+        nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
+        ballNode.physicsBody?.applyForce(SCNVector3(orientation.x * power,
                                                 -orientation.y * power,
                                                 orientation.z * power),
                                      asImpulse: true)
-        self.sceneView.scene.rootNode.addChildNode(ball)
+        self.sceneView.scene.rootNode.addChildNode(ballNode)
     }
 }
 
 func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {
     return SCNVector3Make(left.x + right.x, left.y + right.y, left.z + right.z)
+}
+
+func -(l: SCNVector3, r: SCNVector3) -> SCNVector3 {
+    return SCNVector3Make(l.x - r.x, l.y - r.y, l.z - r.z)
 }
 
