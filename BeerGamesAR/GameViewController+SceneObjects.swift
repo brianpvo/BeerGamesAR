@@ -42,10 +42,10 @@ extension GameViewController {
             // add Table Top
            
             let beerPongText = self.createText(text: "BEER PONG")
-            beerPongText.runAction(self.rotateAnimation())
-            //tableTopNode.addChildNode(beerPongText)
             tableNode.addChildNode(beerPongText)
+
             self.nodePhysics.applyPhysics()
+
         }
         return tableNode
     }
@@ -67,17 +67,21 @@ extension GameViewController {
         let text = SCNText(string: text, extrusionDepth: 2)
         
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor.black
+        material.diffuse.contents = UIColor.red
         text.materials = [material]
         
         let node = SCNNode(geometry: text)
-        node.position = SCNVector3(0, 0.01, 0)
         node.scale = SCNVector3(0.01, 0.01, 0.01)
+        node.position = SCNVector3(0,2,-2)
+        node.name = "scoreNode"
+        
         return node
     }
     
     func rotateAnimation() -> SCNAction {
-        let rotateAction = SCNAction.rotate(by: 2 * CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 10)
-        return SCNAction.repeatForever(rotateAction)
+        
+        let rotateAction = SCNAction.rotate(by: CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 1)
+        
+        return rotateAction
     }
 }

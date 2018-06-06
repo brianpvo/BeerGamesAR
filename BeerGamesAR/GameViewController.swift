@@ -40,7 +40,16 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var isGestureEnabled = true
     var camera: SCNNode!
     
+    // SLIDER VARIABLES
+    var slider: CustomSlider!
+    var sliderTimer = Timer()
+    var power:Float = 0.5
+    var sliderGoingUp = true
+    var sliderGoingDown = false
+    
+    
     // MARK - Overriding UIViewController
+    
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -71,9 +80,13 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         button.backgroundColor = UIColor.green
         button.setTitle("Shoot Ball", for: UIControlState.normal)
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        
         self.view.addSubview(button)
-        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        button.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -150).isActive = true
+        
+        //SLIDER SETUP
+        setupSlider()
         
     }
     
@@ -103,13 +116,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         guard let result = hitTestResult.first else { return }
         self.addAnchorWithTransform(transform: result.worldTransform)
     }
-    
-//    @IBAction func testTap(_ sender: Any) {
-//        let storyboard = UIStoryboard.init(name: "AR", bundle: nil)
-//        let vc = storyboard.instantiateInitialViewController()
-//        vc?.modalTransitionStyle = .coverVertical
-//        present(vc!, animated: true, completion: nil)
-//    }
     
     // MARK: Actions
     
@@ -169,7 +175,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func shootBall() {
-        let power:Float = 2.5
+        
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
         let orientation = SCNVector3(-transform.m31,
@@ -188,7 +194,12 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                                 orientation.z * power),
                                      asImpulse: true)
         self.sceneView.scene.rootNode.addChildNode(ball)
+        
+        nodePhysics.scoreManager.numberOfThrows += 1
+        nodePhysics.scoreManager.updateScoreLabel()
+        
     }
+    
 }
 
 func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {

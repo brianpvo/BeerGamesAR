@@ -20,9 +20,11 @@ enum BitMaskCategory:Int {
 class NodePhysics: NSObject, SCNPhysicsContactDelegate {
     
     var scene: SCNScene
+    var scoreManager = ScoreManager()
     
     init(scene: SCNScene) {
         self.scene = scene
+        scoreManager.scene = scene
     }
     
     func ballBitMaskAndPhysicsBody(_to Node: SCNNode) {
@@ -32,10 +34,10 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         Node.physicsBody = body
         body.isAffectedByGravity = true
         Node.physicsBody?.categoryBitMask = BitMaskCategory.ball.rawValue
-        Node.physicsBody?.contactTestBitMask = BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue //| BitMaskCategory.plane.rawValue
-        Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue | BitMaskCategory.tube.rawValue
-        Node.physicsBody?.restitution = 0.9
-        Node.physicsBody?.damping = 0.2
+        Node.physicsBody?.contactTestBitMask = BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
+        Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue
+        Node.physicsBody?.restitution = 0.2
+        Node.physicsBody?.damping = 0.1
         Node.physicsBody?.friction = 0.8
         Node.physicsBody?.mass = 0.65
     }
@@ -141,19 +143,5 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
     
     
     
-    private func updateTableShape() {
-        DispatchQueue.global(qos: .default).async {
-            self.scene.rootNode.enumerateChildNodes { (node, _) in
-                if node.name == "table" {
-                    let body = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: node, options: [SCNPhysicsShape.Option.keepAsCompound: true, SCNPhysicsShape.Option.type:SCNPhysicsShape.ShapeType.concavePolyhedron]))
-                    node.physicsBody = nil
-                    node.physicsBody = body
-                    node.physicsBody?.categoryBitMask = BitMaskCategory.table.rawValue
-                    node.physicsBody?.contactTestBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
-                    node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
-                }
-            }
-        }
-        
-    }
+   
 }
