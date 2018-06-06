@@ -12,7 +12,7 @@ import ARKit
 
 enum BitMaskCategory:Int {
     case ball = 2
-    case emptyNode = 3
+    case tube = 3
     case table = 4
     case plane = 5
 }
@@ -34,9 +34,9 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         Node.physicsBody = body
         body.isAffectedByGravity = true
         Node.physicsBody?.categoryBitMask = BitMaskCategory.ball.rawValue
-        Node.physicsBody?.contactTestBitMask = BitMaskCategory.emptyNode.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
+        Node.physicsBody?.contactTestBitMask = BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue
-        Node.physicsBody?.restitution = 0.0
+        Node.physicsBody?.restitution = 0.2
         Node.physicsBody?.damping = 0.1
         Node.physicsBody?.friction = 0.8
         Node.physicsBody?.mass = 0.65
@@ -51,12 +51,36 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
     }
     
-    func invisibleNodeBitMaskAndPhysicsBody(_to Node: SCNNode) {
-        let body = SCNPhysicsBody.static()
-        Node.physicsBody = body
-        Node.physicsBody?.categoryBitMask = BitMaskCategory.emptyNode.rawValue
-        Node.physicsBody?.contactTestBitMask = BitMaskCategory.ball.rawValue
-        Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.emptyNode.rawValue
+    func tubeBitMaskAndPhysicsBody(node: SCNNode) {
+        let physicsShape = SCNPhysicsShape(node: node,
+                                           options: [//SCNPhysicsShape.Option.keepAsCompound : true,
+                                                     SCNPhysicsShape.Option.scale:
+                                                        SCNVector3(0.057,
+                                                                   0.138,
+                                                                   0.061),
+                                                     SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
+            ])
+        let body = SCNPhysicsBody(type: .static,
+                                  shape: physicsShape)
+        node.physicsBody = body
+        node.physicsBody?.categoryBitMask = BitMaskCategory.tube.rawValue
+        node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
+    }
+    
+    func planeBitMaskAndPhysicsBody(node: SCNNode) {
+        let physicsShape = SCNPhysicsShape(node: node,
+                                            options: [//SCNPhysicsShape.Option.keepAsCompound : true,
+                                                SCNPhysicsShape.Option.scale:
+                                                    SCNVector3(0.03,
+                                                               0.03,
+                                                               0.1),
+                                                SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
+            ])
+        let body = SCNPhysicsBody(type: .static,
+                                  shape: physicsShape)
+        node.physicsBody = body
+        node.physicsBody?.categoryBitMask = BitMaskCategory.plane.rawValue
+        node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
     }
     
     func tableBitMaskAndPhysicsBody(_to Node: SCNNode) {
@@ -64,6 +88,28 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         Node.physicsBody?.categoryBitMask = BitMaskCategory.table.rawValue
         Node.physicsBody?.contactTestBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
+    }
+    
+    func applyPhysics() {
+        scene.rootNode.enumerateChildNodes { (node, stop) in
+            if node.name == "table" {
+                self.tableBitMaskAndPhysicsBody(_to: node)
+            }
+//            if node.name?.range(of: "yourRedCup") != nil {
+//                node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
+//                //node.physicsBody = nil
+//            }
+//            else if node.name?.range(of: "myCup") != nil {
+////                node.physicsBody = nil
+////                node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
+//            }
+            if node.name?.range(of: "Tube") != nil {
+                self.tubeBitMaskAndPhysicsBody(node: node)
+            }
+            if  node.name?.range(of: "Plane") != nil {
+                self.planeBitMaskAndPhysicsBody(node: node)
+            }
+        }
     }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
@@ -74,11 +120,25 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
             
             if nodeA.name == "ball" && nodeB.name?.range(of: "Plane") != nil {
                 print("ball touched \(nodeB.name!)")
+                self.removeCupAndPhysics(contactNode: nodeB)
             }
             if (nodeA.name?.contains("Plane"))! && nodeB.name == "ball" {
                 print("\(nodeA.name!) touched ball")
+                self.removeCupAndPhysics(contactNode: nodeA)
             }
         }
+    }
+    
+    private func removeCupAndPhysics(contactNode: SCNNode) {
+        self.scene.rootNode.enumerateChildNodes({ (node, _) in
+            guard let nodeNumber = contactNode.name?.suffix(1) else { return }
+            if node.name == "yourCup" + nodeNumber ||
+                node.name == "yourTube" + nodeNumber ||
+                node.name == "yourPlane" + nodeNumber ||
+                node.name == "ball" {
+                node.removeFromParentNode()
+            }
+        })
     }
     
     

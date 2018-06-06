@@ -43,16 +43,9 @@ extension GameViewController {
            
             let beerPongText = self.createText(text: "BEER PONG")
             tableNode.addChildNode(beerPongText)
-            
-            
-            
-            self.nodePhysics.tableBitMaskAndPhysicsBody(_to: tableNode)
-            tableNode.physicsBody?.categoryBitMask = BitMaskCategory.table.rawValue
-            tableNode.physicsBody?.contactTestBitMask =
-                BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
-            tableNode.physicsBody?.collisionBitMask =
-                BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
-            self.applyPhysics()
+
+            self.nodePhysics.applyPhysics()
+
         }
         return tableNode
     }
@@ -90,33 +83,5 @@ extension GameViewController {
         let rotateAction = SCNAction.rotate(by: CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 1)
         
         return rotateAction
-    }
-    
-    
-    func applyPhysics() {
-        sceneView.scene.rootNode.enumerateChildNodes { (node, stop) in
-            if node.name?.range(of: "yourRedCup") != nil {
-                node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
-                node.physicsBody = nil
-            }
-            else if node.name?.range(of: "myCup") != nil {
-                node.physicsBody = nil
-                node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
-            }
-            if node.name?.range(of: "Tube") != nil {
-                print("resizing tube physics")
-                let body = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: node,
-                                                                                options: [SCNPhysicsShape.Option.keepAsCompound : true,
-                                                                                          SCNPhysicsShape.Option.scale: SCNVector3(0.057, 0.138, 0.061),
-                                                                                          SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
-                    ]))
-                node.physicsBody = body
-                node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
-            }
-            if  node.name?.range(of: "Plane") != nil {
-                node.physicsBody = SCNPhysicsBody.static()
-                node.physicsBody?.categoryBitMask = BitMaskCategory.plane.rawValue
-            }
-        }
     }
 }
