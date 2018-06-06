@@ -38,7 +38,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     // Game State
     var ballPosition: SCNVector3!
     var myPlayerNumber: Int!
-    var playerTurn: Int = 0
+    var playerTurn: Int = 2
     var isBallInPlay = false
     
     // SLIDER VARIABLES
@@ -78,8 +78,11 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.setupButtons()
         self.setupSlider()
+        
+        self.shootButton.isHidden = true
+        self.slider.isHidden = true
 
-        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+        //self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -199,9 +202,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         self.sceneView.scene.rootNode.addChildNode(ballNode)
         
         isBallInPlay = true
-        guard let roomCode = roomCode else { return }
-        firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("game_state").child("ball_in_play").setValue(true)
+        self.updateBallInPlay(bool: true)
         
         self.sceneView.scene.rootNode.addChildNode(ballNode)
         

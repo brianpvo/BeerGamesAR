@@ -314,21 +314,20 @@ extension GameViewController {
                 self.ballPosition = SCNVector3(ball_position[0], ball_position[1], ball_position[2])
                 let relativePosition = self.ballPosition + self.sceneView.scene.rootNode.position
                 
-                DispatchQueue.main.async {
-                    if self.playerTurn != player_turn {
-                        if player_turn == self.myPlayerNumber {
-                            // button isHidden = false
-                            self.shootButton.isHidden = false
-                            self.slider.isHidden = false
-                            
-                        } else {
-                            // button isHidden = true
-                            self.shootButton.isHidden = true
-                            self.slider.isHidden = true
-                        }
+                // if 0 != 1 (opponents turn)
+                if self.playerTurn != player_turn {
+                    // opponent unhides button
+                    if player_turn == self.myPlayerNumber {
+                        self.shootButton.isHidden = false
+                        self.slider.isHidden = false
+
+                    } else {
+                        self.shootButton.isHidden = true
+                        self.slider.isHidden = true
+                        self.isBallInPlay = false
                     }
                 }
-                
+    
                 if self.isBallInPlay != ball_in_play {
                     if ball_in_play {
                        if self.ballNode == nil {
@@ -342,7 +341,9 @@ extension GameViewController {
                         }
                     } else {
                         // remove the ball
-                        //self.ballNode.removeFromParentNode()
+                        if self.ballNode != nil {
+                            self.ballNode.removeFromParentNode()
+                        }
                     }
                 }
                 

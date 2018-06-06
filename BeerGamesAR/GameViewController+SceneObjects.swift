@@ -77,12 +77,10 @@ extension GameViewController: SCNPhysicsContactDelegate {
             if nodeA.name == "ball" && nodeB.name?.range(of: "plane") != nil {
                 print("ball touched \(nodeB.name!)")
                 self.removeCupAndPhysics(contactNode: nodeB)
-                //self.updatePlayerTurn()
             }
             if (nodeA.name?.contains("plane"))! && nodeB.name == "ball" {
                 print("\(nodeA.name!) touched ball")
                 self.removeCupAndPhysics(contactNode: nodeA)
-                //self.updatePlayerTurn()
             }
         }
     }
@@ -95,6 +93,8 @@ extension GameViewController: SCNPhysicsContactDelegate {
             if node.name == "cup_" + nodeNumber {
                 node.removeFromParentNode()
                 self.updateCupState(nodeNumber: String(nodeNumber))
+                self.updatePlayerTurn()
+                self.updateBallInPlay(bool: false)
             }
             if node.name == "tube_" + nodeNumber ||
                 node.name == "plane_" + nodeNumber ||
@@ -115,5 +115,11 @@ extension GameViewController: SCNPhysicsContactDelegate {
         let nextPlayer = myPlayerNumber == 1 ? 0 : 1
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").child("player_turn").setValue(nextPlayer)
+    }
+    
+    func updateBallInPlay(bool: Bool) {
+        guard let roomCode = roomCode else { return }
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").child("ball_in_play").setValue(bool)
     }
 }
