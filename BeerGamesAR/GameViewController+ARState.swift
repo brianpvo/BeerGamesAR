@@ -27,6 +27,7 @@ extension GameViewController {
     // MARK: Actions
     
     @objc func hostButtonPressed(_ sender: UIButton) {
+        myPlayerNumber = 0
         if state == ARState.Default {
             enterState(state: .CreatingRoom)
             createRoom()
@@ -36,6 +37,7 @@ extension GameViewController {
     }
     
     @objc func resolveButtonPressed(_ sender: UIButton) {
+        myPlayerNumber = 1
         if state == ARState.Default {
             enterState(state: .EnterRoomCode)
         } else {

@@ -34,7 +34,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var nodePhysics: NodePhysics!
     var ballNode: SCNNode!
     var myPlayerNumber: Int!
-    var playerTurn: Int!
+    var playerTurn: Int = 0
     
     // MARK - Overriding UIViewController
     
