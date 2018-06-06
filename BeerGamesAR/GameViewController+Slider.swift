@@ -14,16 +14,11 @@ import ARCore
 
 extension GameViewController {
 
-    @objc func sliderChanged(sender: UISlider) {
-        print(slider.value)
-    }
-    
     func createSlider() {
         slider = CustomSlider(frame: CGRect.zero)
         slider.transform = CGAffineTransform.init(rotationAngle:-.pi/2)
         slider.minimumValue = 0.5
         slider.maximumValue = 5.0
-        slider.addTarget(self, action: #selector(sliderChanged), for: .valueChanged)
         slider.isContinuous = false
         let xPos = view.frame.maxX - view.frame.width * 0.1
         let yPos:CGFloat = 200.0
@@ -34,7 +29,8 @@ extension GameViewController {
         view.addSubview(slider)
         slider.maximumTrackTintColor = UIColor.clear
         slider.thumbTintColor = UIColor.clear
-        slider.trackWidth = 5.0
+        slider.trackWidth = 15.0
+        slider.alpha = 0.7
     }
     
     
@@ -51,8 +47,7 @@ extension GameViewController {
         }
         
         slider.value = power
-        
-        changeMinTrackColor()
+        self.changeMinTrackColor()
         
         
     }
@@ -70,32 +65,29 @@ extension GameViewController {
     func changeMinTrackColor() {
         
         if power <= 1.7 {
-            slider.minimumTrackTintColor = UIColor.orange
+            self.slider.minimumTrackTintColor = UIColor.yellow
         }
         
         if power > 1.7 && power <= 3.4 {
-            slider.minimumTrackTintColor = UIColor.green
+            self.slider.minimumTrackTintColor = UIColor.orange
         }
         
         if power > 3.4 {
-            slider.minimumTrackTintColor = UIColor.red
+            self.slider.minimumTrackTintColor = UIColor.red
         }
-        
     }
     
    @objc func setupSlider() {
-    print("setupSlider called")
         createSlider()
         slider.value = 1.0
         sliderTimer = Timer.scheduledTimer(timeInterval: 0.03, target: self, selector: #selector(runTimer), userInfo: nil, repeats: true)
         slider.isUserInteractionEnabled = false
     }
+    
+    
 
     
-    @objc func testFunc() {
-        print("test")
-    }
-
+    
 
 
 

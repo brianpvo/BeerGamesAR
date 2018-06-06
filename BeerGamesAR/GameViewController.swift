@@ -80,10 +80,10 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         button.backgroundColor = UIColor.green
         button.setTitle("Shoot Ball", for: UIControlState.normal)
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        
         self.view.addSubview(button)
-//        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
-        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        button.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -150).isActive = true
         
         //SLIDER SETUP
         setupSlider()
@@ -116,13 +116,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         guard let result = hitTestResult.first else { return }
         self.addAnchorWithTransform(transform: result.worldTransform)
     }
-    
-//    @IBAction func testTap(_ sender: Any) {
-//        let storyboard = UIStoryboard.init(name: "AR", bundle: nil)
-//        let vc = storyboard.instantiateInitialViewController()
-//        vc?.modalTransitionStyle = .coverVertical
-//        present(vc!, animated: true, completion: nil)
-//    }
     
     // MARK: Actions
     
@@ -179,12 +172,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             self.shootBall()
         }
-//        self.sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
-//            if node.name == "ball"  {
-//                node.removeFromParentNode()
-//            }
-//        }
-//        shootBall()
     }
     
     func shootBall() {
@@ -208,7 +195,11 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                      asImpulse: true)
         self.sceneView.scene.rootNode.addChildNode(ball)
         
+        nodePhysics.scoreManager.numberOfThrows += 1
+        nodePhysics.scoreManager.updateScoreLabel()
+        
     }
+    
 }
 
 func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {

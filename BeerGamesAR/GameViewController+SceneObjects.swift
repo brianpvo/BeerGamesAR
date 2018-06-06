@@ -42,9 +42,9 @@ extension GameViewController {
             // add Table Top
            
             let beerPongText = self.createText(text: "BEER PONG")
-            beerPongText.runAction(self.rotateAnimation())
-            //tableTopNode.addChildNode(beerPongText)
             tableNode.addChildNode(beerPongText)
+            
+            
             
             self.nodePhysics.tableBitMaskAndPhysicsBody(_to: tableNode)
             tableNode.physicsBody?.categoryBitMask = BitMaskCategory.table.rawValue
@@ -52,34 +52,6 @@ extension GameViewController {
                 BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
             tableNode.physicsBody?.collisionBitMask =
                 BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
-            
-//            // setup my cups
-//            let myRedCup1 = self.createRedCup(position: SCNVector3(0.004, 0.534, 1.027), name: "myCup1")
-//            tableNode.addChildNode(myRedCup1)
-//            let myRedCup2 = self.createRedCup(position: SCNVector3(-0.055, 0.534, 1.125), name: "myCup2")
-//            tableNode.addChildNode(myRedCup2)
-//            let myRedCup3 = self.createRedCup(position: SCNVector3(0.06, 0.534, 1.125), name: "myCup3")
-//            tableNode.addChildNode(myRedCup3)
-//            let myRedCup4 = self.createRedCup(position: SCNVector3(0.117, 0.534, 1.222), name: "myCup4")
-//            tableNode.addChildNode(myRedCup4)
-//            let myRedCup5 = self.createRedCup(position: SCNVector3(0.004, 0.534, 1.222), name: "myCup5")
-//            tableNode.addChildNode(myRedCup5)
-//            let myRedCup6 = self.createRedCup(position: SCNVector3(-0.11, 0.534, 1.222), name: "myCup6")
-//            tableNode.addChildNode(myRedCup6)
-//
-//            // setup opponents red cups
-//            let yourRedCup1 = self.createRedCup(position: SCNVector3(0.004, 0.534, -0.944), name: "yourRedCup1")
-//            tableNode.addChildNode(yourRedCup1)
-//            let yourRedCup2 = self.createRedCup(position: SCNVector3(-0.055, 0.534, -1.042), name: "yourRedCup2")
-//            tableNode.addChildNode(yourRedCup2)
-//            let yourRedCup3 = self.createRedCup(position: SCNVector3(0.06, 0.534, -1.042), name: "yourRedCup3")
-//            tableNode.addChildNode(yourRedCup3)
-//            let yourRedCup4 = self.createRedCup(position: SCNVector3(0.117, 0.534, -1.139), name: "yourRedCup4")
-//            tableNode.addChildNode(yourRedCup4)
-//            let yourRedCup5 = self.createRedCup(position: SCNVector3(0.004, 0.534, -1.139), name: "yourRedCup5")
-//            tableNode.addChildNode(yourRedCup5)
-//            let yourRedCup6 = self.createRedCup(position: SCNVector3(-0.11, 0.534, -1.139), name: "yourRedCup6")
-//            tableNode.addChildNode(yourRedCup6)
             self.applyPhysics()
         }
         return tableNode
@@ -102,18 +74,22 @@ extension GameViewController {
         let text = SCNText(string: text, extrusionDepth: 2)
         
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor.black
+        material.diffuse.contents = UIColor.red
         text.materials = [material]
         
         let node = SCNNode(geometry: text)
-        node.position = SCNVector3(0, 0.01, 0)
         node.scale = SCNVector3(0.01, 0.01, 0.01)
+        node.position = SCNVector3(0,2,-2)
+        node.name = "scoreNode"
+        
         return node
     }
     
     func rotateAnimation() -> SCNAction {
-        let rotateAction = SCNAction.rotate(by: 2 * CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 10)
-        return SCNAction.repeatForever(rotateAction)
+        
+        let rotateAction = SCNAction.rotate(by: CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 1)
+        
+        return rotateAction
     }
     
     

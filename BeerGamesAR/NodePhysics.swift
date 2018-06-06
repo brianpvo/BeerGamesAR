@@ -20,9 +20,11 @@ enum BitMaskCategory:Int {
 class NodePhysics: NSObject, SCNPhysicsContactDelegate {
     
     var scene: SCNScene
+    var scoreManager = ScoreManager()
     
     init(scene: SCNScene) {
         self.scene = scene
+        scoreManager.scene = scene
     }
     
     func ballBitMaskAndPhysicsBody(_to Node: SCNNode) {
@@ -46,7 +48,6 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
             SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
             ]))
         Node.physicsBody = body
-        //Node.physicsBody?.friction = 1
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
     }
     
@@ -77,38 +78,10 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
             if (nodeA.name?.contains("Plane"))! && nodeB.name == "ball" {
                 print("\(nodeA.name!) touched ball")
             }
-            
-//            for i in 1...9 {
-//                if (nodeA.name == "ball" && nodeB.name == "yourCup\(i)invisibleNode") || (nodeB.name == "ball" && nodeA.name == "yourCup\(i)invisibleNode") {
-//                    nodeA.removeFromParentNode()
-//                    nodeB.removeFromParentNode()
-//                    self.scene.rootNode.enumerateChildNodes { (node, _) in
-//                        if node.name == "yourCup\(i)" {
-//                            print("removing yourCup\(i)")
-//                            node.removeFromParentNode()
-//                            self.updateTableShape()
-//                        }
-//                    }
-//                }
-//            }
         }
     }
     
     
     
-    private func updateTableShape() {
-        DispatchQueue.global(qos: .default).async {
-            self.scene.rootNode.enumerateChildNodes { (node, _) in
-                if node.name == "table" {
-                    let body = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: node, options: [SCNPhysicsShape.Option.keepAsCompound: true, SCNPhysicsShape.Option.type:SCNPhysicsShape.ShapeType.concavePolyhedron]))
-                    node.physicsBody = nil
-                    node.physicsBody = body
-                    node.physicsBody?.categoryBitMask = BitMaskCategory.table.rawValue
-                    node.physicsBody?.contactTestBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
-                    node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
-                }
-            }
-        }
-        
-    }
+   
 }
