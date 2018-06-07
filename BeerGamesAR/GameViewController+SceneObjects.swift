@@ -15,7 +15,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
     
     func createBall(position:SCNVector3) -> SCNNode {
         
-        let ball = SCNNode(geometry: SCNSphere(radius: 0.02))
+        let ball = SCNNode(geometry: SCNSphere(radius: 0.02)) // 0.02
         ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
         ball.position = position
         ball.name = "ball"

@@ -15,7 +15,11 @@ class ScoreManager {
     var numberOfThrows = 0
     var numberOfSuccesfulThrows = 0
     var pongsThrowsRatio = 0.0
-    var scene:SCNScene!
+    var scene:SCNScene
+    
+    init(scene: SCNScene) {
+        self.scene = scene
+    }
     
     func updateScoreLabel() {
         scene.rootNode.enumerateChildNodes { (node, _) in

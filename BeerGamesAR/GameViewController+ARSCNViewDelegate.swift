@@ -162,19 +162,12 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
     
     func renderer(_ renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: TimeInterval) {
         guard ballNode != nil, myPlayerNumber != nil, myPlayerNumber == playerTurn else { return }
-        let relativePosition = ballNode.presentation.position - sceneView.scene.rootNode.position
+        let relativePosition = ballNode.presentation.worldPosition
         let positionArray = NSArray(array: [NSNumber(value: relativePosition.x),
                                             NSNumber(value: relativePosition.y),
                                             NSNumber(value: relativePosition.z)])
         guard let roomCode = roomCode, roomCode != "" else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").child("ball_state").setValue(positionArray)
-        
-//        print(ballNode.presentation.position.y)
-//        if ballNode.presentation.position.y < -100.0 {
-//            //ballNode.removeFromParentNode()
-//            self.updatePlayerTurn()
-//            self.updateBallInPlay(bool: false)
-//        }
     }
 }

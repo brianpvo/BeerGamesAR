@@ -34,6 +34,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var shootButton: UIButton!
     var nodePhysics: NodePhysics!
     var ballNode: SCNNode!
+    var scoreManager: ScoreManager!
     
     // Game State
     var ballPosition: SCNVector3!
@@ -61,6 +62,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         sceneView.session.delegate = self
         
         nodePhysics = NodePhysics(scene: self.sceneView.scene)
+        scoreManager = ScoreManager(scene: self.sceneView.scene)
         self.sceneView.scene.physicsWorld.contactDelegate = self
         
         do {
@@ -80,14 +82,14 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         self.shootButton.isHidden = true
         self.slider.isHidden = true
 
-        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+//        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         let configuration = ARWorldTrackingConfiguration()
-        configuration.worldAlignment = .gravity
+        configuration.worldAlignment = .gravityAndHeading
         configuration.planeDetection = .horizontal
         
         sceneView.session.run(configuration)
@@ -168,10 +170,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc func buttonAction(sender: UIButton!) {
         DispatchQueue.global(qos: .background).async {
-            self.sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
-                if node.name == "ball"  {
-                    node.removeFromParentNode()
-                }
+            if self.ballNode != nil {
+                self.ballNode.removeFromParentNode()
             }
             self.shootBall()
         }
@@ -201,8 +201,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.sceneView.scene.rootNode.addChildNode(ballNode)
         
-        nodePhysics.scoreManager.numberOfThrows += 1
-        nodePhysics.scoreManager.updateScoreLabel()
+        scoreManager.numberOfThrows += 1
+        scoreManager.updateScoreLabel()
     }
 }
 
@@ -213,4 +213,5 @@ func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {
 func -(l: SCNVector3, r: SCNVector3) -> SCNVector3 {
     return SCNVector3Make(l.x - r.x, l.y - r.y, l.z - r.z)
 }
+
 

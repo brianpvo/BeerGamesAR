@@ -174,11 +174,11 @@
 			children = (
 				7AB26A5E20B928490066908D /* AppDelegate.swift */,
 				7AB26A6020B928490066908D /* GameViewController.swift */,
-				F164857720C72F4900C70C01 /* CustomSlider.swift */,
 				7AA37C1220C48BD0001C572D /* GameViewController+ARState.swift */,
 				7AA37C0E20C35709001C572D /* GameViewController+ARSCNViewDelegate.swift */,
 				7AA37C1020C35A0B001C572D /* GameViewController+SceneObjects.swift */,
 				F164857520C72EE100C70C01 /* GameViewController+Slider.swift */,
+				F164857720C72F4900C70C01 /* CustomSlider.swift */,
 				F164857920C7441200C70C01 /* ScoreManager.swift */,
 				7AA37C0420C31C9B001C572D /* NodePhysics.swift */,
 				7AA37C0B20C32BE0001C572D /* Secret.swift */,

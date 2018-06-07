@@ -20,11 +20,9 @@ enum BitMaskCategory:Int {
 class NodePhysics: NSObject {
     
     var scene: SCNScene
-    var scoreManager = ScoreManager()
     
     init(scene: SCNScene) {
         self.scene = scene
-        scoreManager.scene = scene
     }
     
     func ballBitMaskAndPhysicsBody(_to Node: SCNNode) {

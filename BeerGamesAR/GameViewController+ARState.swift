@@ -302,7 +302,7 @@ extension GameViewController {
                     print("returning on ball in play")
                     return
                 }
-                guard let ball_position = gameState["ball_state"] as? [Float] else {
+                guard let ball_position = gameState["ball_state"] as? [NSNumber] else {
                     print("returning on ballposition")
                     return
                 }
@@ -310,36 +310,22 @@ extension GameViewController {
                     print("returning on cupstate")
                     return
                 }
-                // NOTE: this may crash cause [Float] is not NSArray explicit
-                self.ballPosition = SCNVector3(ball_position[0], ball_position[1], ball_position[2])
-                let relativePosition = self.ballPosition + self.sceneView.scene.rootNode.position
+                self.ballPosition = SCNVector3(ball_position[0].floatValue,
+                                               ball_position[1].floatValue,
+                                               ball_position[2].floatValue)
                 
-                // if 0 != 1 (opponents turn)
-                if self.playerTurn != player_turn {
-                    // opponent unhides button
-                    if player_turn == self.myPlayerNumber {
-                        self.shootButton.isHidden = false
-                        self.slider.isHidden = false
-
-                    } else {
-                        self.shootButton.isHidden = true
-                        self.slider.isHidden = true
-                        self.isBallInPlay = false
-                    }
-                }
-    
                 if self.isBallInPlay != ball_in_play {
                     if ball_in_play {
-                       if self.ballNode == nil {
-                        // add a ball
-                        print("creating ball")
-                        self.ballNode = self.createBall(position: relativePosition)
-                        self.sceneView.scene.rootNode.addChildNode(self.ballNode)
-                       }
-                       else {
-                        print("translating ball \(relativePosition)")
-                        // translate position of ball
-                        self.ballNode.position = relativePosition
+                        if self.ballNode == nil {
+                            // add a ball
+                            print("creating ball")
+                            self.ballNode = self.createBall(position: self.ballPosition)
+                            self.sceneView.scene.rootNode.addChildNode(self.ballNode)
+                        }
+                        else {
+                            print("translating ball \(self.ballNode.position)")
+                            self.sceneView.scene.rootNode.addChildNode(self.ballNode)
+                            self.ballNode.position = self.ballPosition
                         }
                     } else {
                         // remove the ball
@@ -356,6 +342,19 @@ extension GameViewController {
                                 node.removeFromParentNode()
                             }
                         })
+                    }
+                }
+                
+                if self.playerTurn != player_turn {
+                    // opponent unhides button
+                    if player_turn == self.myPlayerNumber {
+                        self.shootButton.isHidden = false
+                        self.slider.isHidden = false
+                        
+                    } else {
+                        self.shootButton.isHidden = true
+                        self.slider.isHidden = true
+                        self.isBallInPlay = false
                     }
                 }
                 
