@@ -48,10 +48,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var sliderGoingUp = true
     var sliderGoingDown = false
     
-    
     // MARK - Overriding UIViewController
-    
-    
+
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -82,7 +80,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         self.shootButton.isHidden = true
         self.slider.isHidden = true
 
-        //self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -180,7 +178,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func shootBall() {
-        
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
         let orientation = SCNVector3(-transform.m31,
@@ -199,8 +196,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                                 orientation.z * power),
                                      asImpulse: true)
         
-        self.sceneView.scene.rootNode.addChildNode(ballNode)
-        
         isBallInPlay = true
         self.updateBallInPlay(bool: true)
         
@@ -209,7 +204,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         nodePhysics.scoreManager.numberOfThrows += 1
         nodePhysics.scoreManager.updateScoreLabel()
     }
-    
 }
 
 func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {

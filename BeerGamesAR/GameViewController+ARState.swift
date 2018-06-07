@@ -279,8 +279,8 @@ extension GameViewController {
         self.enterState(state: .RoomCreated)
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").child("player_joined").observe(.value, with: { (snapshot) in
-                guard let playerJoined = snapshot.value as? Bool else { return }
-                if playerJoined {
+                guard let player_joined = snapshot.value as? Bool else { return }
+                if player_joined {
                     self.observeGameState()
                 }
             })
@@ -332,10 +332,12 @@ extension GameViewController {
                     if ball_in_play {
                        if self.ballNode == nil {
                         // add a ball
+                        print("creating ball")
                         self.ballNode = self.createBall(position: relativePosition)
                         self.sceneView.scene.rootNode.addChildNode(self.ballNode)
                        }
                        else {
+                        print("translating ball \(relativePosition)")
                         // translate position of ball
                         self.ballNode.position = relativePosition
                         }
