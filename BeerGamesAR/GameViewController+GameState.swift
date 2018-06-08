@@ -27,7 +27,7 @@ extension GameViewController {
                     print("returning on ball in play")
                     return
                 }
-                guard let ball_position = gameState["ball_state"] as? [Float] else {
+                guard let ball_position = gameState["ball_state"] as? [NSNumber] else {
                     print("returning on ballposition")
                     return
                 }
@@ -40,18 +40,21 @@ extension GameViewController {
 //                                               ball_position[1].floatValue,
 //                                               ball_position[2].floatValue)
                 let p = ball_position
-                let ballTransform = SCNMatrix4(m11: p[0], m12: p[1], m13: p[2], m14: p[3], m21: p[4], m22: p[5], m23: p[6], m24: p[7], m31: p[8], m32: p[9], m33: p[10], m34: p[11], m41: p[12], m42: p[13], m43: p[14], m44: p[15])
-//                let relativePosition = self.ballPosition -
-//                    SCNVector3(self.garAnchor?.transform.translation.x,
-//                               self.garAnchor?.transform.translation.y,
-//                               self.garAnchor?.transform.translation.z)
+                let ballTransform = SCNMatrix4(m11: p[0].floatValue, m12: p[1].floatValue,
+                                               m13: p[2].floatValue, m14: p[3].floatValue,
+                                               m21: p[4].floatValue, m22: p[5].floatValue,
+                                               m23: p[6].floatValue, m24: p[7].floatValue,
+                                               m31: p[8].floatValue, m32: p[9].floatValue,
+                                               m33: p[10].floatValue, m34: p[11].floatValue,
+                                               m41: p[12].floatValue, m42: p[13].floatValue,
+                                               m43: p[14].floatValue, m44: p[15].floatValue)
                 
                 if self.isBallInPlay != ball_in_play {
                     if ball_in_play {
                         if self.ballNode == nil {
                             // add a ball
                             print("creating ball")
-                            self.ballNode = self.createBall(position: SCNVector3())
+                            self.ballNode = self.createBall(transform: ballTransform)
                             self.tableNode.addChildNode(self.ballNode)
 //                            self.sceneView.scene.rootNode.addChildNode(self.ballNode)
                         }
@@ -102,14 +105,23 @@ extension GameViewController {
             })
     }
     
+    func resetGameState() {
+        guard let roomCode = roomCode else { return }
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").removeAllObservers()
+        self.shootButton.isHidden = true
+        self.slider.isHidden = true
+    }
+    
     func startBallTimer(){
         DispatchQueue.main.async {
-            self.dismissBallTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.dismissBall), userInfo: nil, repeats: false)
+            self.dismissBallTimer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(self.dismissBall), userInfo: nil, repeats: false)
         }
     }
     
     @objc func dismissBall(){
         ballNode.removeFromParentNode()
+        ballNode = nil
         updatePlayerTurn()
         updateBallInPlay(bool: false)
         dismissBallTimer.invalidate()

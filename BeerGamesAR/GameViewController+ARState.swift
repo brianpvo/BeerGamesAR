@@ -175,6 +175,7 @@ extension GameViewController {
                     firebaseReference.child("hotspot_list").child(roomCode).removeAllObservers()
                 }
             }
+            resetGameState()
             toggleButton(button: hostButton, enabled: true, title: "HOST")
             toggleButton(button: resolveButton, enabled: true, title: "RESOLVE")
             roomCode = "";
@@ -241,7 +242,8 @@ extension GameViewController {
                                             0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.0, 0.0])
-            let cupState = NSArray(array: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+            let cupState = NSArray(array: [1, 1, 1, 1, 1, 1,  // player 0 cups
+                                           1, 1, 1, 1, 1, 1]) // player 1 cups
             let gameState = [
                 "ball_state" : ballState,
                 "ball_in_play" : false,

@@ -168,22 +168,14 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
 //                                            NSNumber(value: relativePosition.y),
 //                                            NSNumber(value: relativePosition.z)])
         let transform = ballNode.presentation.transform
-        let ballTransform = NSArray(array: [transform.m11,
-                                            transform.m12,
-                                            transform.m13,
-                                            transform.m14,
-                                            transform.m21,
-                                            transform.m22,
-                                            transform.m23,
-                                            transform.m24,
-                                            transform.m31,
-                                            transform.m32,
-                                            transform.m33,
-                                            transform.m34,
-                                            transform.m41,
-                                            transform.m42,
-                                            transform.m43,
-                                            transform.m44])
+        let ballTransform = NSArray(array: [transform.m11, transform.m12,
+                                            transform.m13, transform.m14,
+                                            transform.m21, transform.m22,
+                                            transform.m23, transform.m24,
+                                            transform.m31, transform.m32,
+                                            transform.m33, transform.m34,
+                                            transform.m41, transform.m42,
+                                            transform.m43, transform.m44])
         guard let roomCode = roomCode, roomCode != "" else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").child("ball_state").setValue(ballTransform)

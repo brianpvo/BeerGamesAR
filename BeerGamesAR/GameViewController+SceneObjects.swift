@@ -104,13 +104,14 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 disableShootButton()
             }
             if node.name == "tube_" + nodeNumber ||
-                node.name == "plane_" + nodeNumber ||
-                node.name == "ball" {
+                node.name == "plane_" + nodeNumber {
                 node.removeFromParentNode()
                 
                 // invalidate ball dismissal timer
                 dismissBallTimer.invalidate()
             }
         })
+        self.ballNode.removeFromParentNode()
+        self.ballNode = nil
     }
 }

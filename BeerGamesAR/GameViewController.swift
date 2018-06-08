@@ -182,7 +182,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func shootBall() {
         guard let pointOfView = sceneView.pointOfView else { return }
-        var transform = pointOfView.transform
+        let transform = pointOfView.transform
         let tableSpaceTransform = sceneView.scene.rootNode.convertTransform(transform, to: self.tableNode)
         let orientation = SCNVector3(-transform.m31,
                                      -transform.m32,
@@ -192,10 +192,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                   transform.m43)
         let position = orientation + location
         
-        
-        
 //        ballNode = createBall(position: position)
-        ballNode = createBall(transform:tableSpaceTransform)
+        ballNode = createBall(transform: tableSpaceTransform)
         
         nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
         
@@ -203,8 +201,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         // NOTE: Try using [0, 0, -1] instead of the orientation
         // Alternately maybe try using the tableSpace transform to set the orientation
         ballNode.physicsBody?.applyForce(SCNVector3(orientation.x * power,
-                                                -orientation.y * power,
-                                                orientation.z * power),
+                                                    -orientation.y * power,
+                                                    orientation.z * power),
                                      asImpulse: true)
         
         isBallInPlay = true
