@@ -78,6 +78,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
         let nodeA = contact.nodeA
         let nodeB = contact.nodeB
+        var ballDidBounce = false
         
         DispatchQueue.global(qos: .background).async {
             
@@ -88,6 +89,15 @@ extension GameViewController: SCNPhysicsContactDelegate {
             if (nodeA.name?.contains("plane"))! && nodeB.name == "ball" {
                 print("\(nodeA.name!) touched ball")
                 self.removeCupAndPhysics(contactNode: nodeA)
+            }
+            if nodeA.name == "ball" && nodeB.name == "table" {
+                // might find inconsistant behavior because table is a parent
+                ballDidBounce = true
+            }
+            if ballDidBounce == true && ((nodeA.name?.contains("plane"))! && nodeB.name == "ball") {
+                self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
+                    self.removeAdditionalCup(node: node)
+                })
             }
         }
     }
@@ -112,5 +122,53 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 dismissBallTimer.invalidate()
             }
         })
+    }
+    
+    func removeAdditionalCup(node: SCNNode){
+        let hitPlaneArray = [node.childNode(withName: "plane_0", recursively: true),
+                             node.childNode(withName: "plane_1", recursively: true),
+                             node.childNode(withName: "plane_2", recursively: true),
+                             node.childNode(withName: "plane_3", recursively: true),
+                             node.childNode(withName: "plane_4", recursively: true),
+                             node.childNode(withName: "plane_5", recursively: true),
+                             node.childNode(withName: "plane_6", recursively: true),
+                             node.childNode(withName: "plane_7", recursively: true),
+                             node.childNode(withName: "plane_8", recursively: true),
+                             node.childNode(withName: "plane_9", recursively: true),
+                             node.childNode(withName: "plane_10", recursively: true),
+                             node.childNode(withName: "plane_11", recursively: true)
+                             ]
+        let midPoint = hitPlaneArray.count / 2
+        let firstHalf = hitPlaneArray[..<midPoint]
+        let secondHalf = hitPlaneArray[midPoint...]
+        
+        guard let index = hitPlaneArray.index(of: node) else {return}
+        var latterIndex = index + 1
+        var previousIndex = index - 1
+        
+        func removeSecondCup(){
+            let remainingCupArrayFirstHalf = firstHalf.filter {$0?.parent != nil}
+            let remainingCupArraySecondHalf = secondHalf.filter {$0?.parent != nil}
+            
+            guard remainingCupArrayFirstHalf.count > 2, remainingCupArraySecondHalf.count > 2 else {return}
+            
+            if latterIndex < hitPlaneArray.count {
+                if latterIndex == 6 {return}
+                if hitPlaneArray[latterIndex]?.parent != nil {
+                    hitPlaneArray[latterIndex]?.removeFromParentNode()
+                    return
+                }
+                if previousIndex > 0 {
+                    if previousIndex == 5 {return}
+                    if hitPlaneArray[previousIndex]?.parent != nil {
+                        hitPlaneArray[previousIndex]?.removeFromParentNode()
+                        return
+                    }
+                }
+            }
+        }
+        latterIndex = latterIndex + 1
+        previousIndex = previousIndex - 1
+        removeSecondCup()
     }
 }
