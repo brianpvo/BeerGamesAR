@@ -85,7 +85,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
         }
     }
     
-    private func removeCupAndPhysics(contactNode: SCNNode) {
+    func removeCupAndPhysics(contactNode: SCNNode) {
         self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
             guard let nodeName = contactNode.name,
                 let rangeIndex = nodeName.range(of: "_") else { return }
@@ -93,33 +93,17 @@ extension GameViewController: SCNPhysicsContactDelegate {
             if node.name == "cup_" + nodeNumber {
                 node.removeFromParentNode()
                 self.updateCupState(nodeNumber: String(nodeNumber))
-                self.updatePlayerTurn()
                 self.updateBallInPlay(bool: false)
+                disableShootButton()
             }
             if node.name == "tube_" + nodeNumber ||
                 node.name == "plane_" + nodeNumber ||
                 node.name == "ball" {
                 node.removeFromParentNode()
+                
+                // invalidate ball dismissal timer
+                dismissBallTimer.invalidate()
             }
         })
-    }
-    
-    private func updateCupState(nodeNumber: String) {
-        guard let roomCode = roomCode else { return }
-        firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("game_state").child("cup_state").updateChildValues([nodeNumber : 0])
-    }
-    
-    func updatePlayerTurn() {
-        guard let roomCode = roomCode else { return }
-        let nextPlayer = myPlayerNumber == 1 ? 0 : 1
-        firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("game_state").child("player_turn").setValue(nextPlayer)
-    }
-    
-    func updateBallInPlay(bool: Bool) {
-        guard let roomCode = roomCode else { return }
-        firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("game_state").child("ball_in_play").setValue(bool)
     }
 }

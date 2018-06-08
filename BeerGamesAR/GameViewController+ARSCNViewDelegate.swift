@@ -162,7 +162,7 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
     
     func renderer(_ renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: TimeInterval) {
         guard ballNode != nil, myPlayerNumber != nil, myPlayerNumber == playerTurn else { return }
-        let relativePosition = ballNode.presentation.worldPosition
+        let relativePosition = ballNode.presentation.position
         let positionArray = NSArray(array: [NSNumber(value: relativePosition.x),
                                             NSNumber(value: relativePosition.y),
                                             NSNumber(value: relativePosition.z)])

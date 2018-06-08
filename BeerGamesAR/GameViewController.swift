@@ -41,6 +41,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var myPlayerNumber: Int!
     var playerTurn: Int = 2
     var isBallInPlay = false
+    var dismissBallTimer = Timer()
     
     // SLIDER VARIABLES
     var slider: CustomSlider!
@@ -147,10 +148,11 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         resolveButton.isHidden = true
         
         self.shootButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
-        self.shootButton.backgroundColor = UIColor.green
+        self.shootButton.backgroundColor = UIColor.gray
         self.shootButton.setTitle("Shoot Ball", for: UIControlState.normal)
         self.shootButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         self.view.addSubview(self.shootButton)
+        self.shootButton.isUserInteractionEnabled = false
         
         self.shootButton.translatesAutoresizingMaskIntoConstraints = false
         self.shootButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
@@ -203,6 +205,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         scoreManager.numberOfThrows += 1
         scoreManager.updateScoreLabel()
+        
+        startBallTimer()
+        disableShootButton()
     }
 }
 

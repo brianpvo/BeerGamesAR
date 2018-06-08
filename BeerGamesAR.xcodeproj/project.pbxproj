@@ -37,6 +37,7 @@
 		7AB26A6620B9284A0066908D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7AB26A6520B9284A0066908D /* Assets.xcassets */; };
 		7AB26A7320B92E120066908D /* (null) in Resources */ = {isa = PBXBuildFile; };
 		7AB26A7520BA83EB0066908D /* (null) in Sources */ = {isa = PBXBuildFile; };
+		7AF0B44820CA00DE001E0993 /* GameViewController+GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF0B44720CA00DE001E0993 /* GameViewController+GameState.swift */; };
 		7ECC85DA20C09F3200CF0531 /* ball.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7ECC85D920C09F3200CF0531 /* ball.scnassets */; };
 		A3A9E81429EA57B5977F1A5A /* Pods_BeerGamesAR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B6224FC584954427FA2DE89 /* Pods_BeerGamesAR.framework */; };
 		F164857620C72EE100C70C01 /* GameViewController+Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F164857520C72EE100C70C01 /* GameViewController+Slider.swift */; };
@@ -97,6 +98,7 @@
 		7AB26A6320B928490066908D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7AB26A6520B9284A0066908D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7AB26A6A20B9284A0066908D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7AF0B44720CA00DE001E0993 /* GameViewController+GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewController+GameState.swift"; sourceTree = "<group>"; };
 		7ECC85D920C09F3200CF0531 /* ball.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = ball.scnassets; sourceTree = "<group>"; };
 		8E51913D20667A4C7520C5A5 /* Pods-BeerGamesAR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeerGamesAR.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR.release.xcconfig"; sourceTree = "<group>"; };
 		F164857520C72EE100C70C01 /* GameViewController+Slider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewController+Slider.swift"; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				7AA37C1220C48BD0001C572D /* GameViewController+ARState.swift */,
 				7AA37C0E20C35709001C572D /* GameViewController+ARSCNViewDelegate.swift */,
 				7AA37C1020C35A0B001C572D /* GameViewController+SceneObjects.swift */,
+				7AF0B44720CA00DE001E0993 /* GameViewController+GameState.swift */,
 				F164857520C72EE100C70C01 /* GameViewController+Slider.swift */,
 				F164857720C72F4900C70C01 /* CustomSlider.swift */,
 				F164857920C7441200C70C01 /* ScoreManager.swift */,
@@ -378,6 +381,7 @@
 				7AA37C0520C31C9B001C572D /* NodePhysics.swift in Sources */,
 				7AB26A6120B928490066908D /* GameViewController.swift in Sources */,
 				7AB26A7520BA83EB0066908D /* (null) in Sources */,
+				7AF0B44820CA00DE001E0993 /* GameViewController+GameState.swift in Sources */,
 				7A291B6E20C1EFDF0069A09D /* ViewController.swift in Sources */,
 				7AA37C0F20C35709001C572D /* GameViewController+ARSCNViewDelegate.swift in Sources */,
 				F164857620C72EE100C70C01 /* GameViewController+Slider.swift in Sources */,

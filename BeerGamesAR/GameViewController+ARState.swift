@@ -274,7 +274,7 @@ extension GameViewController {
         })
     }
     
-    private func roomCreated(roomCode: String){
+    private func roomCreated(roomCode: String) {
         self.roomCode = roomCode
         self.enterState(state: .RoomCreated)
         firebaseReference?.child("hotspot_list").child(roomCode)
@@ -283,82 +283,6 @@ extension GameViewController {
                 if player_joined {
                     self.observeGameState()
                 }
-            })
-    }
-    
-    func observeGameState() {
-        guard let roomCode = roomCode else { return }
-        firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("game_state").observe(.value, with: { (snapshot) in
-                guard let gameState = snapshot.value as? NSDictionary else {
-                    print("returning on gameState")
-                    return
-                }
-                guard let player_turn = gameState["player_turn"] as? Int else {
-                    print("returning on player turn")
-                    return
-                }
-                guard let ball_in_play = gameState["ball_in_play"] as? Bool else {
-                    print("returning on ball in play")
-                    return
-                }
-                guard let ball_position = gameState["ball_state"] as? [NSNumber] else {
-                    print("returning on ballposition")
-                    return
-                }
-                guard let cup_state = gameState["cup_state"] as? [Int] else {
-                    print("returning on cupstate")
-                    return
-                }
-                self.ballPosition = SCNVector3(ball_position[0].floatValue,
-                                               ball_position[1].floatValue,
-                                               ball_position[2].floatValue)
-                
-                if self.isBallInPlay != ball_in_play {
-                    if ball_in_play {
-                        if self.ballNode == nil {
-                            // add a ball
-                            print("creating ball")
-                            self.ballNode = self.createBall(position: self.ballPosition)
-                            self.sceneView.scene.rootNode.addChildNode(self.ballNode)
-                        }
-                        else {
-                            print("translating ball \(self.ballNode.position)")
-                            self.sceneView.scene.rootNode.addChildNode(self.ballNode)
-                            self.ballNode.position = self.ballPosition
-                        }
-                    } else {
-                        // remove the ball
-                        if self.ballNode != nil {
-                            self.ballNode.removeFromParentNode()
-                        }
-                    }
-                }
-                
-                for i in 0..<cup_state.count {
-                    if cup_state[i] == 0 {
-                        self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
-                            if (node.name?.range(of: "\(i)")) != nil {
-                                node.removeFromParentNode()
-                            }
-                        })
-                    }
-                }
-                
-                if self.playerTurn != player_turn {
-                    // opponent unhides button
-                    if player_turn == self.myPlayerNumber {
-                        self.shootButton.isHidden = false
-                        self.slider.isHidden = false
-                        
-                    } else {
-                        self.shootButton.isHidden = true
-                        self.slider.isHidden = true
-                        self.isBallInPlay = false
-                    }
-                }
-                
-                 self.playerTurn = player_turn
             })
     }
 }
