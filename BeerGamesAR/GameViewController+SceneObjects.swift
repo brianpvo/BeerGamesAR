@@ -22,6 +22,13 @@ extension GameViewController: SCNPhysicsContactDelegate {
         
         return ball
     }
+    func createBall(transform: SCNMatrix4) -> SCNNode {
+        let ball = SCNNode(geometry: SCNSphere(radius: 0.02)) // 0.02
+        ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        ball.transform = transform
+        ball.name = "ball"
+        return ball
+    }
     
     func createRedCup(position: SCNVector3, name: String) -> SCNNode {
         let redCupScene = SCNScene(named: "cup.scnassets/RedSoloCup.scn")
@@ -36,7 +43,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
         
         // add Table Top
         let tableScene = SCNScene(named: "customTableAndCups.scnassets/Table.scn")
-        guard let tableNode = tableScene?.rootNode else { return SCNNode() } //.childNode(withName: "table", recursively: false) else { return SCNNode() }
+        guard let tableNode = tableScene?.rootNode.childNode(withName: "table", recursively: false) else { return SCNNode() }
         
         DispatchQueue.global(qos: .default).async {
             let beerPongText = self.createText(text: "BEER PONG")

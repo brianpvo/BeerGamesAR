@@ -237,7 +237,10 @@ extension GameViewController {
             let timestamp = NSNumber(value: timestampeInt)
             
             // create gameState for multiplayer
-            let ballState = NSArray(array: [0.0, 0.0, 0.0])
+            let ballState = NSArray(array: [0.0, 0.0, 0.0, 0.0,
+                                            0.0, 0.0, 0.0, 0.0,
+                                            0.0, 0.0, 0.0, 0.0,
+                                            0.0, 0.0, 0.0, 0.0])
             let cupState = NSArray(array: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
             let gameState = [
                 "ball_state" : ballState,

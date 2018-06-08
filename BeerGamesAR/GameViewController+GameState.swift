@@ -27,7 +27,7 @@ extension GameViewController {
                     print("returning on ball in play")
                     return
                 }
-                guard let ball_position = gameState["ball_state"] as? [NSNumber] else {
+                guard let ball_position = gameState["ball_state"] as? [Float] else {
                     print("returning on ballposition")
                     return
                 }
@@ -35,21 +35,31 @@ extension GameViewController {
                     print("returning on cupstate")
                     return
                 }
-                self.ballPosition = SCNVector3(ball_position[0].floatValue,
-                                               ball_position[1].floatValue,
-                                               ball_position[2].floatValue)
+                
+//                self.ballPosition = SCNVector3(ball_position[0].floatValue,
+//                                               ball_position[1].floatValue,
+//                                               ball_position[2].floatValue)
+                let p = ball_position
+                let ballTransform = SCNMatrix4(m11: p[0], m12: p[1], m13: p[2], m14: p[3], m21: p[4], m22: p[5], m23: p[6], m24: p[7], m31: p[8], m32: p[9], m33: p[10], m34: p[11], m41: p[12], m42: p[13], m43: p[14], m44: p[15])
+//                let relativePosition = self.ballPosition -
+//                    SCNVector3(self.garAnchor?.transform.translation.x,
+//                               self.garAnchor?.transform.translation.y,
+//                               self.garAnchor?.transform.translation.z)
                 
                 if self.isBallInPlay != ball_in_play {
                     if ball_in_play {
                         if self.ballNode == nil {
                             // add a ball
                             print("creating ball")
-                            self.ballNode = self.createBall(position: self.ballPosition)
-                            self.sceneView.scene.rootNode.addChildNode(self.ballNode)
+                            self.ballNode = self.createBall(position: SCNVector3())
+                            self.tableNode.addChildNode(self.ballNode)
+//                            self.sceneView.scene.rootNode.addChildNode(self.ballNode)
                         }
                         else {
                             //print("translating ball \(self.ballNode.position)")
-                            self.ballNode.position = self.ballPosition
+//                            self.ballNode.position = self.ballPosition
+                            self.ballNode.transform = ballTransform
+                            
                         }
                     } else {
                         // remove the ball

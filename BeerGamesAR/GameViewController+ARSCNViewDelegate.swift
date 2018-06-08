@@ -102,7 +102,8 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
         // render SCN with objects
         if !(anchor.isMember(of: ARPlaneAnchor.self)) {
-            return self.setupGameScene()
+            self.tableNode = self.setupGameScene()
+            return self.tableNode
         }
         let scnNode = SCNNode()
         return scnNode
@@ -162,12 +163,29 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
     
     func renderer(_ renderer: SCNSceneRenderer, didSimulatePhysicsAtTime time: TimeInterval) {
         guard ballNode != nil, myPlayerNumber != nil, myPlayerNumber == playerTurn else { return }
-        let relativePosition = ballNode.presentation.position
-        let positionArray = NSArray(array: [NSNumber(value: relativePosition.x),
-                                            NSNumber(value: relativePosition.y),
-                                            NSNumber(value: relativePosition.z)])
+//        let relativePosition = ballNode.presentation.position
+//        let positionArray = NSArray(array: [NSNumber(value: relativePosition.x),
+//                                            NSNumber(value: relativePosition.y),
+//                                            NSNumber(value: relativePosition.z)])
+        let transform = ballNode.presentation.transform
+        let ballTransform = NSArray(array: [transform.m11,
+                                            transform.m12,
+                                            transform.m13,
+                                            transform.m14,
+                                            transform.m21,
+                                            transform.m22,
+                                            transform.m23,
+                                            transform.m24,
+                                            transform.m31,
+                                            transform.m32,
+                                            transform.m33,
+                                            transform.m34,
+                                            transform.m41,
+                                            transform.m42,
+                                            transform.m43,
+                                            transform.m44])
         guard let roomCode = roomCode, roomCode != "" else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("game_state").child("ball_state").setValue(positionArray)
+            .child("game_state").child("ball_state").setValue(ballTransform)
     }
 }

@@ -35,6 +35,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var nodePhysics: NodePhysics!
     var ballNode: SCNNode!
     var scoreManager: ScoreManager!
+    var tableNode: SCNNode!
     
     // Game State
     var ballPosition: SCNVector3!
@@ -181,7 +182,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func shootBall() {
         guard let pointOfView = sceneView.pointOfView else { return }
-        let transform = pointOfView.transform
+        var transform = pointOfView.transform
+        let tableSpaceTransform = sceneView.scene.rootNode.convertTransform(transform, to: self.tableNode)
         let orientation = SCNVector3(-transform.m31,
                                      -transform.m32,
                                      -transform.m33)
@@ -190,9 +192,16 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                   transform.m43)
         let position = orientation + location
         
-        ballNode = createBall(position: position)
+        
+        
+//        ballNode = createBall(position: position)
+        ballNode = createBall(transform:tableSpaceTransform)
         
         nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
+        
+        
+        // NOTE: Try using [0, 0, -1] instead of the orientation
+        // Alternately maybe try using the tableSpace transform to set the orientation
         ballNode.physicsBody?.applyForce(SCNVector3(orientation.x * power,
                                                 -orientation.y * power,
                                                 orientation.z * power),
@@ -201,7 +210,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         isBallInPlay = true
         self.updateBallInPlay(bool: true)
         
-        self.sceneView.scene.rootNode.addChildNode(ballNode)
+        self.tableNode.addChildNode(ballNode)
         
         scoreManager.numberOfThrows += 1
         scoreManager.updateScoreLabel()
