@@ -106,7 +106,5 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 dismissBallTimer.invalidate()
             }
         })
-//        self.ballNode.removeFromParentNode()
-//        self.ballNode = nil
     }
 }

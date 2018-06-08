@@ -84,7 +84,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         self.shootButton.isHidden = true
         self.slider.isHidden = true
 
-//        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
     }
     
     override func viewWillAppear(_ animated: Bool) {

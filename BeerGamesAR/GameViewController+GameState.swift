@@ -74,7 +74,9 @@ extension GameViewController {
                 for i in 0..<cup_state.count {
                     if cup_state[i] == 0 {
                         self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
-                            if node.name?.range(of: "_\(i)") != nil {
+                            if node.name == "cup_\(i)" ||
+                                node.name == "tube_\(i)" ||
+                                node.name == "plane_\(i)" {
                                 node.removeFromParentNode()
                             }
                         })
@@ -118,10 +120,10 @@ extension GameViewController {
         if player1Cups.count == range.count {
             let winner = self.createText(text: "WINNER - PLAYER \(player)",
                 textColor: .yellow,
-                position: SCNVector3(0.0, 1.5, 0.0),
+                position: SCNVector3(0.0, 1.2, 0.0),
                 scale: SCNVector3(0.1, 0.1, 0.1))
+            winner.runAction(self.rotateAnimation())
             self.tableNode.addChildNode(winner)
-            winner.runAction(rotateAnimation())
             self.shootButton.isHidden = true
             self.slider.isHidden = true
         }
