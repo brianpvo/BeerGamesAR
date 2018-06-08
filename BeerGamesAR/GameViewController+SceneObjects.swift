@@ -13,18 +13,9 @@ extension GameViewController: SCNPhysicsContactDelegate {
     
     // MARK: Setup Scene
     
-    func createBall(position:SCNVector3) -> SCNNode {
-        
-        let ball = SCNNode(geometry: SCNSphere(radius: 0.02)) // 0.02
-        ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-        ball.position = position
-        ball.name = "ball"
-        
-        return ball
-    }
     func createBall(transform: SCNMatrix4) -> SCNNode {
         let ball = SCNNode(geometry: SCNSphere(radius: 0.02)) // 0.02
-        ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
+        ball.geometry?.firstMaterial?.diffuse.contents = UIColor.orange
         ball.transform = transform
         ball.name = "ball"
         return ball
@@ -46,23 +37,26 @@ extension GameViewController: SCNPhysicsContactDelegate {
         guard let tableNode = tableScene?.rootNode.childNode(withName: "table", recursively: false) else { return SCNNode() }
         
         DispatchQueue.global(qos: .default).async {
-            let beerPongText = self.createText(text: "BEER PONG")
+            let beerPongText = self.createText(text: "BEER PONG",
+                                               textColor: .red,
+                                               position: SCNVector3(0, 2, -2),
+                                               scale: SCNVector3(0.01, 0.01, 0.01))
             tableNode.addChildNode(beerPongText)
             self.nodePhysics.apply()
         }
         return tableNode
     }
     
-    func createText(text: String) -> SCNNode {
+    func createText(text: String, textColor: UIColor, position: SCNVector3, scale: SCNVector3) -> SCNNode {
         let text = SCNText(string: text, extrusionDepth: 2)
         
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor.red
+        material.diffuse.contents = textColor
         text.materials = [material]
         
         let node = SCNNode(geometry: text)
-        node.scale = SCNVector3(0.01, 0.01, 0.01)
-        node.position = SCNVector3(0,2,-2)
+        node.scale = scale
+        node.position = position
         node.name = "scoreNode"
         
         return node
@@ -104,14 +98,15 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 disableShootButton()
             }
             if node.name == "tube_" + nodeNumber ||
-                node.name == "plane_" + nodeNumber {
+                node.name == "plane_" + nodeNumber ||
+                node.name == "ball" {
                 node.removeFromParentNode()
                 
                 // invalidate ball dismissal timer
                 dismissBallTimer.invalidate()
             }
         })
-        self.ballNode.removeFromParentNode()
-        self.ballNode = nil
+//        self.ballNode.removeFromParentNode()
+//        self.ballNode = nil
     }
 }

@@ -34,7 +34,7 @@ class NodePhysics: NSObject {
         Node.physicsBody?.categoryBitMask = BitMaskCategory.ball.rawValue
         Node.physicsBody?.contactTestBitMask = BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue
-        Node.physicsBody?.restitution = 0.2
+        Node.physicsBody?.restitution = 0.4
         Node.physicsBody?.damping = 0.1
         Node.physicsBody?.friction = 0.8
         Node.physicsBody?.mass = 0.65

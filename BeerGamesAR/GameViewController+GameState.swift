@@ -28,11 +28,11 @@ extension GameViewController {
                     return
                 }
                 guard let ball_position = gameState["ball_state"] as? [NSNumber] else {
-                    print("returning on ballposition")
+                    print("returning on ball state")
                     return
                 }
                 guard let cup_state = gameState["cup_state"] as? [Int] else {
-                    print("returning on cupstate")
+                    print("returning on cup state")
                     return
                 }
                 
@@ -56,7 +56,6 @@ extension GameViewController {
                             print("creating ball")
                             self.ballNode = self.createBall(transform: ballTransform)
                             self.tableNode.addChildNode(self.ballNode)
-//                            self.sceneView.scene.rootNode.addChildNode(self.ballNode)
                         }
                         else {
                             //print("translating ball \(self.ballNode.position)")
@@ -76,13 +75,14 @@ extension GameViewController {
                     if cup_state[i] == 0 {
                         self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
                             if node.name?.range(of: "_\(i)") != nil {
-                                print("nodeName: \(node.name)")
                                 node.removeFromParentNode()
                             }
                         })
                     }
+                    
                 }
                 
+                // Switch turns for each round
                 if self.playerTurn != player_turn {
                     // opponent unhides button
                     if player_turn == self.myPlayerNumber {
@@ -100,9 +100,31 @@ extension GameViewController {
                         self.ballNode = nil
                     }
                 }
-                
                 self.playerTurn = player_turn
+                
+                // Check if the game is over
+                self.checkForWinner(cupArray: cup_state,
+                                    leftBound: 0, rightBound: 5,
+                                    player: 1)
+                self.checkForWinner(cupArray: cup_state,
+                                    leftBound: 6, rightBound: 11,
+                                    player: 2)
             })
+    }
+    
+    func checkForWinner(cupArray: [Int], leftBound: Int, rightBound: Int, player: Int) {
+        let range = leftBound...rightBound
+        let player1Cups = cupArray[range].filter{ $0 == 0 }
+        if player1Cups.count == range.count {
+            let winner = self.createText(text: "WINNER - PLAYER \(player)",
+                textColor: .yellow,
+                position: SCNVector3(0.0, 1.5, 0.0),
+                scale: SCNVector3(0.1, 0.1, 0.1))
+            self.tableNode.addChildNode(winner)
+            winner.runAction(rotateAnimation())
+            self.shootButton.isHidden = true
+            self.slider.isHidden = true
+        }
     }
     
     func resetGameState() {

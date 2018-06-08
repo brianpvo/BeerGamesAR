@@ -187,16 +187,13 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         let orientation = SCNVector3(-transform.m31,
                                      -transform.m32,
                                      -transform.m33)
-        let location = SCNVector3(transform.m41,
-                                  transform.m42,
-                                  transform.m43)
-        let position = orientation + location
-        
+//        let location = SCNVector3(transform.m41,
+//                                  transform.m42,
+//                                  transform.m43)
+        //let position = orientation + location
 //        ballNode = createBall(position: position)
         ballNode = createBall(transform: tableSpaceTransform)
-        
         nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
-        
         
         // NOTE: Try using [0, 0, -1] instead of the orientation
         // Alternately maybe try using the tableSpace transform to set the orientation
