@@ -186,29 +186,32 @@ extension GameViewController {
             toggleButton(button: resolveButton, enabled: false, title: "RESOLVE")
             break;
         case .RoomCreated:
-            self.message = "Tap on a plane to create anchor and host.";
+            self.message = "Tap on a plane to setup beer pong game and host.";
             toggleButton(button: hostButton, enabled: true, title: "CANCEL")
             toggleButton(button: resolveButton, enabled: false, title: "RESOLVE")
             break;
         case .Hosting:
-            self.message = "Hosting anchor...";
+            self.message = "Hosting game...";
             break;
         case .HostingFinished:
-            guard let garAnchor = self.garAnchor else { return }
-            self.message = "Finished hosting: \(garAnchor.cloudState)"
+            self.message = "Finished setting up game"
             break;
         case .EnterRoomCode:
             self.showRoomCodeDialog()
             break;
         case .Resolving:
             self.dismiss(animated: false, completion: nil)
-            self.message = "Resolving anchor...";
+            self.message = "Joining game...";
             toggleButton(button: hostButton, enabled: false, title: "HOST")
             toggleButton(button: resolveButton, enabled: true, title: "CANCEL")
             break;
         case .ResolvingFinished:
             guard let garAnchor = self.garAnchor else { return }
-            self.message = "Finished resolving \(self.cloudStateString(cloudState: garAnchor.cloudState))"
+            if garAnchor.cloudState == .success {
+                self.message = "Successfully joined game"
+            } else {
+                self.message = "Finished resolving \(self.cloudStateString(cloudState: garAnchor.cloudState))"
+            }
             break;
         }
         self.state = state;

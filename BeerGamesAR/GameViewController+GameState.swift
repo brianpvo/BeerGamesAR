@@ -12,6 +12,7 @@ import ARKit
 extension GameViewController {
     
     func observeGameState() {
+        self.inGame = true;
         guard let roomCode = roomCode else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").observe(.value, with: { (snapshot) in
@@ -120,10 +121,10 @@ extension GameViewController {
         let range = leftBound...rightBound
         let player1Cups = cupArray[range].filter{ $0 == 0 }
         if player1Cups.count == range.count {
-            let winner = self.createText(text: "WINNER: PLAYER \(player)",
-                textColor: .yellow,
+            let winner = self.createText(text: "GAME OVER!",
+                textColor: .orange,
                 position: SCNVector3(0.0, 1.2, 0.0),
-                scale: SCNVector3(0.05, 0.05, 0.05))
+                scale: SCNVector3(0.03, 0.05, 0.05))
             winner.runAction(self.rotateAnimation())
             self.tableNode.addChildNode(winner)
             self.shootButton.isHidden = true
@@ -132,11 +133,12 @@ extension GameViewController {
     }
     
     func resetGameState() {
-        guard let roomCode = roomCode else { return }
+        guard let roomCode = roomCode, roomCode.count != 0 else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").removeAllObservers()
         self.shootButton.isHidden = true
         self.slider.isHidden = true
+        self.inGame = false;
     }
     
     func startBallTimer(){

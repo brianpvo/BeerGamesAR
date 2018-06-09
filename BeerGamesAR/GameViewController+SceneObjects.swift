@@ -23,7 +23,6 @@ extension GameViewController: SCNPhysicsContactDelegate {
     
     func createRedCup(position: SCNVector3, name: String) -> SCNNode {
         let redCupScene = SCNScene(named: "cup.scnassets/RedSoloCup.scn")
-        //let redCupScene = SCNScene(named: "customTableAndCups.scnassets/lowerPolyCup.scn")
         let redCupNode = redCupScene?.rootNode.childNode(withName: "redCup", recursively: false)
         redCupNode?.name = name
         redCupNode?.position = position

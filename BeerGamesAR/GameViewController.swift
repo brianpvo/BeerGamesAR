@@ -36,6 +36,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var ballNode: SCNNode!
     var scoreManager: ScoreManager!
     var tableNode: SCNNode!
+    var inGame = false;
     
     // GAME STATE VARIABLES
     var myPlayerNumber: Int! {
@@ -86,7 +87,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.setupSlider()
         self.setupButtons()
-        
 //        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
     }
     

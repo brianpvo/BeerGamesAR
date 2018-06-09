@@ -118,7 +118,7 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
             let height = planeAnchor.extent.z
             let plane = SCNPlane.init(width: CGFloat(width), height: CGFloat(height))
             
-            plane.materials.first?.diffuse.contents = UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 0.3)
+            plane.materials.first?.diffuse.contents = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.25)
             
             let planeNode = SCNNode(geometry: plane)
             
@@ -145,6 +145,12 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
             }
             if let height = planeAnchor?.extent.z {
                 plane.height = CGFloat(height)
+            }
+            
+            if self.inGame {
+                node.enumerateChildNodes { (planeNode, _) in
+                    planeNode.geometry?.materials.first?.diffuse.contents = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.0)
+                }
             }
             
             if let x = planeAnchor?.center.x, let y = planeAnchor?.center.y, let z = planeAnchor?.center.z {
