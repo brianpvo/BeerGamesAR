@@ -65,6 +65,15 @@ extension GameViewController {
                     }
                 }
                 
+                // TODO: Make an icebreaker state to declare who goes first.
+                // NOTE: Perhaps do this before gameState observer.
+//                if !self.isIcebroken {
+//                    self.shootButton.isHidden = false
+//                    self.slider.isHidden = false
+//                } else {
+//
+//                }
+                
                 for i in 0..<cup_state.count {
                     if cup_state[i] == 0 {
                         self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
@@ -86,7 +95,6 @@ extension GameViewController {
                             self.shootButton.isHidden = false
                         }
 //                        self.disableShootButton()
-                        
                     } else {
                         DispatchQueue.main.async {
                             self.shootButton.isHidden = true
@@ -112,10 +120,10 @@ extension GameViewController {
         let range = leftBound...rightBound
         let player1Cups = cupArray[range].filter{ $0 == 0 }
         if player1Cups.count == range.count {
-            let winner = self.createText(text: "WINNER - PLAYER \(player)",
+            let winner = self.createText(text: "WINNER: PLAYER \(player)",
                 textColor: .yellow,
                 position: SCNVector3(0.0, 1.2, 0.0),
-                scale: SCNVector3(0.1, 0.1, 0.1))
+                scale: SCNVector3(0.05, 0.05, 0.05))
             winner.runAction(self.rotateAnimation())
             self.tableNode.addChildNode(winner)
             self.shootButton.isHidden = true
@@ -133,7 +141,11 @@ extension GameViewController {
     
     func startBallTimer(){
         DispatchQueue.main.async {
-            self.dismissBallTimer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(self.dismissBall), userInfo: nil, repeats: false)
+            self.dismissBallTimer = Timer.scheduledTimer(timeInterval: 3,
+                                                         target: self,
+                                                         selector: #selector(self.dismissBall),
+                                                         userInfo: nil,
+                                                         repeats: false)
         }
     }
     

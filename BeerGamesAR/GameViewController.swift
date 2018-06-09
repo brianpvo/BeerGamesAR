@@ -37,24 +37,18 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var scoreManager: ScoreManager!
     var tableNode: SCNNode!
     
-    // Game State
-    var ballPosition: SCNVector3!
+    // GAME STATE VARIABLES
     var myPlayerNumber: Int! {
-        didSet {
-            toggleShootButton()
-        }
+        didSet { toggleShootButton() }
     }
     var playerTurn: Int = 2 {
-        didSet {
-            toggleShootButton()
-        }
+        didSet { toggleShootButton() }
     }
     var isBallInPlay = false {
-        didSet {
-            toggleShootButton()
-        }
+        didSet { toggleShootButton() }
     }
     var dismissBallTimer = Timer()
+    var isIcebroken = false
     
     // SLIDER VARIABLES
     var slider: CustomSlider!

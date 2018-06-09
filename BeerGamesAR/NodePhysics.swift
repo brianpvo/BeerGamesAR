@@ -53,8 +53,7 @@ class NodePhysics: NSObject {
     private func planeBitMaskAndPhysicsBody(node: SCNNode) {
         let physicsShape = SCNPhysicsShape(node: node,
                                             options: [SCNPhysicsShape.Option.scale: SCNVector3(0.03, 0.03, 0.1),
-                                                SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
-            ])
+                                                SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
         let body = SCNPhysicsBody(type: .static,
                                   shape: physicsShape)
         node.physicsBody = body

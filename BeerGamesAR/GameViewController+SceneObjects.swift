@@ -57,6 +57,16 @@ extension GameViewController: SCNPhysicsContactDelegate {
         let node = SCNNode(geometry: text)
         node.scale = scale
         node.position = position
+        
+        // rotate at the center of the nodes width and height
+        let min = node.boundingBox.min
+        let max = node.boundingBox.max
+        node.pivot = SCNMatrix4MakeTranslation(
+            min.x + (max.x - min.x) / 2,
+            min.y + (max.y - min.y) / 2,
+            min.z + (max.z - min.z) / 2
+        )
+        
         node.name = "scoreNode"
         
         return node
@@ -64,9 +74,9 @@ extension GameViewController: SCNPhysicsContactDelegate {
     
     func rotateAnimation() -> SCNAction {
         
-        let rotateAction = SCNAction.rotate(by: CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 1)
+        let rotateAction = SCNAction.rotate(by: 2 * CGFloat.pi, around: SCNVector3(0, 0.5, 0), duration: 5)
         
-        return rotateAction
+        return SCNAction.repeatForever(rotateAction)
     }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
@@ -94,16 +104,16 @@ extension GameViewController: SCNPhysicsContactDelegate {
             if node.name == "cup_" + nodeNumber {
                 node.removeFromParentNode()
                 self.updateCupState(nodeNumber: String(nodeNumber))
-                self.updateBallInPlay(bool: false)
-                self.isBallInPlay = false
 //                disableShootButton()
             }
             if node.name == "tube_" + nodeNumber ||
-                node.name == "plane_" + nodeNumber ||
-                node.name == "ball" {
+                node.name == "plane_" + nodeNumber {
                 node.removeFromParentNode()
-                
-                // invalidate ball dismissal timer
+            }
+            if node.name == "ball" {
+                node.removeFromParentNode()
+                self.updateBallInPlay(bool: false)
+                self.isBallInPlay = false
                 dismissBallTimer.invalidate()
             }
         })
