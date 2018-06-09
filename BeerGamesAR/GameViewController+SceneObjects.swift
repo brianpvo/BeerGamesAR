@@ -62,9 +62,9 @@ extension GameViewController: SCNPhysicsContactDelegate {
         let min = node.boundingBox.min
         let max = node.boundingBox.max
         node.pivot = SCNMatrix4MakeTranslation(
-            min.x + (max.x - min.x) / 2,
-            min.y + (max.y - min.y) / 2,
-            min.z + (max.z - min.z) / 2
+            min.x + /* (+ 0.5 *) */ (max.x - min.x) / 2,
+            min.y + /* (+ 0.5 *) */ (max.y - min.y) / 2,
+            min.z + /* (+ 0.5 *) */ (max.z - min.z) / 2
         )
         
         node.name = "scoreNode"
