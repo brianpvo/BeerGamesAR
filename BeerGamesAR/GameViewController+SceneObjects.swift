@@ -8,17 +8,16 @@
 
 import ARKit
 
-extension GameViewController {
+// Scene Objects
+extension GameViewController: SCNPhysicsContactDelegate {
     
     // MARK: Setup Scene
     
-    func createBallShoot(_with position:SCNVector3) -> SCNNode {
-        
-        let ball = SCNNode(geometry: SCNSphere(radius: 0.02))
-        ball.geometry?.firstMaterial?.diffuse.contents = UIColor.red
-        ball.position = position
+    func createBall(transform: SCNMatrix4) -> SCNNode {
+        let ball = SCNNode(geometry: SCNSphere(radius: 0.02)) // 0.02
+        ball.geometry?.firstMaterial?.diffuse.contents = UIColor.orange
+        ball.transform = transform
         ball.name = "ball"
-        
         return ball
     }
     
@@ -36,43 +35,38 @@ extension GameViewController {
         // add Table Top
         let tableScene = SCNScene(named: "customTableAndCups.scnassets/Table.scn")
         guard let tableNode = tableScene?.rootNode.childNode(withName: "table", recursively: false) else { return SCNNode() }
-        tableNode.name = "table"
         
         DispatchQueue.global(qos: .default).async {
-            // add Table Top
-           
-            let beerPongText = self.createText(text: "BEER PONG")
+            let beerPongText = self.createText(text: "BEER PONG",
+                                               textColor: .red,
+                                               position: SCNVector3(0, 2, -2),
+                                               scale: SCNVector3(0.01, 0.01, 0.01))
             tableNode.addChildNode(beerPongText)
-
-            self.nodePhysics.applyPhysics()
-
+            self.nodePhysics.apply()
         }
         return tableNode
     }
     
-    @objc func createBall(position: SCNVector3){
-        let ballGeo = SCNSphere(radius: 0.15)
-        ballNode = SCNNode(geometry: ballGeo)
-        let ballMaterial = SCNMaterial()
-        ballMaterial.diffuse.contents = UIImage(named: "ball.scnassets/ballTextWhite.tif")
-        ballNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: ballGeo, options: nil))
-        ballGeo.materials = [ballMaterial]
-        ballNode.physicsBody?.isAffectedByGravity = false
-        ballNode.position = position
-        
-        sceneView.scene.rootNode.addChildNode(ballNode)
-    }
-    
-    func createText(text: String) -> SCNNode {
+    func createText(text: String, textColor: UIColor, position: SCNVector3, scale: SCNVector3) -> SCNNode {
         let text = SCNText(string: text, extrusionDepth: 2)
         
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor.red
+        material.diffuse.contents = textColor
         text.materials = [material]
         
         let node = SCNNode(geometry: text)
-        node.scale = SCNVector3(0.01, 0.01, 0.01)
-        node.position = SCNVector3(0,2,-2)
+        node.scale = scale
+        node.position = position
+        
+        // rotate at the center of the nodes width and height
+        let min = node.boundingBox.min
+        let max = node.boundingBox.max
+        node.pivot = SCNMatrix4MakeTranslation(
+            min.x + /* (+ 0.5 *) */ (max.x - min.x) / 2,
+            min.y + /* (+ 0.5 *) */ (max.y - min.y) / 2,
+            min.z + /* (+ 0.5 *) */ (max.z - min.z) / 2
+        )
+        
         node.name = "scoreNode"
         
         return node
@@ -80,8 +74,48 @@ extension GameViewController {
     
     func rotateAnimation() -> SCNAction {
         
-        let rotateAction = SCNAction.rotate(by: CGFloat.pi, around: SCNVector3(0, 1, 0), duration: 1)
+        let rotateAction = SCNAction.rotate(by: 2 * CGFloat.pi, around: SCNVector3(0, 0.5, 0), duration: 5)
         
-        return rotateAction
+        return SCNAction.repeatForever(rotateAction)
+    }
+    
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        let nodeA = contact.nodeA
+        let nodeB = contact.nodeB
+        
+        DispatchQueue.global(qos: .background).async {
+            
+            if nodeA.name == "ball" && nodeB.name?.range(of: "plane") != nil {
+                print("ball touched \(nodeB.name!)")
+                self.removeCupAndPhysics(contactNode: nodeB)
+            }
+            else if (nodeA.name?.contains("plane"))! && nodeB.name == "ball" {
+                print("\(nodeA.name!) touched ball")
+                self.removeCupAndPhysics(contactNode: nodeA)
+            }
+        }
+    }
+    
+    func removeCupAndPhysics(contactNode: SCNNode) {
+        self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
+            guard let nodeName = contactNode.name,
+                let rangeIndex = nodeName.range(of: "_") else { return }
+            let nodeNumber = nodeName[rangeIndex.upperBound...]
+            if node.name == "cup_" + nodeNumber {
+                node.removeFromParentNode()
+                self.updateCupState(nodeNumber: String(nodeNumber))
+//                disableShootButton()
+            }
+            if node.name == "tube_" + nodeNumber ||
+                node.name == "plane_" + nodeNumber {
+                node.removeFromParentNode()
+            }
+            if node.name == "ball" {
+                node.removeFromParentNode()
+                self.updateBallInPlay(bool: false)
+                self.isBallInPlay = false
+                dismissBallTimer.invalidate()
+            }
+        })
     }
 }

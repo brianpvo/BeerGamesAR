@@ -27,6 +27,7 @@ extension GameViewController {
     // MARK: Actions
     
     @objc func hostButtonPressed(_ sender: UIButton) {
+        myPlayerNumber = 0
         if state == ARState.Default {
             enterState(state: .CreatingRoom)
             createRoom()
@@ -36,6 +37,7 @@ extension GameViewController {
     }
     
     @objc func resolveButtonPressed(_ sender: UIButton) {
+        myPlayerNumber = 1
         if state == ARState.Default {
             enterState(state: .EnterRoomCode)
         } else {
@@ -60,10 +62,10 @@ extension GameViewController {
                     }
                     guard let anchors = value["hosted_anchor_id"] as? [String] else { return }
                     for anchorId in anchors {
-                        //                        print(anchorId)
                         strongSelf.resolveAnchorWithIdentifier(identifier: anchorId)
                     }
-                    strongSelf.firebaseReference?.child("hotspot_list").child(roomCode).removeAllObservers()
+                    strongSelf.firebaseReference?.child("hotspot_list")
+                        .child(roomCode).removeAllObservers()
                 }
             })
     }
@@ -173,6 +175,7 @@ extension GameViewController {
                     firebaseReference.child("hotspot_list").child(roomCode).removeAllObservers()
                 }
             }
+            resetGameState()
             toggleButton(button: hostButton, enabled: true, title: "HOST")
             toggleButton(button: resolveButton, enabled: true, title: "RESOLVE")
             roomCode = "";
@@ -234,10 +237,26 @@ extension GameViewController {
             let timestampeInt = Int(currentTimestamp.timeIntervalSince1970 * 1000)
             let timestamp = NSNumber(value: timestampeInt)
             
+            // create gameState for multiplayer
+            let ballState = NSArray(array: [0.0, 0.0, 0.0, 0.0,
+                                            0.0, 0.0, 0.0, 0.0,
+                                            0.0, 0.0, 0.0, 0.0,
+                                            0.0, 0.0, 0.0, 0.0])
+            let cupState = NSArray(array: [1, 1, 1, 1, 1, 1,  // player 0 cups
+                                           1, 1, 1, 1, 1, 1]) // player 1 cups
+            let gameState = [
+                "ball_state" : ballState,
+                "ball_in_play" : false,
+                "cup_state": cupState,
+                "player_joined" : false,
+                "player_turn" : 0 // 0 - host, 1 - new player
+            ] as [String: Any]
+            
             // pass room number, anchor count, and timestamp into newRoom dictionary
             let newRoom = ["display_name" : newRoomNumber.stringValue,
                            "hosted_anchor_count" : 0,
-                           "updated_at_timestamp" : timestamp] as [String : Any]
+                           "updated_at_timestamp" : timestamp,
+                           "game_state" : gameState] as [String : Any]
             
             // create a new node in firebase under hotspot_list to document the new room info with newRoom variable
             strongSelf?.firebaseReference?.child("hotspot_list")
@@ -260,8 +279,15 @@ extension GameViewController {
         })
     }
     
-    private func roomCreated(roomCode: String){
+    private func roomCreated(roomCode: String) {
         self.roomCode = roomCode
         self.enterState(state: .RoomCreated)
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").child("player_joined").observe(.value, with: { (snapshot) in
+                guard let player_joined = snapshot.value as? Bool else { return }
+                if player_joined {
+                    self.observeGameState()
+                }
+            })
     }
 }

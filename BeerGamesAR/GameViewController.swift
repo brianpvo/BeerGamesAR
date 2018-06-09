@@ -31,14 +31,24 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var roomCode: String?
     var hostButton: UIButton!
     var resolveButton: UIButton!
+    var shootButton: UIButton!
     var nodePhysics: NodePhysics!
     var ballNode: SCNNode!
-    var cameraOrientation: SCNVector3!
-    var cameraPosition: SCNVector3!
-    var panGesture: UIPanGestureRecognizer!
-    var timer = Timer()
-    var isGestureEnabled = true
-    var camera: SCNNode!
+    var scoreManager: ScoreManager!
+    var tableNode: SCNNode!
+    
+    // GAME STATE VARIABLES
+    var myPlayerNumber: Int! {
+        didSet { toggleShootButton() }
+    }
+    var playerTurn: Int = 2 {
+        didSet { toggleShootButton() }
+    }
+    var isBallInPlay = false {
+        didSet { toggleShootButton() }
+    }
+    var dismissBallTimer = Timer()
+    var isIcebroken = false
     
     // SLIDER VARIABLES
     var slider: CustomSlider!
@@ -47,10 +57,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var sliderGoingUp = true
     var sliderGoingDown = false
     
-    
     // MARK - Overriding UIViewController
-    
-    
+
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -62,7 +70,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         sceneView.session.delegate = self
         
         nodePhysics = NodePhysics(scene: self.sceneView.scene)
-        self.sceneView.scene.physicsWorld.contactDelegate = nodePhysics
+        scoreManager = ScoreManager(scene: self.sceneView.scene)
+        self.sceneView.scene.physicsWorld.contactDelegate = self
         
         do {
             gSession = try GARSession.init(apiKey: ARCoreAPIKey, bundleIdentifier: nil)
@@ -75,26 +84,17 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             enterState(state: .Default)
         }
         
+        self.setupSlider()
         self.setupButtons()
-        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
-        button.backgroundColor = UIColor.green
-        button.setTitle("Shoot Ball", for: UIControlState.normal)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        self.view.addSubview(button)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        button.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -150).isActive = true
         
-        //SLIDER SETUP
-        setupSlider()
-        
+//        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         let configuration = ARWorldTrackingConfiguration()
-        configuration.worldAlignment = .gravity
+        configuration.worldAlignment = .gravityAndHeading
         configuration.planeDetection = .horizontal
         
         sceneView.session.run(configuration)
@@ -150,6 +150,19 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         hostButton.isHidden = true
         resolveButton.isHidden = true
+        
+        self.shootButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
+        self.shootButton.backgroundColor = UIColor.gray
+        self.shootButton.setTitle("Shoot Ball", for: UIControlState.normal)
+        self.shootButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        self.view.addSubview(self.shootButton)
+        self.shootButton.isUserInteractionEnabled = false
+        
+        self.shootButton.translatesAutoresizingMaskIntoConstraints = false
+        self.shootButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        self.shootButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -150).isActive = true
+        
+        self.shootButton.isHidden = true
     }
     
     func updateMessageLabel() {
@@ -165,44 +178,55 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc func buttonAction(sender: UIButton!) {
         DispatchQueue.global(qos: .background).async {
-            self.sceneView.scene.rootNode.enumerateChildNodes { (node, _) in
-                if node.name == "ball"  {
-                    node.removeFromParentNode()
-                }
+            if self.ballNode != nil {
+                self.ballNode.removeFromParentNode()
             }
             self.shootBall()
         }
     }
     
     func shootBall() {
-        
         guard let pointOfView = sceneView.pointOfView else { return }
         let transform = pointOfView.transform
+        let tableSpaceTransform = sceneView.scene.rootNode.convertTransform(transform, to: self.tableNode)
         let orientation = SCNVector3(-transform.m31,
                                      -transform.m32,
                                      -transform.m33)
-        let location = SCNVector3(transform.m41,
-                                  transform.m42,
-                                  transform.m43)
-        let position = orientation + location
+//        let location = SCNVector3(transform.m41,
+//                                  transform.m42,
+//                                  transform.m43)
+//        let position = orientation + location
+        ballNode = createBall(transform: tableSpaceTransform)
+        ballNode.position = SCNVector3(tableSpaceTransform.m41 - tableSpaceTransform.m31,
+                                       tableSpaceTransform.m42 - tableSpaceTransform.m32,
+                                       tableSpaceTransform.m43 - tableSpaceTransform.m33)
+        nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
         
-        let ball = createBallShoot(_with: position)
-        
-        nodePhysics.ballBitMaskAndPhysicsBody(_to: ball)
-        ball.physicsBody?.applyForce(SCNVector3(orientation.x * power,
-                                                -orientation.y * power,
-                                                orientation.z * power),
+        // Alternately maybe try using the tableSpace transform to set the orientation
+        ballNode.physicsBody?.applyForce(SCNVector3(orientation.x * power,
+                                                    -orientation.y * power,
+                                                    orientation.z * power),
                                      asImpulse: true)
-        self.sceneView.scene.rootNode.addChildNode(ball)
         
-        nodePhysics.scoreManager.numberOfThrows += 1
-        nodePhysics.scoreManager.updateScoreLabel()
+        isBallInPlay = true
+        self.updateBallInPlay(bool: true)
         
+        self.tableNode.addChildNode(ballNode)
+        
+        scoreManager.numberOfThrows += 1
+        scoreManager.updateScoreLabel()
+        
+        startBallTimer()
+//        disableShootButton()
     }
-    
 }
 
 func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {
     return SCNVector3Make(left.x + right.x, left.y + right.y, left.z + right.z)
 }
+
+func -(l: SCNVector3, r: SCNVector3) -> SCNVector3 {
+    return SCNVector3Make(l.x - r.x, l.y - r.y, l.z - r.z)
+}
+
 

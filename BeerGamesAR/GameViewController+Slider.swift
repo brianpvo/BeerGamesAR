@@ -20,10 +20,10 @@ extension GameViewController {
         slider.minimumValue = 0.5
         slider.maximumValue = 5.0
         slider.isContinuous = false
-        let xPos = view.frame.maxX - view.frame.width * 0.1
-        let yPos:CGFloat = 200.0
         let width = view.frame.width * 0.1
         let height = view.frame.height * 0.5
+        let xPos = view.frame.maxX - view.frame.width * 0.1
+        let yPos:CGFloat = self.sceneView.frame.midY - (height / 2)
         let sliderFrame = CGRect(x: xPos, y: yPos, width: width, height: height)
         slider.frame = sliderFrame
         view.addSubview(slider)
@@ -48,8 +48,6 @@ extension GameViewController {
         
         slider.value = power
         self.changeMinTrackColor()
-        
-        
     }
     
     func powerGoingUp() {
@@ -80,8 +78,9 @@ extension GameViewController {
    @objc func setupSlider() {
         createSlider()
         slider.value = 1.0
-        sliderTimer = Timer.scheduledTimer(timeInterval: 0.03, target: self, selector: #selector(runTimer), userInfo: nil, repeats: true)
+        sliderTimer = Timer.scheduledTimer(timeInterval: 0.06, target: self, selector: #selector(runTimer), userInfo: nil, repeats: true)
         slider.isUserInteractionEnabled = false
+        slider.isHidden = true
     }
     
     

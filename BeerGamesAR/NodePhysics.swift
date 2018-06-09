@@ -17,14 +17,12 @@ enum BitMaskCategory:Int {
     case plane = 5
 }
 
-class NodePhysics: NSObject, SCNPhysicsContactDelegate {
+class NodePhysics: NSObject {
     
     var scene: SCNScene
-    var scoreManager = ScoreManager()
     
     init(scene: SCNScene) {
         self.scene = scene
-        scoreManager.scene = scene
     }
     
     func ballBitMaskAndPhysicsBody(_to Node: SCNNode) {
@@ -38,28 +36,13 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue
         Node.physicsBody?.restitution = 0.2
         Node.physicsBody?.damping = 0.1
-        Node.physicsBody?.friction = 0.8
-        Node.physicsBody?.mass = 0.65
+        Node.physicsBody?.friction = 0.7
+        Node.physicsBody?.mass = 0.60
     }
     
-    func cupBitMaskAndPhysicsBody(_to Node: SCNNode, scale: SCNVector3) {
-        let body = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: Node, options: [SCNPhysicsShape.Option.keepAsCompound : true,
-            SCNPhysicsShape.Option.scale: scale,
-            SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
-            ]))
-        Node.physicsBody = body
-        Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
-    }
-    
-    func tubeBitMaskAndPhysicsBody(node: SCNNode) {
+    private func tubeBitMaskAndPhysicsBody(node: SCNNode) {
         let physicsShape = SCNPhysicsShape(node: node,
-                                           options: [//SCNPhysicsShape.Option.keepAsCompound : true,
-                                                     SCNPhysicsShape.Option.scale:
-                                                        SCNVector3(0.057,
-                                                                   0.138,
-                                                                   0.061),
-                                                     SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
-            ])
+                                           options: [SCNPhysicsShape.Option.keepAsCompound : true])
         let body = SCNPhysicsBody(type: .static,
                                   shape: physicsShape)
         node.physicsBody = body
@@ -67,15 +50,10 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
     }
     
-    func planeBitMaskAndPhysicsBody(node: SCNNode) {
+    private func planeBitMaskAndPhysicsBody(node: SCNNode) {
         let physicsShape = SCNPhysicsShape(node: node,
-                                            options: [//SCNPhysicsShape.Option.keepAsCompound : true,
-                                                SCNPhysicsShape.Option.scale:
-                                                    SCNVector3(0.03,
-                                                               0.03,
-                                                               0.1),
-                                                SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
-            ])
+                                            options: [SCNPhysicsShape.Option.scale: SCNVector3(0.03, 0.03, 0.1),
+                                                SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
         let body = SCNPhysicsBody(type: .static,
                                   shape: physicsShape)
         node.physicsBody = body
@@ -83,65 +61,25 @@ class NodePhysics: NSObject, SCNPhysicsContactDelegate {
         node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
     }
     
-    func tableBitMaskAndPhysicsBody(_to Node: SCNNode) {
+    private func tableBitMaskAndPhysicsBody(_to Node: SCNNode) {
         Node.physicsBody = SCNPhysicsBody.static()
         Node.physicsBody?.categoryBitMask = BitMaskCategory.table.rawValue
         Node.physicsBody?.contactTestBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
     }
     
-    func applyPhysics() {
+    func apply() {
         scene.rootNode.enumerateChildNodes { (node, stop) in
             if node.name == "table" {
                 self.tableBitMaskAndPhysicsBody(_to: node)
             }
-//            if node.name?.range(of: "yourRedCup") != nil {
-//                node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
-//                //node.physicsBody = nil
-//            }
-//            else if node.name?.range(of: "myCup") != nil {
-////                node.physicsBody = nil
-////                node.scale = SCNVector3(x: 0.375, y: 0.468, z: 0.375)
-//            }
-            if node.name?.range(of: "Tube") != nil {
+            if node.name?.range(of: "tube") != nil {
                 self.tubeBitMaskAndPhysicsBody(node: node)
             }
-            if  node.name?.range(of: "Plane") != nil {
+            if  node.name?.range(of: "plane") != nil {
                 self.planeBitMaskAndPhysicsBody(node: node)
             }
         }
     }
-    
-    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        let nodeA = contact.nodeA
-        let nodeB = contact.nodeB
-        
-        DispatchQueue.global(qos: .background).async {
-            
-            if nodeA.name == "ball" && nodeB.name?.range(of: "Plane") != nil {
-                print("ball touched \(nodeB.name!)")
-                self.removeCupAndPhysics(contactNode: nodeB)
-            }
-            if (nodeA.name?.contains("Plane"))! && nodeB.name == "ball" {
-                print("\(nodeA.name!) touched ball")
-                self.removeCupAndPhysics(contactNode: nodeA)
-            }
-        }
-    }
-    
-    private func removeCupAndPhysics(contactNode: SCNNode) {
-        self.scene.rootNode.enumerateChildNodes({ (node, _) in
-            guard let nodeNumber = contactNode.name?.suffix(1) else { return }
-            if node.name == "yourCup" + nodeNumber ||
-                node.name == "yourTube" + nodeNumber ||
-                node.name == "yourPlane" + nodeNumber ||
-                node.name == "ball" {
-                node.removeFromParentNode()
-            }
-        })
-    }
-    
-    
-    
-   
+
 }
