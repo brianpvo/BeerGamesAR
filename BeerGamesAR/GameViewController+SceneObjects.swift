@@ -91,7 +91,6 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 self.removeCupAndPhysics(contactNode: nodeA)
             }
             if nodeA.name == "ball" && nodeB.name == "table" {
-                // might find inconsistant behavior because table is a parent
                 ballDidBounce = true
             }
             if ballDidBounce == true && ((nodeA.name?.contains("plane"))! && nodeB.name == "ball") {
@@ -125,19 +124,12 @@ extension GameViewController: SCNPhysicsContactDelegate {
     }
     
     func removeAdditionalCup(node: SCNNode){
-        let hitPlaneArray = [node.childNode(withName: "plane_0", recursively: true),
-                             node.childNode(withName: "plane_1", recursively: true),
-                             node.childNode(withName: "plane_2", recursively: true),
-                             node.childNode(withName: "plane_3", recursively: true),
-                             node.childNode(withName: "plane_4", recursively: true),
-                             node.childNode(withName: "plane_5", recursively: true),
-                             node.childNode(withName: "plane_6", recursively: true),
-                             node.childNode(withName: "plane_7", recursively: true),
-                             node.childNode(withName: "plane_8", recursively: true),
-                             node.childNode(withName: "plane_9", recursively: true),
-                             node.childNode(withName: "plane_10", recursively: true),
-                             node.childNode(withName: "plane_11", recursively: true)
-                             ]
+        
+        var hitPlaneArray: [SCNNode] = []
+        
+        for i in 0..<12 {
+            hitPlaneArray.append(node.childNode(withName: "plane_\(i)", recursively: true)!)
+        }
         let midPoint = hitPlaneArray.count / 2
         let firstHalf = hitPlaneArray[..<midPoint]
         let secondHalf = hitPlaneArray[midPoint...]
@@ -147,21 +139,21 @@ extension GameViewController: SCNPhysicsContactDelegate {
         var previousIndex = index - 1
         
         func removeSecondCup(){
-            let remainingCupArrayFirstHalf = firstHalf.filter {$0?.parent != nil}
-            let remainingCupArraySecondHalf = secondHalf.filter {$0?.parent != nil}
+            let remainingCupArrayFirstHalf = firstHalf.filter {$0.parent != nil}
+            let remainingCupArraySecondHalf = secondHalf.filter {$0.parent != nil}
             
             guard remainingCupArrayFirstHalf.count > 2, remainingCupArraySecondHalf.count > 2 else {return}
             
             if latterIndex < hitPlaneArray.count {
                 if latterIndex == 6 {return}
-                if hitPlaneArray[latterIndex]?.parent != nil {
-                    hitPlaneArray[latterIndex]?.removeFromParentNode()
+                if hitPlaneArray[latterIndex].parent != nil {
+                    removeCupAndPhysics(contactNode: hitPlaneArray[latterIndex])
                     return
                 }
                 if previousIndex > 0 {
                     if previousIndex == 5 {return}
-                    if hitPlaneArray[previousIndex]?.parent != nil {
-                        hitPlaneArray[previousIndex]?.removeFromParentNode()
+                    if hitPlaneArray[previousIndex].parent != nil {
+                        removeCupAndPhysics(contactNode: hitPlaneArray[previousIndex])
                         return
                     }
                 }
