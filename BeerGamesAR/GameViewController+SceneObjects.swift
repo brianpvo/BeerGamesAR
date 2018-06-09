@@ -79,7 +79,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 print("ball touched \(nodeB.name!)")
                 self.removeCupAndPhysics(contactNode: nodeB)
             }
-            if (nodeA.name?.contains("plane"))! && nodeB.name == "ball" {
+            else if (nodeA.name?.contains("plane"))! && nodeB.name == "ball" {
                 print("\(nodeA.name!) touched ball")
                 self.removeCupAndPhysics(contactNode: nodeA)
             }
@@ -95,7 +95,8 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 node.removeFromParentNode()
                 self.updateCupState(nodeNumber: String(nodeNumber))
                 self.updateBallInPlay(bool: false)
-                disableShootButton()
+                self.isBallInPlay = false
+//                disableShootButton()
             }
             if node.name == "tube_" + nodeNumber ||
                 node.name == "plane_" + nodeNumber ||

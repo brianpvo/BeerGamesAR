@@ -35,10 +35,6 @@ extension GameViewController {
                     print("returning on cup state")
                     return
                 }
-                
-//                self.ballPosition = SCNVector3(ball_position[0].floatValue,
-//                                               ball_position[1].floatValue,
-//                                               ball_position[2].floatValue)
                 let p = ball_position
                 let ballTransform = SCNMatrix4(m11: p[0].floatValue, m12: p[1].floatValue,
                                                m13: p[2].floatValue, m14: p[3].floatValue,
@@ -58,8 +54,6 @@ extension GameViewController {
                             self.tableNode.addChildNode(self.ballNode)
                         }
                         else {
-                            //print("translating ball \(self.ballNode.position)")
-//                            self.ballNode.position = self.ballPosition
                             self.ballNode.transform = ballTransform
                             
                         }
@@ -91,16 +85,16 @@ extension GameViewController {
                         DispatchQueue.main.async {
                             self.shootButton.isHidden = false
                         }
-                        self.disableShootButton()
+//                        self.disableShootButton()
                         
                     } else {
                         DispatchQueue.main.async {
                             self.shootButton.isHidden = true
                             self.slider.isHidden = true
                         }
-                        self.isBallInPlay = false
                         self.ballNode = nil
                     }
+                    self.isBallInPlay = false
                 }
                 self.playerTurn = player_turn
                 
@@ -170,12 +164,28 @@ extension GameViewController {
             .child("game_state").child("ball_in_play").setValue(bool)
     }
     
-    func disableShootButton() {
+    func toggleShootButton() {
         DispatchQueue.main.async {
-            self.shootButton.isUserInteractionEnabled = !self.shootButton.isUserInteractionEnabled
-            self.shootButton.backgroundColor = self.shootButton.backgroundColor == .gray ? .green : .gray
-            self.slider.isHidden = !self.slider.isHidden
+            self.shootButton.isUserInteractionEnabled = self.shouldAllowPlayerInteraction
+            self.shootButton.backgroundColor = self.shouldAllowPlayerInteraction ? self.interactiveColor : self.nonInteractiveColor
+            self.slider.isHidden = !self.shouldAllowPlayerInteraction
         }
     }
     
+    var shouldAllowPlayerInteraction: Bool {
+        get {
+            return (playerTurn == myPlayerNumber) && !isBallInPlay
+        }
+    }
+    
+    var nonInteractiveColor: UIColor {
+        get {
+            return UIColor.gray
+        }
+    }
+    var interactiveColor: UIColor {
+        get {
+            return UIColor.green
+        }
+    }
 }

@@ -80,6 +80,7 @@ extension GameViewController {
         slider.value = 1.0
         sliderTimer = Timer.scheduledTimer(timeInterval: 0.06, target: self, selector: #selector(runTimer), userInfo: nil, repeats: true)
         slider.isUserInteractionEnabled = false
+        slider.isHidden = true
     }
     
     

@@ -39,9 +39,21 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     // Game State
     var ballPosition: SCNVector3!
-    var myPlayerNumber: Int!
-    var playerTurn: Int = 2
-    var isBallInPlay = false
+    var myPlayerNumber: Int! {
+        didSet {
+            toggleShootButton()
+        }
+    }
+    var playerTurn: Int = 2 {
+        didSet {
+            toggleShootButton()
+        }
+    }
+    var isBallInPlay = false {
+        didSet {
+            toggleShootButton()
+        }
+    }
     var dismissBallTimer = Timer()
     
     // SLIDER VARIABLES
@@ -78,13 +90,10 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
             enterState(state: .Default)
         }
         
-        self.setupButtons()
         self.setupSlider()
+        self.setupButtons()
         
-        self.shootButton.isHidden = true
-        self.slider.isHidden = true
-
-        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+//        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -158,6 +167,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         self.shootButton.translatesAutoresizingMaskIntoConstraints = false
         self.shootButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         self.shootButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -150).isActive = true
+        
+        self.shootButton.isHidden = true
     }
     
     func updateMessageLabel() {
@@ -190,12 +201,13 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
 //        let location = SCNVector3(transform.m41,
 //                                  transform.m42,
 //                                  transform.m43)
-        //let position = orientation + location
-//        ballNode = createBall(position: position)
+//        let position = orientation + location
         ballNode = createBall(transform: tableSpaceTransform)
+        ballNode.position = SCNVector3(tableSpaceTransform.m41 - tableSpaceTransform.m31,
+                                       tableSpaceTransform.m42 - tableSpaceTransform.m32,
+                                       tableSpaceTransform.m43 - tableSpaceTransform.m33)
         nodePhysics.ballBitMaskAndPhysicsBody(_to: ballNode)
         
-        // NOTE: Try using [0, 0, -1] instead of the orientation
         // Alternately maybe try using the tableSpace transform to set the orientation
         ballNode.physicsBody?.applyForce(SCNVector3(orientation.x * power,
                                                     -orientation.y * power,
@@ -211,7 +223,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         scoreManager.updateScoreLabel()
         
         startBallTimer()
-        disableShootButton()
+//        disableShootButton()
     }
 }
 

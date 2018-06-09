@@ -40,16 +40,7 @@ class NodePhysics: NSObject {
         Node.physicsBody?.mass = 0.60
     }
     
-    func cupBitMaskAndPhysicsBody(_to Node: SCNNode, scale: SCNVector3) {
-        let body = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: Node, options: [SCNPhysicsShape.Option.keepAsCompound : true,
-            SCNPhysicsShape.Option.scale: scale,
-            SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
-            ]))
-        Node.physicsBody = body
-        Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
-    }
-    
-    func tubeBitMaskAndPhysicsBody(node: SCNNode) {
+    private func tubeBitMaskAndPhysicsBody(node: SCNNode) {
         let physicsShape = SCNPhysicsShape(node: node,
                                            options: [SCNPhysicsShape.Option.keepAsCompound : true])
         let body = SCNPhysicsBody(type: .static,
@@ -59,13 +50,9 @@ class NodePhysics: NSObject {
         node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
     }
     
-    func planeBitMaskAndPhysicsBody(node: SCNNode) {
+    private func planeBitMaskAndPhysicsBody(node: SCNNode) {
         let physicsShape = SCNPhysicsShape(node: node,
-                                            options: [//SCNPhysicsShape.Option.keepAsCompound : true,
-                                                SCNPhysicsShape.Option.scale:
-                                                    SCNVector3(0.03,
-                                                               0.03,
-                                                               0.1),
+                                            options: [SCNPhysicsShape.Option.scale: SCNVector3(0.03, 0.03, 0.1),
                                                 SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron
             ])
         let body = SCNPhysicsBody(type: .static,
@@ -75,7 +62,7 @@ class NodePhysics: NSObject {
         node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
     }
     
-    func tableBitMaskAndPhysicsBody(_to Node: SCNNode) {
+    private func tableBitMaskAndPhysicsBody(_to Node: SCNNode) {
         Node.physicsBody = SCNPhysicsBody.static()
         Node.physicsBody?.categoryBitMask = BitMaskCategory.table.rawValue
         Node.physicsBody?.contactTestBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue
