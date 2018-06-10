@@ -26,7 +26,6 @@ class NodePhysics: NSObject {
     }
     
     func ballBitMaskAndPhysicsBody(_to Node: SCNNode) {
-        
         let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: SCNSphere(radius: 0.02), options: [:]))
         
         Node.physicsBody = body
@@ -34,10 +33,10 @@ class NodePhysics: NSObject {
         Node.physicsBody?.categoryBitMask = BitMaskCategory.ball.rawValue
         Node.physicsBody?.contactTestBitMask = BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue
-        Node.physicsBody?.restitution = 0.2
-        Node.physicsBody?.damping = 0.1
+        Node.physicsBody?.restitution = 1.45
+        Node.physicsBody?.damping = 0.3
         Node.physicsBody?.friction = 0.7
-        Node.physicsBody?.mass = 0.60
+        Node.physicsBody?.mass = 0.6
     }
     
     private func tubeBitMaskAndPhysicsBody(node: SCNNode) {

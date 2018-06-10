@@ -136,8 +136,10 @@ extension GameViewController {
         guard let roomCode = roomCode, roomCode.count != 0 else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").removeAllObservers()
-        self.shootButton.isHidden = true
-        self.slider.isHidden = true
+        DispatchQueue.main.async {
+            self.shootButton.isHidden = true
+            self.slider.isHidden = true
+        }
         self.inGame = false;
     }
     
