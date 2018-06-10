@@ -14,8 +14,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var sceneView: ARSCNView!
     @IBOutlet weak var roomCodeLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
-    @IBOutlet weak var menuWidthConstraint: NSLayoutConstraint!
-    @IBOutlet weak var menuBarView: UIView!
+    //    @IBOutlet weak var menuWidthConstraint: NSLayoutConstraint!
+    //    @IBOutlet weak var menuBarView: UIView!
     
     // API VARIABLES
     var firebaseReference: DatabaseReference?
@@ -57,8 +57,23 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var sliderGoingUp = true
     var sliderGoingDown = false
     
+    // popover menu on right bottom corner to show Host and Join
+    var popover: Popover!
+    let popoverText = ["HOST", "JOIN"]
+    
+    let popoverMenu: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        let image = #imageLiteral(resourceName: "popoverMenu")
+        button.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.imageView?.tintColor = .white
+        button.addTarget(self, action: #selector(tappedPopoverMenu), for: .touchUpInside)
+        return button
+    }()
+    
+    
     // MARK - Overriding UIViewController
-
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -87,7 +102,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         self.setupSlider()
         self.setupButtons()
         
-//        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+        view.addSubview(popoverMenu)
+        setupConstraint()
+        //        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -119,38 +136,38 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     
     // MARK: Actions
     
-    @IBAction func menuButtonPressed(_ sender: UIButton) {
-        self.menuWidthConstraint.constant = self.menuWidthConstraint.constant == 200 ? 20 : 200
-        UIView.animate(withDuration: 1.5, delay: 0.0, usingSpringWithDamping: 0.3, initialSpringVelocity: 3, options: .curveEaseInOut, animations: {
-            self.view.layoutIfNeeded()
-            self.hostButton.isHidden = false
-            self.resolveButton.isHidden = false
-        }, completion: nil)
-    }
+    //    @IBAction func menuButtonPressed(_ sender: UIButton) {
+    //        self.menuWidthConstraint.constant = self.menuWidthConstraint.constant == 200 ? 20 : 200
+    //        UIView.animate(withDuration: 1.5, delay: 0.0, usingSpringWithDamping: 0.3, initialSpringVelocity: 3, options: .curveEaseInOut, animations: {
+    //            self.view.layoutIfNeeded()
+    //            self.hostButton.isHidden = false
+    //            self.resolveButton.isHidden = false
+    //        }, completion: nil)
+    //    }
     
     // MARK: Helper Methods
     
     func setupButtons() {
-        hostButton = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
-        hostButton.setTitle("HOST", for: .normal)
-        hostButton.addTarget(self, action: #selector(hostButtonPressed(_:)), for: .touchUpInside)
-        menuBarView.addSubview(hostButton)
-        hostButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        resolveButton = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
-        resolveButton.setTitle("RESOLVE", for: .normal)
-        resolveButton.addTarget(self, action: #selector(resolveButtonPressed(_:)), for: .touchUpInside)
-        menuBarView.addSubview(resolveButton)
-        resolveButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.hostButton.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
-        self.resolveButton.rightAnchor.constraint(equalTo: self.menuBarView.rightAnchor, constant: -35).isActive = true
-        self.resolveButton.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
-        self.hostButton.rightAnchor.constraint(equalTo: self.resolveButton.leftAnchor, constant: -10).isActive = true
-        
-        hostButton.isHidden = true
-        resolveButton.isHidden = true
-        
+        //        hostButton = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+        //        hostButton.setTitle("HOST", for: .normal)
+        //        hostButton.addTarget(self, action: #selector(hostButtonPressed(_:)), for: .touchUpInside)
+        //        menuBarView.addSubview(hostButton)
+        //        hostButton.translatesAutoresizingMaskIntoConstraints = false
+        //
+        //        resolveButton = UIButton(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+        //        resolveButton.setTitle("RESOLVE", for: .normal)
+        //                resolveButton.addTarget(self, action: #selector(resolveButtonPressed(_:)), for: .touchUpInside)
+        //        menuBarView.addSubview(resolveButton)
+        //        resolveButton.translatesAutoresizingMaskIntoConstraints = false
+        //
+        //        self.hostButton.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
+        //        self.resolveButton.rightAnchor.constraint(equalTo: self.menuBarView.rightAnchor, constant: -35).isActive = true
+        //        self.resolveButton.centerYAnchor.constraint(equalTo: self.menuBarView.centerYAnchor, constant: 0).isActive = true
+        //        self.hostButton.rightAnchor.constraint(equalTo: self.resolveButton.leftAnchor, constant: -10).isActive = true
+        //
+        //        hostButton.isHidden = true
+        //        resolveButton.isHidden = true
+        //
         self.shootButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
         self.shootButton.backgroundColor = UIColor.gray
         self.shootButton.setTitle("Shoot Ball", for: UIControlState.normal)
@@ -163,6 +180,8 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         self.shootButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -150).isActive = true
         
         self.shootButton.isHidden = true
+        
+        
     }
     
     func updateMessageLabel() {
@@ -192,10 +211,10 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         let orientation = SCNVector3(-transform.m31,
                                      -transform.m32,
                                      -transform.m33)
-//        let location = SCNVector3(transform.m41,
-//                                  transform.m42,
-//                                  transform.m43)
-//        let position = orientation + location
+        //        let location = SCNVector3(transform.m41,
+        //                                  transform.m42,
+        //                                  transform.m43)
+        //        let position = orientation + location
         ballNode = createBall(transform: tableSpaceTransform)
         ballNode.position = SCNVector3(tableSpaceTransform.m41 - tableSpaceTransform.m31,
                                        tableSpaceTransform.m42 - tableSpaceTransform.m32,
@@ -206,7 +225,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         ballNode.physicsBody?.applyForce(SCNVector3(orientation.x * power,
                                                     -orientation.y * power,
                                                     orientation.z * power),
-                                     asImpulse: true)
+                                         asImpulse: true)
         
         isBallInPlay = true
         self.updateBallInPlay(bool: true)
@@ -217,8 +236,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         scoreManager.updateScoreLabel()
         
         startBallTimer()
-//        disableShootButton()
+        //        disableShootButton()
     }
+    
 }
 
 func +(left:SCNVector3, right:SCNVector3) -> SCNVector3 {

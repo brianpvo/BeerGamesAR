@@ -1,16 +1,87 @@
 //
-//  Popover.swift
+//  PopoverMenu.swift
 //  BeerGamesAR
 //
 //  Created by ruijia lin on 6/9/18.
 //  Copyright © 2018 Brian Vo & Ray Lin & Ramen Singh & Tyler Boudreau. All rights reserved.
 //
 //
-//  Popover.swift
-//  Popover
+//  PopoverMenu.swift
+//  PopoverMenu
 
 import Foundation
 import UIKit
+
+struct PopOverText {
+    let host = "HOST"
+    let join = "JOIN"
+}
+
+extension GameViewController{
+    
+    @objc func tappedPopoverMenu(){
+        let tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width / 4, height: self.view.frame.height / 8))
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.isScrollEnabled = false
+        let popoverOptions: [PopoverOption] = [
+            .type(.auto),
+            .blackOverlayColor(UIColor(white: 0.0, alpha: 0.6))]
+        popover = Popover(options: popoverOptions, showHandler: nil, dismissHandler: nil)
+        popover.show(tableView, fromView: popoverMenu)
+    }
+    
+    func setupConstraint(){
+        popoverMenu.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
+        popoverMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
+        popoverMenu.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.05).isActive = true
+        popoverMenu.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.02).isActive = true
+    }
+    
+    private func resolveButtonPressed() {
+        myPlayerNumber = 1
+        if state == ARState.Default {
+            enterState(state: .EnterRoomCode)
+        } else {
+            enterState(state: .Default)
+        }
+    }
+    
+    private func hostButtonPressed() {
+        myPlayerNumber = 0
+        if state == ARState.Default {
+            enterState(state: .CreatingRoom)
+            createRoom()
+        } else {
+            enterState(state: .Default)
+        }
+    }
+}
+
+extension GameViewController: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return popoverText.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
+        cell.textLabel?.text = popoverText[indexPath.row]
+        cell.textLabel?.textAlignment = .center
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let popOverText = PopOverText()
+
+        if popoverText[indexPath.row] == popOverText.host {
+            hostButtonPressed()
+        }else if popoverText[indexPath.row] == popOverText.join {
+            resolveButtonPressed()
+        }
+        // dismiss
+        popover.dismiss()
+    }
+}
 
 public enum PopoverOption {
     case arrowSize(CGSize)

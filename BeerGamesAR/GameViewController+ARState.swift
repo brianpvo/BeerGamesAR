@@ -26,24 +26,24 @@ extension GameViewController {
     
     // MARK: Actions
     
-    @objc func hostButtonPressed(_ sender: UIButton) {
-        myPlayerNumber = 0
-        if state == ARState.Default {
-            enterState(state: .CreatingRoom)
-            createRoom()
-        } else {
-            enterState(state: .Default)
-        }
-    }
+//    @objc func hostButtonPressed(_ sender: UIButton) {
+//        myPlayerNumber = 0
+//        if state == ARState.Default {
+//            enterState(state: .CreatingRoom)
+//            createRoom()
+//        } else {
+//            enterState(state: .Default)
+//        }
+//    }
     
-    @objc func resolveButtonPressed(_ sender: UIButton) {
-        myPlayerNumber = 1
-        if state == ARState.Default {
-            enterState(state: .EnterRoomCode)
-        } else {
-            enterState(state: .Default)
-        }
-    }
+//    @objc func resolveButtonPressed(_ sender: UIButton) {
+//        myPlayerNumber = 1
+//        if state == ARState.Default {
+//            enterState(state: .EnterRoomCode)
+//        } else {
+//            enterState(state: .Default)
+//        }
+//    }
     
     // MARK: Anchor Hosting / Resolving
     
