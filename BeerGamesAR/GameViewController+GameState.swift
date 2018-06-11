@@ -124,7 +124,11 @@ extension GameViewController {
             winner.runAction(self.rotateAnimation())
             self.tableNode.addChildNode(winner)
             self.removeGameStateObserver()
-            self.showResetGameDialog()
+            Timer.scheduledTimer(withTimeInterval: 6, repeats: false) { [weak self]_ in
+                DispatchQueue.main.async {
+                    self?.showResetGameDialog()
+                }
+            }
         }
     }
     
@@ -195,13 +199,13 @@ extension GameViewController {
     }
     
     func removeGameStateObserver() {
-        guard let roomCode = roomCode, roomCode.count != 0 else { return }
-        firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("game_state").removeAllObservers()
         DispatchQueue.main.async {
             self.shootButton.isHidden = true
             self.slider.isHidden = true
         }
+        guard let roomCode = roomCode, roomCode.count != 0 else { return }
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").removeAllObservers()
         self.inGame = false;
     }
     
