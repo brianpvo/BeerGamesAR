@@ -86,6 +86,7 @@ extension GameViewController: UITableViewDelegate, UITableViewDataSource{
             // return to default state
             enterState(state: .Default)
             tableView.isUserInteractionEnabled = true
+            roomCodePanel.isHidden = true
         }
         // dismiss
         popover.dismiss()
