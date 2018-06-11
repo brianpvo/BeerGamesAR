@@ -12,11 +12,6 @@
 import Foundation
 import UIKit
 
-struct PopOverText {
-    let host = "HOST"
-    let join = "JOIN"
-}
-
 extension GameViewController{
     
     @objc func tappedPopoverMenu(){
@@ -32,13 +27,15 @@ extension GameViewController{
     }
     
     func setupConstraint(){
-        popoverMenu.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
-        popoverMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
-        popoverMenu.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.05).isActive = true
-        popoverMenu.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.02).isActive = true
+        popoverMenu.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20).isActive = true
+        popoverMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        popoverMenu.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.15).isActive = true
+        popoverMenu.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.15).isActive = true
+        
+        popoverMenu.imageEdgeInsets = .init(top: 15, left: 15, bottom: 15, right: 15)
     }
     
-    private func resolveButtonPressed() {
+    @objc func joinButtonPressed() {
         myPlayerNumber = 1
         if state == ARState.Default {
             enterState(state: .EnterRoomCode)
@@ -47,7 +44,7 @@ extension GameViewController{
         }
     }
     
-    private func hostButtonPressed() {
+    @objc func hostButtonPressed() {
         myPlayerNumber = 0
         if state == ARState.Default {
             enterState(state: .CreatingRoom)
@@ -71,12 +68,24 @@ extension GameViewController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let popOverText = PopOverText()
-
-        if popoverText[indexPath.row] == popOverText.host {
+        guard let selectedCell = tableView.cellForRow(at: indexPath) else {return}
+        guard let cellLabel = selectedCell.textLabel else {return}
+        var index = indexPath
+        
+        if cellLabel.text == "HOST" && state == .Default {
             hostButtonPressed()
-        }else if popoverText[indexPath.row] == popOverText.join {
-            resolveButtonPressed()
+            index.row = 1
+            guard let disableCell = tableView.cellForRow(at: index) else {return}
+            disableCell.isUserInteractionEnabled = false
+        }else if cellLabel.text == "JOIN" && state == .Default {
+            joinButtonPressed()
+            index.row = 0
+            guard let disableCell = tableView.cellForRow(at: index) else {return}
+            disableCell.isUserInteractionEnabled = false
+        }else if cellLabel.text == "CANCEL" {
+            // return to default state
+            enterState(state: .Default)
+            tableView.isUserInteractionEnabled = true
         }
         // dismiss
         popover.dismiss()

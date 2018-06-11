@@ -32,11 +32,8 @@ class StatusViewController: UIViewController {
     }
 
     // MARK: - IBOutlets
-
     @IBOutlet weak private var messagePanel: UIVisualEffectView!
-    
     @IBOutlet weak private var messageLabel: UILabel!
-    
     @IBOutlet weak private var restartExperienceButton: UIButton!
 
     // MARK: - Properties
@@ -122,7 +119,6 @@ class StatusViewController: UIViewController {
     }
 	
 	// MARK: - Panel Visibility
-    
 	private func setMessageHidden(_ hide: Bool, animated: Bool) {
         // The panel starts out hidden, so show it before animating opacity.
         messagePanel.isHidden = false
