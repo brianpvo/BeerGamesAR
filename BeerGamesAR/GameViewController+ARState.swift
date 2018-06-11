@@ -164,9 +164,9 @@ extension GameViewController {
                 self.garAnchor = nil;
             }
             if (self.state == .CreatingRoom) {
-                self.message = "Failed to create room. Tap HOST or JOIN to begin.";
+                self.message = "Failed to create room. Tap HOST or JOIN to begin";
             } else {
-                self.message = "Tap HOST or JOIN to begin.";
+                self.message = "Tap HOST or JOIN to begin";
             }
             if (self.state == .EnterRoomCode) {
                 self.dismiss(animated: false, completion: nil)
@@ -186,7 +186,7 @@ extension GameViewController {
             toggleButton(button: resolveButton, enabled: false, title: "JOIN")
             break;
         case .RoomCreated:
-            self.message = "Tap on a plane to setup beer pong game and host.";
+            self.message = "Tap on the surface to setup game";
             toggleButton(button: hostButton, enabled: true, title: "CANCEL")
             toggleButton(button: resolveButton, enabled: false, title: "JOIN")
             break;

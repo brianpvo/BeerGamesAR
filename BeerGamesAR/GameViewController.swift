@@ -49,7 +49,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         didSet { toggleShootButton() }
     }
     var dismissBallTimer = Timer()
-    var isIcebroken = false
     
     // SLIDER VARIABLES
     var slider: CustomSlider!
@@ -87,7 +86,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.setupSlider()
         self.setupButtons()
-//        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -217,7 +216,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         scoreManager.updateScoreLabel()
         
         startBallTimer()
-//        disableShootButton()
     }
 }
 
