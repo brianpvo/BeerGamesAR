@@ -61,7 +61,7 @@
                                     </constraints>
                                 </view>
                                 <vibrancyEffect>
-                                    <blurEffect style="extraLight"/>
+                                    <blurEffect style="light"/>
                                 </vibrancyEffect>
                             </visualEffectView>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V4r-pE-E9w" userLabel="Message Panel">

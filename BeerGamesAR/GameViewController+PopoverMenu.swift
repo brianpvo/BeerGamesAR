@@ -27,8 +27,8 @@ extension GameViewController{
     }
     
     func setupConstraint(){
-        popoverMenu.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20).isActive = true
-        popoverMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        popoverMenu.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10).isActive = true
+        popoverMenu.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
         popoverMenu.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.15).isActive = true
         popoverMenu.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.15).isActive = true
         
