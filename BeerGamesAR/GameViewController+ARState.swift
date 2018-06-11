@@ -23,28 +23,7 @@ enum ARState {
 };
 
 extension GameViewController {
-    
-    // MARK: Actions
-    
-    @objc func hostButtonPressed(_ sender: UIButton) {
-        myPlayerNumber = 0
-        if state == ARState.Default {
-            enterState(state: .CreatingRoom)
-            createRoom()
-        } else {
-            enterState(state: .Default)
-        }
-    }
-    
-    @objc func resolveButtonPressed(_ sender: UIButton) {
-        myPlayerNumber = 1
-        if state == ARState.Default {
-            enterState(state: .EnterRoomCode)
-        } else {
-            enterState(state: .Default)
-        }
-    }
-    
+
     // MARK: Anchor Hosting / Resolving
     
     func resolveAnchorWithRoomCode(roomCode: String) {
@@ -164,9 +143,9 @@ extension GameViewController {
                 self.garAnchor = nil;
             }
             if (self.state == .CreatingRoom) {
-                self.message = "Failed to create room. Tap HOST or RESOLVE to begin.";
+                self.message = "Failed to create room. Tap HOST or JOIN to begin.";
             } else {
-                self.message = "Tap HOST or RESOLVE to begin.";
+                self.message = "Tap HOST or JOIN to begin.";
             }
             if (self.state == .EnterRoomCode) {
                 self.dismiss(animated: false, completion: nil)
@@ -176,19 +155,16 @@ extension GameViewController {
                 }
             }
             resetGameState()
-            toggleButton(button: hostButton, enabled: true, title: "HOST")
-            toggleButton(button: resolveButton, enabled: true, title: "RESOLVE")
+            toggleButton(state: state)
             roomCode = "";
             break;
         case .CreatingRoom:
             self.message = "Creating room...";
-            toggleButton(button: hostButton, enabled: false, title: "HOST")
-            toggleButton(button: resolveButton, enabled: false, title: "RESOLVE")
+            toggleButton(state: state)
             break;
         case .RoomCreated:
-            self.message = "Tap on a plane to create anchor and host.";
-            toggleButton(button: hostButton, enabled: true, title: "CANCEL")
-            toggleButton(button: resolveButton, enabled: false, title: "RESOLVE")
+            self.message = "Tap on surface to create anchor and host.";
+            toggleButton(state: state)
             break;
         case .Hosting:
             self.message = "Hosting anchor...";
@@ -203,16 +179,15 @@ extension GameViewController {
         case .Resolving:
             self.dismiss(animated: false, completion: nil)
             self.message = "Resolving anchor...";
-            toggleButton(button: hostButton, enabled: false, title: "HOST")
-            toggleButton(button: resolveButton, enabled: true, title: "CANCEL")
+            toggleButton(state: state)
             break;
         case .ResolvingFinished:
             guard let garAnchor = self.garAnchor else { return }
             self.message = "Finished resolving \(self.cloudStateString(cloudState: garAnchor.cloudState))"
             break;
         }
-        self.state = state;
-        self.updateMessageLabel()
+        self.state = state
+        scheduleMessage()
     }
     
     func createRoom() {
@@ -243,14 +218,14 @@ extension GameViewController {
                                             0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.0, 0.0])
             let cupState = NSArray(array: [1, 1, 1, 1, 1, 1,  // player 0 cups
-                                           1, 1, 1, 1, 1, 1]) // player 1 cups
+                1, 1, 1, 1, 1, 1]) // player 1 cups
             let gameState = [
                 "ball_state" : ballState,
                 "ball_in_play" : false,
                 "cup_state": cupState,
                 "player_joined" : false,
                 "player_turn" : 0 // 0 - host, 1 - new player
-            ] as [String: Any]
+                ] as [String: Any]
             
             // pass room number, anchor count, and timestamp into newRoom dictionary
             let newRoom = ["display_name" : newRoomNumber.stringValue,
