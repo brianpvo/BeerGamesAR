@@ -256,7 +256,7 @@ extension GameViewController {
     
     var shouldAllowPlayerInteraction: Bool {
         get {
-            return (playerTurn == myPlayerNumber) && !isBallInPlay
+            return (playerTurn == myPlayerNumber) && !isBallInPlay && inGame
         }
     }
     
