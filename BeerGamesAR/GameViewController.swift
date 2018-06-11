@@ -98,7 +98,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.setupSlider()
         self.setupShootButton()
-        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
+//        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
         view.addSubview(popoverMenu)
         setupConstraint()
         

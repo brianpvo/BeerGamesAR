@@ -36,7 +36,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
         guard let tableNode = tableScene?.rootNode.childNode(withName: "table", recursively: false) else { return SCNNode() }
         
         DispatchQueue.global(qos: .default).async {
-            let beerPongText = self.createText(text: "BEER PONG",
+            let beerPongText = self.createText(text: "BEER PONG AR",
                                                textColor: .red,
                                                position: SCNVector3(0, 2, 0),
                                                scale: SCNVector3(0.01, 0.01, 0.01))

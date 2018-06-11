@@ -181,6 +181,8 @@ extension GameViewController {
                 node.removeFromParentNode()
             }
         })
+        self.isBallInPlay = false
+        self.playerTurn = 2
         
         // Reset firebase data
         let ballState = NSArray(array: [0.0, 0.0, 0.0, 0.0,
