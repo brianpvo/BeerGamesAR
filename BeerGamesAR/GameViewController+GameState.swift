@@ -70,17 +70,15 @@ extension GameViewController {
                 for i in 0..<cup_state.count {
                     if cup_state[i] == 0 {
                         self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
-                            if node.name == "cup_\(i)" ||
-                                node.name == "tube_\(i)" ||
+                            if node.name == "cup_\(i)" {
+                                node.isHidden = true
+//                                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
+                            }
+                            if node.name == "tube_\(i)" ||
                                 node.name == "plane_\(i)" {
                                 //node.removeFromParentNode()
                                 node.isHidden = true
                                 node.physicsBody?.collisionBitMask = 0
-//                                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
-                            }
-                            
-                            if node.name == "ball" {
-                                node.removeFromParentNode()
                             }
                         })
                     }

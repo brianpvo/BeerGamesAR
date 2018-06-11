@@ -94,9 +94,26 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
         }catch let error{
             print("fail to update ARKit frame to ARCore session: \(error)")
         }
-        
-        
     }
+    
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        self.message = camera.trackingState.presentationStr
+        scheduleMessage()
+        
+        switch camera.trackingState {
+        case .notAvailable, .limited:
+            var message = camera.trackingState.presentationStr
+            if let recommendation = camera.trackingState.recommendStr {
+                message.append(": \(recommendation)")
+            }
+            self.message = message
+            scheduleMessage()
+        case .normal:
+            self.message = camera.trackingState.presentationStr
+            scheduleMessage()
+        }
+    }
+    
     // MARK: ARSCNViewDelegate
     
     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {

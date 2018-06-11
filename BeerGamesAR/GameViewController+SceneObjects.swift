@@ -7,7 +7,7 @@
 //
 
 import ARKit
-//import AudioToolbox
+import AudioToolbox
 
 // Scene Objects
 extension GameViewController: SCNPhysicsContactDelegate {
@@ -106,7 +106,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 //node.removeFromParentNode()
                 node.isHidden = true
                 self.updateCupState(nodeNumber: String(nodeNumber))
-//                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
+                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
             }
             if node.name == "tube_" + nodeNumber ||
                 node.name == "plane_" + nodeNumber {
