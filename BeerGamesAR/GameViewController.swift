@@ -36,6 +36,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var ballNode: SCNNode!
     var scoreManager: ScoreManager!
     var tableNode: SCNNode!
+    var inGame = false;
     
     // GAME STATE VARIABLES
     var myPlayerNumber: Int! {
@@ -48,7 +49,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         didSet { toggleShootButton() }
     }
     var dismissBallTimer = Timer()
-    var isIcebroken = false
     
     // SLIDER VARIABLES
     var slider: CustomSlider!
@@ -101,12 +101,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.setupSlider()
         self.setupButtons()
-        
+        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
         view.addSubview(popoverMenu)
         setupConstraint()
-        //        self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
-        
-        // set status labels to be more rounded corners
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -202,7 +199,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         scoreManager.updateScoreLabel()
         
         startBallTimer()
-        //        disableShootButton()
     }
 }
 

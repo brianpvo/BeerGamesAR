@@ -24,7 +24,7 @@ class ScoreManager {
     func updateScoreLabel() {
         scene.rootNode.enumerateChildNodes { (node, _) in
             if node.name == "scoreNode" {
-                let text = SCNText(string: "\(numberOfSuccesfulThrows) cups in \(numberOfThrows) tries", extrusionDepth: 2)
+                let text = SCNText(string: "\(numberOfSuccesfulThrows) CUPS IN \(numberOfThrows) tries", extrusionDepth: 2)
                 let material = SCNMaterial()
                 material.diffuse.contents = UIColor.red
                 text.materials = [material]

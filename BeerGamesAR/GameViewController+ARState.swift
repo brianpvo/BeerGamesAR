@@ -143,9 +143,9 @@ extension GameViewController {
                 self.garAnchor = nil;
             }
             if (self.state == .CreatingRoom) {
-                self.message = "Failed to create room. Tap HOST or JOIN to begin.";
+                self.message = "Failed to create room. Tap HOST or JOIN to begin";
             } else {
-                self.message = "Tap HOST or JOIN to begin.";
+                self.message = "Tap HOST or JOIN to begin";
             }
             if (self.state == .EnterRoomCode) {
                 self.dismiss(animated: false, completion: nil)
@@ -163,27 +163,30 @@ extension GameViewController {
             toggleButton(state: state)
             break;
         case .RoomCreated:
-            self.message = "Tap on surface to create anchor and host.";
+            self.message = "Tap on the surface to setup game";
             toggleButton(state: state)
             break;
         case .Hosting:
-            self.message = "Hosting anchor...";
+            self.message = "Setting up game...";
             break;
         case .HostingFinished:
-            guard let garAnchor = self.garAnchor else { return }
-            self.message = "Finished hosting: \(garAnchor.cloudState)"
+            self.message = "Finished setting up game"
             break;
         case .EnterRoomCode:
             self.showRoomCodeDialog()
             break;
         case .Resolving:
             self.dismiss(animated: false, completion: nil)
-            self.message = "Resolving anchor...";
+            self.message = "Joining game...";
             toggleButton(state: state)
             break;
         case .ResolvingFinished:
             guard let garAnchor = self.garAnchor else { return }
-            self.message = "Finished resolving \(self.cloudStateString(cloudState: garAnchor.cloudState))"
+            if garAnchor.cloudState == .success {
+                self.message = "Successfully joined game"
+            } else {
+                self.message = "Finished resolving \(self.cloudStateString(cloudState: garAnchor.cloudState))"
+            }
             break;
         }
         self.state = state

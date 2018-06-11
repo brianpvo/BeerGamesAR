@@ -26,18 +26,17 @@ class NodePhysics: NSObject {
     }
     
     func ballBitMaskAndPhysicsBody(_to Node: SCNNode) {
-        
         let body = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: SCNSphere(radius: 0.02), options: [:]))
         
         Node.physicsBody = body
         body.isAffectedByGravity = true
         Node.physicsBody?.categoryBitMask = BitMaskCategory.ball.rawValue
-        Node.physicsBody?.contactTestBitMask = BitMaskCategory.table.rawValue | BitMaskCategory.ball.rawValue
+        Node.physicsBody?.contactTestBitMask = BitMaskCategory.table.rawValue //| BitMaskCategory.ball.rawValue
         Node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue | BitMaskCategory.table.rawValue | BitMaskCategory.plane.rawValue
-        Node.physicsBody?.restitution = 0.2
-        Node.physicsBody?.damping = 0.1
-        Node.physicsBody?.friction = 0.7
-        Node.physicsBody?.mass = 0.60
+        Node.physicsBody?.restitution = 1.4
+        Node.physicsBody?.damping = 0.3
+        Node.physicsBody?.friction = 0.6
+        Node.physicsBody?.mass = 0.6
     }
     
     private func tubeBitMaskAndPhysicsBody(node: SCNNode) {
@@ -52,7 +51,7 @@ class NodePhysics: NSObject {
     
     private func planeBitMaskAndPhysicsBody(node: SCNNode) {
         let physicsShape = SCNPhysicsShape(node: node,
-                                            options: [SCNPhysicsShape.Option.scale: SCNVector3(0.03, 0.03, 0.1),
+                                            options: [SCNPhysicsShape.Option.scale: SCNVector3(0.035, 0.035, 0.1),
                                                 SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
         let body = SCNPhysicsBody(type: .static,
                                   shape: physicsShape)

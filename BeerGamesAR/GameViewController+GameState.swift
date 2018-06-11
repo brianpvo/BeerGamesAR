@@ -8,10 +8,12 @@
 
 import Foundation
 import ARKit
+//import AudioToolbox
 
 extension GameViewController {
     
     func observeGameState() {
+        self.inGame = true;
         guard let roomCode = roomCode else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").observe(.value, with: { (snapshot) in
@@ -65,22 +67,18 @@ extension GameViewController {
                     }
                 }
                 
-                // TODO: Make an icebreaker state to declare who goes first.
-                // NOTE: Perhaps do this before gameState observer.
-//                if !self.isIcebroken {
-//                    self.shootButton.isHidden = false
-//                    self.slider.isHidden = false
-//                } else {
-//
-//                }
-                
                 for i in 0..<cup_state.count {
                     if cup_state[i] == 0 {
                         self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
-                            if node.name == "cup_\(i)" ||
-                                node.name == "tube_\(i)" ||
+                            if node.name == "cup_\(i)" {
+                                node.isHidden = true
+//                                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
+                            }
+                            if node.name == "tube_\(i)" ||
                                 node.name == "plane_\(i)" {
-                                node.removeFromParentNode()
+                                //node.removeFromParentNode()
+                                node.isHidden = true
+                                node.physicsBody?.collisionBitMask = 0
                             }
                         })
                     }
@@ -120,23 +118,28 @@ extension GameViewController {
         let range = leftBound...rightBound
         let player1Cups = cupArray[range].filter{ $0 == 0 }
         if player1Cups.count == range.count {
-            let winner = self.createText(text: "WINNER: PLAYER \(player)",
-                textColor: .yellow,
+            let winner = self.createText(text: "GAME OVER!",
+                textColor: .orange,
                 position: SCNVector3(0.0, 1.2, 0.0),
-                scale: SCNVector3(0.05, 0.05, 0.05))
+                scale: SCNVector3(0.02, 0.015, 0.01))
             winner.runAction(self.rotateAnimation())
             self.tableNode.addChildNode(winner)
-            self.shootButton.isHidden = true
-            self.slider.isHidden = true
+            DispatchQueue.main.async {
+                self.shootButton.isHidden = true
+                self.slider.isHidden = true
+            }
         }
     }
     
     func resetGameState() {
-        guard let roomCode = roomCode else { return }
+        guard let roomCode = roomCode, roomCode.count != 0 else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").removeAllObservers()
-        self.shootButton.isHidden = true
-        self.slider.isHidden = true
+        DispatchQueue.main.async {
+            self.shootButton.isHidden = true
+            self.slider.isHidden = true
+        }
+        self.inGame = false;
     }
     
     func startBallTimer(){

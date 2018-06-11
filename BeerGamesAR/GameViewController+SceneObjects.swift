@@ -7,6 +7,7 @@
 //
 
 import ARKit
+import AudioToolbox
 
 // Scene Objects
 extension GameViewController: SCNPhysicsContactDelegate {
@@ -23,7 +24,6 @@ extension GameViewController: SCNPhysicsContactDelegate {
     
     func createRedCup(position: SCNVector3, name: String) -> SCNNode {
         let redCupScene = SCNScene(named: "cup.scnassets/RedSoloCup.scn")
-        //let redCupScene = SCNScene(named: "customTableAndCups.scnassets/lowerPolyCup.scn")
         let redCupNode = redCupScene?.rootNode.childNode(withName: "redCup", recursively: false)
         redCupNode?.name = name
         redCupNode?.position = position
@@ -39,7 +39,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
         DispatchQueue.global(qos: .default).async {
             let beerPongText = self.createText(text: "BEER PONG",
                                                textColor: .red,
-                                               position: SCNVector3(0, 2, -2),
+                                               position: SCNVector3(0, 2, 0),
                                                scale: SCNVector3(0.01, 0.01, 0.01))
             tableNode.addChildNode(beerPongText)
             self.nodePhysics.apply()
@@ -49,6 +49,7 @@ extension GameViewController: SCNPhysicsContactDelegate {
     
     func createText(text: String, textColor: UIColor, position: SCNVector3, scale: SCNVector3) -> SCNNode {
         let text = SCNText(string: text, extrusionDepth: 2)
+        text.font = UIFont(name: "HelveticaNeue-CondensedBlack", size: 25)
         
         let material = SCNMaterial()
         material.diffuse.contents = textColor
@@ -102,13 +103,16 @@ extension GameViewController: SCNPhysicsContactDelegate {
                 let rangeIndex = nodeName.range(of: "_") else { return }
             let nodeNumber = nodeName[rangeIndex.upperBound...]
             if node.name == "cup_" + nodeNumber {
-                node.removeFromParentNode()
+                //node.removeFromParentNode()
+                node.isHidden = true
                 self.updateCupState(nodeNumber: String(nodeNumber))
-//                disableShootButton()
+                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate)
             }
             if node.name == "tube_" + nodeNumber ||
                 node.name == "plane_" + nodeNumber {
-                node.removeFromParentNode()
+                //node.removeFromParentNode()
+                node.isHidden = true
+                node.physicsBody?.collisionBitMask = 0
             }
             if node.name == "ball" {
                 node.removeFromParentNode()
