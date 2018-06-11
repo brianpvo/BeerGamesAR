@@ -93,13 +93,13 @@ extension GameViewController {
         case .errorHostingDatasetProcessingFailed:
             return "ErrorHostingDatasetProcessingFailed";
         case .errorCloudIdNotFound:
-            return "ErrorCloudIdNotFound";
+            return "Error: No Table Found\nPlease Try Again";
         case .errorResolvingSdkVersionTooNew:
             return "ErrorResolvingSdkVersionTooNew";
         case .errorResolvingSdkVersionTooOld:
             return "ErrorResolvingSdkVersfionTooOld";
         case .errorResolvingLocalizationNoMatch:
-            return "ErrorResolvingLocalizationNoMatch";
+            return "Error: No Match Found\nPlease Try Again";
         }
     }
     
@@ -155,6 +155,9 @@ extension GameViewController {
                 }
             }
             removeGameStateObserver()
+            self.messagePanel.isHidden = false
+            self.isBallInPlay = false
+            self.playerTurn = 2
             toggleButton(state: state)
             roomCode = "";
             break;
@@ -177,15 +180,15 @@ extension GameViewController {
             break;
         case .Resolving:
             self.dismiss(animated: false, completion: nil)
-            self.message = "Joining game...";
+            self.message = "Joining room...";
             toggleButton(state: state)
             break;
         case .ResolvingFinished:
             guard let garAnchor = self.garAnchor else { return }
             if garAnchor.cloudState == .success {
-                self.message = "Successfully joined game"
+                self.message = "Successfully joined room"
             } else {
-                self.message = "Finished resolving \(self.cloudStateString(cloudState: garAnchor.cloudState))"
+                self.message = "Finished - \(self.cloudStateString(cloudState: garAnchor.cloudState))"
             }
             break;
         }

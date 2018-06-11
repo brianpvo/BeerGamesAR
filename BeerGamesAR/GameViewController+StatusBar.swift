@@ -15,20 +15,27 @@ extension GameViewController {
     func scheduleMessage() {
         updateMessageLabel()
         
-        let _ = Timer.scheduledTimer(withTimeInterval: 6, repeats: false) { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.messagePanel.isHidden = true
+        if state == ARState.HostingFinished || state == ARState.ResolvingFinished {
+            let _ = Timer.scheduledTimer(withTimeInterval: 6, repeats: false) { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.messagePanel.isHidden = true
+                }
             }
         }
     }
     
-    @objc func updateMessageLabel() {
+    @objc private func updateMessageLabel() {
         DispatchQueue.main.async {
-            self.messagePanel.isHidden = false
             self.messageLabel.text = self.message
-            self.roomCodePanel.isHidden = false
-            self.roomCodeLabel.text = self.roomCode != "" ? "Room: \(self.roomCode ?? "0000")" : ""
+            if self.state == ARState.RoomCreated || self.state == ARState.CreatingRoom ||
+                self.state == ARState.ResolvingFinished || self.state == ARState.Resolving {
+                self.displayRoomCode()
+            }
         }
+    }
+    private func displayRoomCode(){
+        self.roomCodePanel.isHidden = false
+        self.roomCodeLabel.text = self.roomCode != "" ? "Room: \(self.roomCode ?? "0000")" : ""
     }
 }
 

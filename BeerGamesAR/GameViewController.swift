@@ -101,6 +101,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
         view.addSubview(popoverMenu)
         setupConstraint()
+        
+        // Set RoomCodePanel to hidden by default
+        roomCodePanel.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
