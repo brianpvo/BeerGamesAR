@@ -30,7 +30,6 @@ extension GameViewController {
             self.roomCodeLabel.text = self.roomCode != "" ? "Room: \(self.roomCode ?? "0000")" : ""
         }
     }
-    
 }
 
 extension ARCamera.TrackingState {

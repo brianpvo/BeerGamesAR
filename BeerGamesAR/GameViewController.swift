@@ -29,12 +29,10 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     // NORMAL VARIABLES
     var message: String?
     var roomCode: String?
-//    var hostButton: UIButton!
-//    var resolveButton: UIButton!
     var shootButton: UIButton!
     var nodePhysics: NodePhysics!
     var ballNode: SCNNode!
-    var scoreManager: ScoreManager!
+//    var scoreManager: ScoreManager!
     var tableNode: SCNNode!
     var inGame = false;
     
@@ -57,10 +55,9 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     var sliderGoingUp = true
     var sliderGoingDown = false
     
-    // popover menu on right bottom corner to show Host and Join
+    // POPOVER VARIABLES
     var popover: Popover!
     var popoverText = ["HOST", "JOIN"]
-    
     let popoverMenu: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -85,7 +82,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         sceneView.session.delegate = self
         
         nodePhysics = NodePhysics(scene: self.sceneView.scene)
-        scoreManager = ScoreManager(scene: self.sceneView.scene)
+//        scoreManager = ScoreManager(scene: self.sceneView.scene)
         self.sceneView.scene.physicsWorld.contactDelegate = self
         
         do {
@@ -100,7 +97,7 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         self.setupSlider()
-        self.setupButtons()
+        self.setupShootButton()
         self.sceneView.debugOptions = SCNDebugOptions.showPhysicsShapes
         view.addSubview(popoverMenu)
         setupConstraint()
@@ -133,16 +130,15 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     // MARK: Helper Methods
-    func setupButtons() {
+    func setupShootButton() {
         self.shootButton = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
-        self.shootButton.backgroundColor = UIColor.gray
-        self.shootButton.setTitle("Shoot Ball", for: UIControlState.normal)
+        self.shootButton.setImage(#imageLiteral(resourceName: "oval-grey"), for: .normal)
         self.shootButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         self.view.addSubview(self.shootButton)
         self.shootButton.isUserInteractionEnabled = false
         self.shootButton.translatesAutoresizingMaskIntoConstraints = false
         self.shootButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        self.shootButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -150).isActive = true
+        self.shootButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -30).isActive = true
         self.shootButton.isHidden = true
     }
     
@@ -175,10 +171,6 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
         let orientation = SCNVector3(-transform.m31,
                                      -transform.m32,
                                      -transform.m33)
-        //        let location = SCNVector3(transform.m41,
-        //                                  transform.m42,
-        //                                  transform.m43)
-        //        let position = orientation + location
         ballNode = createBall(transform: tableSpaceTransform)
         ballNode.position = SCNVector3(tableSpaceTransform.m41 - tableSpaceTransform.m31,
                                        tableSpaceTransform.m42 - tableSpaceTransform.m32,
@@ -192,13 +184,10 @@ class GameViewController: UIViewController, UIGestureRecognizerDelegate {
                                          asImpulse: true)
         isBallInPlay = true
         self.updateBallInPlay(bool: true)
-        
-        self.tableNode.addChildNode(ballNode)
-        
-        scoreManager.numberOfThrows += 1
-        scoreManager.updateScoreLabel()
-        
         startBallTimer()
+        self.tableNode.addChildNode(ballNode)
+//        scoreManager.numberOfThrows += 1
+//        scoreManager.updateScoreLabel()
     }
 }
 

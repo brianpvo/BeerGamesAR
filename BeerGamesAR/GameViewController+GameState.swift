@@ -182,7 +182,7 @@ extension GameViewController {
     func toggleShootButton() {
         DispatchQueue.main.async {
             self.shootButton.isUserInteractionEnabled = self.shouldAllowPlayerInteraction
-            self.shootButton.backgroundColor = self.shouldAllowPlayerInteraction ? self.interactiveColor : self.nonInteractiveColor
+            self.shootButton.imageView?.image = self.shouldAllowPlayerInteraction ? self.interactiveColor : self.nonInteractiveColor
             self.slider.isHidden = !self.shouldAllowPlayerInteraction
         }
     }
@@ -193,14 +193,14 @@ extension GameViewController {
         }
     }
     
-    var nonInteractiveColor: UIColor {
+    var nonInteractiveColor: UIImage {
         get {
-            return UIColor.gray
+            return #imageLiteral(resourceName: "oval-grey")
         }
     }
-    var interactiveColor: UIColor {
+    var interactiveColor: UIImage {
         get {
-            return UIColor.green
+            return #imageLiteral(resourceName: "oval-white")
         }
     }
 }
