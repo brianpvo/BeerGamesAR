@@ -93,13 +93,13 @@ extension GameViewController {
         case .errorHostingDatasetProcessingFailed:
             return "ErrorHostingDatasetProcessingFailed";
         case .errorCloudIdNotFound:
-            return "ErrorCloudIdNotFound";
+            return "Error: No Table Found\nPlease Try Again";
         case .errorResolvingSdkVersionTooNew:
             return "ErrorResolvingSdkVersionTooNew";
         case .errorResolvingSdkVersionTooOld:
             return "ErrorResolvingSdkVersfionTooOld";
         case .errorResolvingLocalizationNoMatch:
-            return "ErrorResolvingLocalizationNoMatch";
+            return "Error: No Match Found\nPlease Try Again";
         }
     }
     
@@ -154,7 +154,10 @@ extension GameViewController {
                     firebaseReference.child("hotspot_list").child(roomCode).removeAllObservers()
                 }
             }
-            resetGameState()
+            removeGameStateObserver()
+            self.messagePanel.isHidden = false
+            self.isBallInPlay = false
+            self.playerTurn = 2
             toggleButton(state: state)
             roomCode = "";
             break;
@@ -177,15 +180,15 @@ extension GameViewController {
             break;
         case .Resolving:
             self.dismiss(animated: false, completion: nil)
-            self.message = "Joining game...";
+            self.message = "Joining room...";
             toggleButton(state: state)
             break;
         case .ResolvingFinished:
             guard let garAnchor = self.garAnchor else { return }
             if garAnchor.cloudState == .success {
-                self.message = "Successfully joined game"
+                self.message = "Successfully joined room"
             } else {
-                self.message = "Finished resolving \(self.cloudStateString(cloudState: garAnchor.cloudState))"
+                self.message = "Finished - \(self.cloudStateString(cloudState: garAnchor.cloudState))"
             }
             break;
         }
@@ -220,14 +223,15 @@ extension GameViewController {
                                             0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.0, 0.0,
                                             0.0, 0.0, 0.0, 0.0])
-            let cupState = NSArray(array: [1, 1, 1, 1, 1, 1,  // player 0 cups
-                1, 1, 1, 1, 1, 1]) // player 1 cups
+            let cupState = NSArray(array: [1, 1, 1, 1, 1, 1, // player 0 cups
+                                           1, 1, 1, 1, 1, 1]) // player 1 cups
             let gameState = [
                 "ball_state" : ballState,
                 "ball_in_play" : false,
                 "cup_state": cupState,
                 "player_joined" : false,
-                "player_turn" : 0 // 0 - host, 1 - new player
+                "player_turn" : 0, // 0 - host, 1 - new player
+                "reset_game" : NSArray(array: [2, 2]) // 0 for no, 1 for yes
                 ] as [String: Any]
             
             // pass room number, anchor count, and timestamp into newRoom dictionary

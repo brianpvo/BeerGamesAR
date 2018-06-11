@@ -97,7 +97,6 @@ extension GameViewController {
                         DispatchQueue.main.async {
                             self.shootButton.isHidden = false
                         }
-//                        self.disableShootButton()
                     } else {
                         DispatchQueue.main.async {
                             self.shootButton.isHidden = true
@@ -119,7 +118,7 @@ extension GameViewController {
             })
     }
     
-    func checkForWinner(cupArray: [Int], leftBound: Int, rightBound: Int, player: Int) {
+    private func checkForWinner(cupArray: [Int], leftBound: Int, rightBound: Int, player: Int) {
         let range = leftBound...rightBound
         let player1Cups = cupArray[range].filter{ $0 == 0 }
         if player1Cups.count == range.count {
@@ -129,21 +128,89 @@ extension GameViewController {
                 scale: SCNVector3(0.02, 0.015, 0.01))
             winner.runAction(self.rotateAnimation())
             self.tableNode.addChildNode(winner)
-            DispatchQueue.main.async {
-                self.shootButton.isHidden = true
-                self.slider.isHidden = true
+            self.removeGameStateObserver()
+            Timer.scheduledTimer(withTimeInterval: 6, repeats: false) { [weak self]_ in
+                DispatchQueue.main.async {
+                    self?.showResetGameDialog()
+                }
             }
         }
     }
     
-    func resetGameState() {
+    private func checkResetGameState(reset_status: [Int]) {
+        let bothPlayerAccept = reset_status.filter { $0 == 1 }
+        let onePlayerReject = reset_status.filter { $0 == 0 }
+        if onePlayerReject.count > 0 {
+            self.enterState(state: .Default)
+        }
+        if bothPlayerAccept.count == 2 {
+            self.resetGame()
+        }
+    }
+    
+    private func showResetGameDialog() {
+        let alertController = UIAlertController(title: "RESET GAME?", message: "", preferredStyle: .alert)
+        guard let roomCode = self.roomCode, let myPlayerNumber = self.myPlayerNumber else { return }
+        let yesAction = UIAlertAction(title: "YES", style: .default) { (action) in
+            self.firebaseReference?.child("hotspot_list").child(roomCode)
+                .child("game_state").child("reset_game").updateChildValues(["\(myPlayerNumber)" : 1])
+        }
+        let noAction = UIAlertAction(title: "NO", style: .default) { (action) in
+            self.firebaseReference?.child("hotspot_list").child(roomCode)
+                .child("game_state").child("reset_game").updateChildValues(["\(myPlayerNumber)" : 0])
+        }
+        alertController.addAction(yesAction)
+        alertController.addAction(noAction)
+        self.present(alertController, animated: false, completion: nil)
+        
+        self.firebaseReference?.child("hotspot_list").child(roomCode).child("game_state")
+            .child("reset_game").observe(.value, with: { (snapshot) in
+                guard let resetGameStatus = snapshot.value as? [Int] else { return }
+                self.checkResetGameState(reset_status: resetGameStatus)
+            })
+    }
+    
+    private func resetGame() {
+        self.sceneView.scene.rootNode.enumerateChildNodes({ (node, _) in
+            node.isHidden = false
+            if node.name?.range(of: "tube") != nil ||
+                node.name?.range(of: "plane") != nil {
+                node.physicsBody?.collisionBitMask = BitMaskCategory.ball.rawValue
+            }
+            if node.name == "scoreNode" {
+                node.removeFromParentNode()
+            }
+        })
+        
+        // Reset firebase data
+        let ballState = NSArray(array: [0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0])
+        let cupState = NSArray(array: [1, 1, 1, 1, 1, 1,
+                                       1, 1, 1, 1, 1, 1])
+        let gameState = [
+            "ball_state" : ballState,
+            "ball_in_play" : false,
+            "cup_state": cupState,
+            "player_joined" : false,
+            "player_turn" : 1, // switch player
+            "reset_game" : NSArray(array: [2, 2])
+            ] as [String: Any]
         guard let roomCode = roomCode, roomCode.count != 0 else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
-            .child("game_state").removeAllObservers()
+            .child("game_state").setValue(gameState)
+        self.observeGameState()
+    }
+    
+    func removeGameStateObserver() {
         DispatchQueue.main.async {
             self.shootButton.isHidden = true
             self.slider.isHidden = true
         }
+        guard let roomCode = roomCode, roomCode.count != 0 else { return }
+        firebaseReference?.child("hotspot_list").child(roomCode)
+            .child("game_state").removeAllObservers()
         self.inGame = false;
     }
     
@@ -187,25 +254,25 @@ extension GameViewController {
     func toggleShootButton() {
         DispatchQueue.main.async {
             self.shootButton.isUserInteractionEnabled = self.shouldAllowPlayerInteraction
-            self.shootButton.backgroundColor = self.shouldAllowPlayerInteraction ? self.interactiveColor : self.nonInteractiveColor
+            self.shootButton.imageView?.image = self.shouldAllowPlayerInteraction ? self.interactiveColor : self.nonInteractiveColor
             self.slider.isHidden = !self.shouldAllowPlayerInteraction
         }
     }
     
     var shouldAllowPlayerInteraction: Bool {
         get {
-            return (playerTurn == myPlayerNumber) && !isBallInPlay
+            return (playerTurn == myPlayerNumber) && !isBallInPlay && inGame
         }
     }
     
-    var nonInteractiveColor: UIColor {
+    var nonInteractiveColor: UIImage {
         get {
-            return UIColor.gray
+            return #imageLiteral(resourceName: "oval-grey")
         }
     }
-    var interactiveColor: UIColor {
+    var interactiveColor: UIImage {
         get {
-            return UIColor.green
+            return #imageLiteral(resourceName: "oval-white")
         }
     }
 }

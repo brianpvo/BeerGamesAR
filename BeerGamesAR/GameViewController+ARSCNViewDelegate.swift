@@ -168,6 +168,10 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate, GARSessionDe
                 node.enumerateChildNodes { (planeNode, _) in
                     planeNode.geometry?.materials.first?.diffuse.contents = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.0)
                 }
+            } else {
+                node.enumerateChildNodes { (planeNode, _) in
+                    planeNode.geometry?.materials.first?.diffuse.contents = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.25)
+                }
             }
             
             if let x = planeAnchor?.center.x, let y = planeAnchor?.center.y, let z = planeAnchor?.center.z {

@@ -24,7 +24,7 @@ extension GameViewController {
         }
     }
     
-    @objc func updateMessageLabel() {
+    @objc private func updateMessageLabel() {
         DispatchQueue.main.async {
             self.messageLabel.text = self.message
             if self.state == ARState.RoomCreated || self.state == ARState.CreatingRoom ||
@@ -33,8 +33,7 @@ extension GameViewController {
             }
         }
     }
-    
-    func displayRoomCode(){
+    private func displayRoomCode(){
         self.roomCodePanel.isHidden = false
         self.roomCodeLabel.text = self.roomCode != "" ? "Room: \(self.roomCode ?? "0000")" : ""
     }
