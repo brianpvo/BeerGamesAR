@@ -14,6 +14,11 @@ extension GameViewController {
     
     func observeGameState() {
         self.inGame = true;
+        
+        DispatchQueue.main.async {
+            self.roomCodePanel.isHidden = true
+        }
+        
         guard let roomCode = roomCode else { return }
         firebaseReference?.child("hotspot_list").child(roomCode)
             .child("game_state").observe(.value, with: { (snapshot) in

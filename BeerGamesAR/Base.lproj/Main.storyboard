@@ -23,7 +23,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </arscnView>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="68X-vp-Hwk" userLabel="Room Code Panel">
-                                <rect key="frame" x="252" y="20" width="113" height="34"/>
+                                <rect key="frame" x="0.0" y="633" width="113" height="34"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Wup-lx-fb5">
                                     <rect key="frame" x="0.0" y="0.0" width="113" height="34"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -48,9 +48,7 @@
                                                     <constraint firstAttribute="trailing" secondItem="mqs-VN-2Sa" secondAttribute="trailing" id="qKw-PY-WwO"/>
                                                 </constraints>
                                             </view>
-                                            <vibrancyEffect>
-                                                <blurEffect style="light"/>
-                                            </vibrancyEffect>
+                                            <blurEffect style="light"/>
                                         </visualEffectView>
                                     </subviews>
                                     <constraints>
@@ -60,9 +58,7 @@
                                         <constraint firstItem="lhB-4w-YSY" firstAttribute="leading" secondItem="Wup-lx-fb5" secondAttribute="leading" id="x0J-cL-gOU"/>
                                     </constraints>
                                 </view>
-                                <vibrancyEffect>
-                                    <blurEffect style="light"/>
-                                </vibrancyEffect>
+                                <blurEffect style="light"/>
                             </visualEffectView>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V4r-pE-E9w" userLabel="Message Panel">
                                 <rect key="frame" x="118.5" y="80" width="139.5" height="53.5"/>
@@ -113,11 +109,11 @@
                             <constraint firstItem="bXb-eF-poO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="MgS-n0-PFH"/>
                             <constraint firstItem="bXb-eF-poO" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="ZXu-ip-t5T"/>
                             <constraint firstItem="bXb-eF-poO" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="eKL-d5-Kh1"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="68X-vp-Hwk" secondAttribute="bottom" id="eey-Pi-OwS"/>
                             <constraint firstItem="V4r-pE-E9w" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="60" id="fQy-PR-rJE"/>
                             <constraint firstItem="V4r-pE-E9w" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.08" id="mWo-rP-JPi"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="68X-vp-Hwk" secondAttribute="trailing" constant="10" id="nvx-vT-2N2"/>
-                            <constraint firstItem="68X-vp-Hwk" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="oTc-6Z-nni"/>
                             <constraint firstItem="bXb-eF-poO" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="rns-f4-5y1"/>
+                            <constraint firstItem="68X-vp-Hwk" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="swe-QL-A7O"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
