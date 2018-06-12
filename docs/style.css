@@ -1,12 +1,3 @@
-
-/*
-Template Name: Apex App	
-Author: MarkUps
-Author URI: http://www.markups.io/
-Version: 1.0
-*/
-
-
 /* Table of Content
 ==================================================
 #BASIC TYPOGRAPHY
@@ -105,7 +96,7 @@ img {
 }
 
 code {
-	background-color: #ee6e73;
+	background-color: #e6c900;
 	border-radius: 2px;
 	color: #fff;
 	padding: 2px 4px;
@@ -124,14 +115,14 @@ pre code {
 }
 
 del{
-	text-decoration-color: #ee6e73;
+	text-decoration-color: #e6c900;
 }
 
 kbd {
 	background-color: #ddd;
 	padding: 4px 6px;
 	border-radius: 2px;
-	color: ;
+	/* color: ; */
 }
 
 address {
@@ -167,7 +158,6 @@ button:focus {
 	outline: none;
 	border: none;
 }
-
 
 /* ========= BUTTON =========*/
 
@@ -210,6 +200,9 @@ button:focus {
 	background-color: #fff;
 }
 
+ul{
+	padding-left: 1em;
+}
 
 
 /*--------------------*/
@@ -226,10 +219,12 @@ button:focus {
 }
 
 .mu-header-overlay {
-	display: inline;
+	display: 
+	inline;
 	float: left;
-	opacity: 0.8;
+	/* opacity: 0.8; */
 	width: 100%;
+	background: rgba(255, 204, 0, 0.8)
 }
 
 .mu-logo-area {
@@ -345,7 +340,7 @@ button:focus {
 .mu-apple-btn:focus,
 .mu-google-btn:focus,
 .mu-windows-btn:focus {
-	background-color: #ffffff;
+	background-color: #1c1b1b;
 }
 
 .mu-apple-btn i,
@@ -435,7 +430,7 @@ button:focus {
 /* Menu overlay */
 
 .mu-menu-full-overlay {
-	background-color: rgba(0, 0, 0, 0.94);
+	background-color: rgba(0, 0, 0, 0.5);
 	color: #fff;
 	height: 100%;
 	left: 0;
@@ -606,9 +601,9 @@ button:focus {
 
 
 #mu-video {
-	background-image: url("assets/images/video-bg.jpeg");
+	background-image: url("assets/images/BeerARTitle.png");
 	background-attachment: fixed;
-	background-position: center center;
+	background-position: center top;
 	-webkit-background-size: cover;
 	background-size: cover;
 	display: inline;
@@ -1054,8 +1049,6 @@ button:focus {
 	 -moz-border-radius: 4px;
 	      border-radius: 4px;
 }
-
-
 
 /*--------------------*/
 /* FOOTER */
