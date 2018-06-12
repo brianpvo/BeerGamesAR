@@ -68,7 +68,6 @@ extension GameViewController: SCNPhysicsContactDelegate {
         )
         
         node.name = "scoreNode"
-        
         return node
     }
     
