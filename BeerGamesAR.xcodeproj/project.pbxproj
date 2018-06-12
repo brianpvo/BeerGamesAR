@@ -12,8 +12,6 @@
 		7A291B8F20C1FB660069A09D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A291B8E20C1FB660069A09D /* LaunchScreen.storyboard */; };
 		7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */; };
 		7AA37C0520C31C9B001C572D /* NodePhysics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA37C0420C31C9B001C572D /* NodePhysics.swift */; };
-		7AA37C0A20C32BD7001C572D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7AA37C0920C32BD7001C572D /* GoogleService-Info.plist */; };
-		7AA37C0C20C32BE0001C572D /* Secret.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA37C0B20C32BE0001C572D /* Secret.swift */; };
 		7AA37C0F20C35709001C572D /* GameViewController+ARSCNViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA37C0E20C35709001C572D /* GameViewController+ARSCNViewDelegate.swift */; };
 		7AA37C1120C35A0B001C572D /* GameViewController+SceneObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA37C1020C35A0B001C572D /* GameViewController+SceneObjects.swift */; };
 		7AA37C1320C48BD0001C572D /* GameViewController+ARState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AA37C1220C48BD0001C572D /* GameViewController+ARState.swift */; };
@@ -25,6 +23,8 @@
 		7AB26A7320B92E120066908D /* (null) in Resources */ = {isa = PBXBuildFile; };
 		7AB26A7520BA83EB0066908D /* (null) in Sources */ = {isa = PBXBuildFile; };
 		7AF0B44820CA00DE001E0993 /* GameViewController+GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AF0B44720CA00DE001E0993 /* GameViewController+GameState.swift */; };
+		7E7A961020CF4CF400760862 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E7A960F20CF4CF400760862 /* GoogleService-Info.plist */; };
+		7E7A961220CF4CF800760862 /* Secret.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7A961120CF4CF800760862 /* Secret.swift */; };
 		A3A9E81429EA57B5977F1A5A /* Pods_BeerGamesAR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B6224FC584954427FA2DE89 /* Pods_BeerGamesAR.framework */; };
 		F164857620C72EE100C70C01 /* GameViewController+Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F164857520C72EE100C70C01 /* GameViewController+Slider.swift */; };
 		F164857820C72F4900C70C01 /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F164857720C72F4900C70C01 /* CustomSlider.swift */; };
@@ -56,8 +56,6 @@
 		7A291B8E20C1FB660069A09D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = cup.scnassets; sourceTree = "<group>"; };
 		7AA37C0420C31C9B001C572D /* NodePhysics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePhysics.swift; sourceTree = "<group>"; };
-		7AA37C0920C32BD7001C572D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7AA37C0B20C32BE0001C572D /* Secret.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secret.swift; sourceTree = "<group>"; };
 		7AA37C0E20C35709001C572D /* GameViewController+ARSCNViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewController+ARSCNViewDelegate.swift"; sourceTree = "<group>"; };
 		7AA37C1020C35A0B001C572D /* GameViewController+SceneObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewController+SceneObjects.swift"; sourceTree = "<group>"; };
 		7AA37C1220C48BD0001C572D /* GameViewController+ARState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewController+ARState.swift"; sourceTree = "<group>"; };
@@ -69,6 +67,8 @@
 		7AB26A6520B9284A0066908D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7AB26A6A20B9284A0066908D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7AF0B44720CA00DE001E0993 /* GameViewController+GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewController+GameState.swift"; sourceTree = "<group>"; };
+		7E7A960F20CF4CF400760862 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7E7A961120CF4CF800760862 /* Secret.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secret.swift; sourceTree = "<group>"; };
 		8E51913D20667A4C7520C5A5 /* Pods-BeerGamesAR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeerGamesAR.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeerGamesAR/Pods-BeerGamesAR.release.xcconfig"; sourceTree = "<group>"; };
 		F164857520C72EE100C70C01 /* GameViewController+Slider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameViewController+Slider.swift"; sourceTree = "<group>"; };
 		F164857720C72F4900C70C01 /* CustomSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
@@ -127,13 +127,13 @@
 				F164857520C72EE100C70C01 /* GameViewController+Slider.swift */,
 				38018AB520CC81B000626EE1 /* GameViewController+PopoverMenu.swift */,
 				F164857720C72F4900C70C01 /* CustomSlider.swift */,
+				7E7A960F20CF4CF400760862 /* GoogleService-Info.plist */,
+				7E7A961120CF4CF800760862 /* Secret.swift */,
 				F164857920C7441200C70C01 /* ScoreManager.swift */,
 				7AA37C0420C31C9B001C572D /* NodePhysics.swift */,
-				7AA37C0B20C32BE0001C572D /* Secret.swift */,
 				7AB26A6220B928490066908D /* Main.storyboard */,
 				7A291B8E20C1FB660069A09D /* LaunchScreen.storyboard */,
 				7AB26A6A20B9284A0066908D /* Info.plist */,
-				7AA37C0920C32BD7001C572D /* GoogleService-Info.plist */,
 				7AB26A6520B9284A0066908D /* Assets.xcassets */,
 				7AA37C1820C4BC4D001C572D /* customTableAndCups.scnassets */,
 				7A6E88FE20BF5E0300BD6C6B /* cup.scnassets */,
@@ -242,8 +242,8 @@
 				7AB26A6420B928490066908D /* Main.storyboard in Resources */,
 				7AA37C1920C4BC4D001C572D /* customTableAndCups.scnassets in Resources */,
 				7A6E88FF20BF5E0300BD6C6B /* cup.scnassets in Resources */,
-				7AA37C0A20C32BD7001C572D /* GoogleService-Info.plist in Resources */,
 				7AB26A7320B92E120066908D /* (null) in Resources */,
+				7E7A961020CF4CF400760862 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -318,6 +318,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7AA37C1320C48BD0001C572D /* GameViewController+ARState.swift in Sources */,
+				7E7A961220CF4CF800760862 /* Secret.swift in Sources */,
 				7AA37C0520C31C9B001C572D /* NodePhysics.swift in Sources */,
 				7AB26A6120B928490066908D /* GameViewController.swift in Sources */,
 				7AB26A7520BA83EB0066908D /* (null) in Sources */,
@@ -326,7 +327,6 @@
 				F164857620C72EE100C70C01 /* GameViewController+Slider.swift in Sources */,
 				38018AB620CC81B000626EE1 /* GameViewController+PopoverMenu.swift in Sources */,
 				F164857A20C7441200C70C01 /* ScoreManager.swift in Sources */,
-				7AA37C0C20C32BE0001C572D /* Secret.swift in Sources */,
 				38018ABC20CCB93E00626EE1 /* GameViewController+StatusBar.swift in Sources */,
 				F164857820C72F4900C70C01 /* CustomSlider.swift in Sources */,
 				7AB26A5F20B928490066908D /* AppDelegate.swift in Sources */,
@@ -476,7 +476,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3WQXF9B9M3;
+				DEVELOPMENT_TEAM = BMW7M4Q97K;
 				INFOPLIST_FILE = BeerGamesAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -496,7 +496,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3WQXF9B9M3;
+				DEVELOPMENT_TEAM = BMW7M4Q97K;
 				INFOPLIST_FILE = BeerGamesAR/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
