@@ -20,10 +20,9 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BeerARTitle" translatesAutoresizingMaskIntoConstraints="NO" id="B7A-Jd-OPC">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" red="0.99215686274509807" green="0.0" blue="0.10588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.99607843139999996" green="0.0" blue="0.10980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="B7A-Jd-OPC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="aDQ-PH-H4k"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="B7A-Jd-OPC" secondAttribute="trailing" id="fyN-mV-v28"/>
