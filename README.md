@@ -11,7 +11,7 @@ Beer Pong AR is played by two people in which each player takes turn throwing a 
 * Xcode version 9.3 or later
 * iPhone SE to current
 * Cocoapods
-* WiFi and Mobile Data
+* WiFi or Mobile Data
 
 ## Getting Started
 1. Fork this repository and clone your forked repository

@@ -720,9 +720,22 @@ ul{
 
 
 #mu-apps-screenshot {
-	background-color: #fff;
+	background-image: url("assets/images/BeerARTitle.png");
+	background-attachment: fixed;
+	background-position: center top;
+	/* background-color: #fff; */
+	display: inline;
+	-webkit-background-size: cover;
+	background-size: cover;
 	display: inline;
 	float: left;
+	width: 100%;
+}
+
+.mu-app-screenshot-overlay {
+	display: inline;
+	float: left;
+	opacity: 0.8;
 	width: 100%;
 }
 
@@ -761,7 +774,7 @@ ul{
 
 .mu-apps-screenshot-slider .slick-next,
 .mu-apps-screenshot-slider .slick-prev {
-	background-color: transparent;
+	background-color: #79A267;
 }
 
 
