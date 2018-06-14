@@ -735,7 +735,7 @@ ul{
 .mu-app-screenshot-overlay {
 	display: inline;
 	float: left;
-	opacity: 0.8;
+	opacity: 0.5;
 	width: 100%;
 }
 
@@ -774,7 +774,7 @@ ul{
 
 .mu-apps-screenshot-slider .slick-next,
 .mu-apps-screenshot-slider .slick-prev {
-	background-color: #79A267;
+	background-color: #ffcc00;
 }
 
 
