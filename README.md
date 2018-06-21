@@ -7,8 +7,9 @@ For this final project, we created an augmented reality version of beer pong whi
 Beer Pong AR is played by two people in which each player takes turn throwing a ping pong ball into the other player cups. Once a ball lands in a cup, the cup is taken away and the player gets to shoot again. If the ball thrown bounces off the table and sinks into a cup, the player is rewarded with an extra cup taken away. The player that successfully hits all of the opponent’s cups wins the game.
 
 ## Screenshots
-![Alt text](/docs/assets/images/screenshot/ss03.png=250x250?raw=true "Optional Title")
-![Alt text](/docs/assets/images/screenshot/ss04.png =125x125 "Optional Title")
+<img src="/docs/assets/images/screenshot/ss03.png" width="60">
+![Alt text](/docs/assets/images/screenshot/ss03.png?raw=true "Optional Title")
+![Alt text](/docs/assets/images/screenshot/ss04.png?raw=true "Optional Title")
 ![Alt text](/docs/assets/images/screenshot/ss05.png?raw=true "Optional Title")
 ![Alt text](/docs/assets/images/screenshot/ss06.png?raw=true "Optional Title")
 ![Alt text](/docs/assets/images/screenshot/ss07.png?raw=true "Optional Title")
