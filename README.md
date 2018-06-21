@@ -8,11 +8,10 @@ Beer Pong AR is played by two people in which each player takes turn throwing a 
 
 ## Screenshots
 <img src="/docs/assets/images/screenshot/ss03.png" width="300">
-![Alt text](/docs/assets/images/screenshot/ss03.png?raw=true "Optional Title")
-![Alt text](/docs/assets/images/screenshot/ss04.png?raw=true "Optional Title")
-![Alt text](/docs/assets/images/screenshot/ss05.png?raw=true "Optional Title")
-![Alt text](/docs/assets/images/screenshot/ss06.png?raw=true "Optional Title")
-![Alt text](/docs/assets/images/screenshot/ss07.png?raw=true "Optional Title")
+<img src="/docs/assets/images/screenshot/ss04.png" width="300">
+<img src="/docs/assets/images/screenshot/ss05.png" width="300">
+<img src="/docs/assets/images/screenshot/ss06.png" width="300">
+<img src="/docs/assets/images/screenshot/ss07.png" width="300">
 
 ## Pre-Requisites
 * iOS version 11.3 or later
